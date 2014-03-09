@@ -72,15 +72,6 @@
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="VVVV.Core">
-      <HintPath>..\Dependencies\VVVV.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="VVVV.PluginInterfaces">
-      <HintPath>..\Dependencies\VVVV.PluginInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="VVVV.Utils">
-      <HintPath>..\Dependencies\VVVV.Utils.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\AudioTrack.cs" />
@@ -110,12 +101,7 @@
     <Compile Include="View\ValueTrackView.cs" />
     <Compile Include="WAMPTimeliner.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model" />
-    <Folder Include="Resources" />
-    <Folder Include="SvgWidgets" />
-    <Folder Include="View" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\NWamp\NWamp\NWamp.csproj">
       <Project>{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}</Project>
@@ -128,6 +114,14 @@
     <ProjectReference Include="..\..\SVG\Source\Svg.csproj">
       <Project>{886A98C5-37C0-4E8B-885E-30C1D2F98B47}</Project>
       <Name>Svg</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\vvvv\public\common\src\core\Core\Core.csproj">
+      <Project>{6AD35106-187B-4A3A-A801-E665CD12E020}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\vvvv\public\common\src\core\Utils\Utils.csproj">
+      <Project>{C3773330-81FA-4253-823E-1BDE1529AA99}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

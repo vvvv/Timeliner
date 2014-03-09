@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-# SharpDevelop 5.0
+# SharpDevelop 4.4
 VisualStudioVersion = 12.0.20827.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svg", "..\SVG\Source\Svg.csproj", "{886A98C5-37C0-4E8B-885E-30C1D2F98B47}"
@@ -10,9 +10,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Posh", "..\Posh\Source\Posh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeLinerSA", "TimelinerSA\TimeLinerSA.csproj", "{FEB50B08-BA81-453C-8376-A13F09506C19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NWamp", "..\NWamp\NWamp\NWamp.csproj", "{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timeliner", "Source\Timeliner.csproj", "{A8ED0E84-E337-4DB5-8898-4BAD3960D908}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NWamp", "..\NWamp\NWamp\NWamp.csproj", "{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\vvvv\public\common\src\core\Core\Core.csproj", "{6AD35106-187B-4A3A-A801-E665CD12E020}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "..\vvvv\public\common\src\core\Utils\Utils.csproj", "{C3773330-81FA-4253-823E-1BDE1529AA99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,13 +36,21 @@ Global
 		{FEB50B08-BA81-453C-8376-A13F09506C19}.Debug|x86.Build.0 = Debug|x86
 		{FEB50B08-BA81-453C-8376-A13F09506C19}.Release|x86.ActiveCfg = Release|x86
 		{FEB50B08-BA81-453C-8376-A13F09506C19}.Release|x86.Build.0 = Release|x86
-		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Debug|x86.ActiveCfg = Debug|x86
-		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Debug|x86.Build.0 = Debug|x86
-		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Release|x86.ActiveCfg = Release|x86
-		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Release|x86.Build.0 = Release|x86
 		{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}.Debug|x86.Build.0 = Debug|Any CPU
 		{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}.Release|x86.ActiveCfg = Release|Any CPU
 		{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}.Release|x86.Build.0 = Release|Any CPU
+		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Debug|x86.Build.0 = Debug|x86
+		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Debug|x86.ActiveCfg = Debug|x86
+		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Release|x86.Build.0 = Release|x86
+		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Release|x86.ActiveCfg = Release|x86
+		{6AD35106-187B-4A3A-A801-E665CD12E020}.Debug|x86.Build.0 = Debug|Any CPU
+		{6AD35106-187B-4A3A-A801-E665CD12E020}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6AD35106-187B-4A3A-A801-E665CD12E020}.Release|x86.Build.0 = Release|Any CPU
+		{6AD35106-187B-4A3A-A801-E665CD12E020}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3773330-81FA-4253-823E-1BDE1529AA99}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3773330-81FA-4253-823E-1BDE1529AA99}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3773330-81FA-4253-823E-1BDE1529AA99}.Release|x86.Build.0 = Release|Any CPU
+		{C3773330-81FA-4253-823E-1BDE1529AA99}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 EndGlobal

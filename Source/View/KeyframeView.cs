@@ -26,7 +26,7 @@ namespace Timeliner
 			
 			//configure svg
 			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "/Keyframe", UriKind.Relative);
-			Background.ID = MainGroup.ID + "/bg";
+			Background.ID = "bg";
 			Background.CustomAttributes["class"] = "kf";
 			
 			Background.MouseDown += Background_MouseDown;
@@ -35,7 +35,7 @@ namespace Timeliner
 			
 			Label.FontSize = 8;
 			Label.FontFamily = "Lucida Sans Unicode";
-			Label.ID = MainGroup.ID + "/label";
+			Label.ID = "label";
 			Label.CustomAttributes["pointer-events"] = "none";
 			Label.Visible = false;
 			Label.Transforms = new SvgTransformCollection();

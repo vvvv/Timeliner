@@ -82,7 +82,7 @@ namespace Timeliner
 			Background.Width = width;
 			Background.Height = 20; 
 			Background.Fill = TimelinerColors.LightGray;
-			Background.ID = MainGroup.ID + "/bg";
+			Background.ID = "bg";
 			
 			//register event handlers
 			Background.MouseDown += Background_MouseDown;
@@ -123,7 +123,7 @@ namespace Timeliner
 	
 			ClipRect.Width = width;
 			ClipRect.Height = Background.Height;
-			ClipRect.ID = Background.ID + "/ClipRect";
+			ClipRect.ID = "ClipRect";
 			
 			//document roots id is "svg". this is where the trackclips are added to
 			RulerClipPath.ID = "svg/clip" + IDGenerator.NewID;
@@ -132,11 +132,11 @@ namespace Timeliner
 			var uri = new Uri("url(#" + RulerClipPath.ID + ")", UriKind.Relative);
 			MainGroup.ClipPath = uri;
 			
-			TickNumGroup.ID = MainGroup.ID + "/Ticks";
+			TickNumGroup.ID = "Ticks";
 			TickNumGroup.Transforms = new SvgTransformCollection();
 			TickNumGroup.Transforms.Add(PanZoomMatrix);
 			
-			PanZoomGroup.ID = MainGroup.ID + "/PanZoom";
+			PanZoomGroup.ID = "PanZoom";
 			PanZoomGroup.Transforms = new SvgTransformCollection();
 			PanZoomGroup.Transforms.Add(PanZoomMatrix);
 			
@@ -171,7 +171,7 @@ namespace Timeliner
 				TickNumGroup.Children.Add(num);
 			}
 			
-			LoopStart.ID = MainGroup.ID + "LoopStart";
+			LoopStart.ID = "LoopStart";
 			LoopStart.Transforms = new SvgTransformCollection();
 			LoopStart.Transforms.Add(new SvgTranslate(0, 0)); 
 			var points1 = new SvgUnitCollection();
@@ -188,7 +188,7 @@ namespace Timeliner
 			LoopStart.MouseMove += (s, e) => Parent.Default_MouseMove(LoopStart, e);
 			Model.LoopStart.ValueChanged += Model_LoopStart_ValueChanged;
 			
-			LoopEnd.ID = MainGroup.ID + "LoopEnd";
+			LoopEnd.ID = "LoopEnd";
 			LoopEnd.Transforms = new SvgTransformCollection();
 			LoopEnd.Transforms.Add(new SvgTranslate(10, 0)); 
 			var points2 = new SvgUnitCollection();

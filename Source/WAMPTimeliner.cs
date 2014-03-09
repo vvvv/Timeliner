@@ -30,6 +30,7 @@ namespace Timeliner
 		{
 			FUrl = url;
 			FWAMPServer = new WAMPServer(port);
+			FWAMPServer.AutoPublishAllAfterRemoteCall = false;
 			FWAMPServer.OnSessionCreated += FSVGTerminalProtocol_SessionCreated;
 			FWAMPServer.OnSessionClosed += FSVGTerminalProtocol_SessionClosed;
 			FWAMPServer.OnKeyDown += FSVGTerminalProtocol_OnKeyDown;

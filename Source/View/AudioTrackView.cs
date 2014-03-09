@@ -54,13 +54,13 @@ namespace Timeliner
 //			
 			SampleDefinition.Width = 5;
 			SampleDefinition.Height = 1;
-			SampleDefinition.ID = Model.GetID() + "/Sample";
+			SampleDefinition.ID = "Sample";
 //			SampleDefinition.Transforms = new SvgTransformCollection();
 //			SampleDefinition.Transforms.Add(new SvgScale(1, 1));
 			
-			SampleGroup.ID = MainGroup.ID + "/Samples";
+			SampleGroup.ID = "Samples";
 			
-			Path.ID = MainGroup.ID + "/path";
+			Path.ID = "path";
 	        Path.Stroke = new SvgColourServer(Color.Gray);
 	        Path.StrokeWidth = 1.0f;
 	        Path.CustomAttributes["vector-effect"] = "non-scaling-stroke";
@@ -203,7 +203,7 @@ namespace Timeliner
 		{
 			//configure svg
 			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "/Sample", UriKind.Relative);
-			Background.ID = MainGroup.ID + "/bg";
+			Background.ID = "bg";
 			Background.CustomAttributes["class"] = "kf";
 			Background.Transforms = new SvgTransformCollection();
 			Background.Transforms.Add(new SvgScale(1, 1));

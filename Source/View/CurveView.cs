@@ -17,7 +17,7 @@ namespace Timeliner
 	    public CurveView(TLCurve curve, ValueTrackView tv)
 	        : base(curve, tv)
 	    {
-	        Path.ID = MainGroup.ID + "/path";
+	        Path.ID = "path";
 	        Path.Stroke = new SvgColourServer(Color.Gray);
 	        Path.StrokeWidth = 1.0f;
 	        Path.CustomAttributes["vector-effect"] = "non-scaling-stroke";

@@ -117,23 +117,23 @@ namespace Timeliner
 			Background.Width = width;
 			Background.Height = 1; // this is the value range, not the actual track size
 			Background.Fill = TimelinerColors.LightGray;
-			Background.ID = MainGroup.ID + "/bg";
+			Background.ID ="bg";
 			
 			ClipRect.Width = width;
 			ClipRect.Height = Background.Height;
-			ClipRect.ID = Background.ID + "/ClipRect";
+			ClipRect.ID = "ClipRect";
 			
 			//document roots id is "svg". this is where the trackclips are added to
 			TrackClipPath.ID = "svg/clip" + IDGenerator.NewID;
 			TrackClipPath.Children.Add(ClipRect);
 			
-			TrackGroup.ID = MainGroup.ID + "/Clip";
+			TrackGroup.ID = "Clip";
 			TrackGroup.Transforms = new SvgTransformCollection();
 			TrackGroup.Transforms.Add(new SvgScale(1, 1));
 			var uri = new Uri("url(#" + TrackClipPath.ID + ")", UriKind.Relative);
 			TrackGroup.ClipPath = uri;
 			
-			PanZoomGroup.ID = MainGroup.ID + "/PanZoom";
+			PanZoomGroup.ID = "PanZoom";
 			PanZoomGroup.Transforms = new SvgTransformCollection();
 			PanZoomGroup.Transforms.Add(FRuler.PanZoomMatrix); //pan/zoom
 			PanZoomGroup.Transforms.Add(new SvgTranslate(0)); //min/max
@@ -141,7 +141,7 @@ namespace Timeliner
 			SizeBar.Width = width;
 			SizeBar.Height = 5;
 			SizeBar.Fill = TimelinerColors.DarkGray;
-			SizeBar.ID = MainGroup.ID + "/" + "SizeBar";
+			SizeBar.ID = "SizeBar";
 			SizeBar.CustomAttributes["style"] = "cursor:row-resize";
 			SizeBar.Y = Background.Height.Value;
 			
@@ -225,9 +225,9 @@ namespace Timeliner
 			
 			//stuff added to parents
 			//needs to be removed extra!
-			TrackMenu.ID = Parent.FOverlaysGroup.ID + "/TrackMenu" + IDGenerator.NewID;
+			TrackMenu.ID = "TrackMenu" + IDGenerator.NewID;
 			Parent.FOverlaysGroup.Children.Add(TrackMenu);
-			SizeBarDragRect.ID = Parent.FOverlaysGroup.ID + "/DragRect" + IDGenerator.NewID;
+			SizeBarDragRect.ID = "DragRect" + IDGenerator.NewID;
 			Parent.FOverlaysGroup.Children.Add(SizeBarDragRect);
 		}
 		

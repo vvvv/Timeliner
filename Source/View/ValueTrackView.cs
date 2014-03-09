@@ -77,8 +77,8 @@ namespace Timeliner
 			KeyframeDefinition.Transforms = new SvgTransformCollection();
 			KeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
 			
-			CurveGroup.ID = MainGroup.ID + "/Curves";
-			KeyframeGroup.ID = MainGroup.ID + "/Keyframes";
+			CurveGroup.ID = "Curves";
+			KeyframeGroup.ID = "Keyframes";
 			
 			Model.BeforeBuildingCurves += Model_BeforeBuildingCurves;
 			Model.AfterBuildingCurves += Model_AfterBuildingCurves;
