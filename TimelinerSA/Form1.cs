@@ -36,6 +36,17 @@ namespace TimeLinerSA
 			//FWAMPTimeliner.SaveData = xml => FData[0] = xml.ToString();
 			
 			Clock.Start();
+			
+			//dispose web- and wampserver
+			this.Disposed += (s, e) => 
+				{
+					WebServer.Stop();
+					foreach (var tl in FWAMPTimeliners) 
+					{
+						tl.Dispose();
+					}
+				};
+			
         }
 
         void timer1_Tick(object sender, EventArgs e)
