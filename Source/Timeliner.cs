@@ -32,7 +32,7 @@ namespace Timeliner
 		{
 			Context = context;
 			
-            Timeline = new TLDocument("TimelineJS", @"C:\vvvv\testing\TimelinerJS\timeline.xml");
+            Timeline = new TLDocument("", @"C:\vvvv\testing\TimelinerJS\timeline.xml");
             Shell.Instance.Root = Timeline;
             
             Timeline.CreateMapper(context.MappingRegistry);
