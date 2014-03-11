@@ -101,7 +101,9 @@
     <Compile Include="View\ValueTrackView.cs" />
     <Compile Include="WAMPTimeliner.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="web" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NWamp\NWamp\NWamp.csproj">
       <Project>{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}</Project>
@@ -130,6 +132,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\StopButton.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="web\timeliner.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
