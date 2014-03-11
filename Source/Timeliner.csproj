@@ -134,7 +134,7 @@
     <None Include="Resources\StopButton.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="web\timeliner.css">
+    <None Include="web\project.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
