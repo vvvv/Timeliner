@@ -400,13 +400,13 @@ namespace Timeliner
 			if (Parent.Timer.TimeDelta != 0 || FViewChanged)
 			{
 				Parent.TimeBar.Transforms[0] = new SvgTranslate(TimeToXPos(Parent.Timer.Time));
-				mainloopUpdate.AddAttribute(Parent.TimeBar.ID, "transform", Parent.TimeBar.Transforms);
+				mainloopUpdate.AddAttributeUpdate(Parent.TimeBar.ID, "transform", Parent.TimeBar.Transforms);
 			}
 			
 			if (Parent.Timer.TimeDelta != 0)
 			{
 				Label.Text = Parent.Timer.ToString();
-				mainloopUpdate.AddAttribute(Label.ID, "", Label.Text);				
+				mainloopUpdate.AddAttributeUpdate(Label.ID, "", Label.Text);				
 			}
 			
 			FViewChanged = false;

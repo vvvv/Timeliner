@@ -192,10 +192,6 @@ namespace Timeliner
 		public MouseHandlerBase(TView view, string sessionID)
 		{
 			Instance = view;
-			if (Instance is TimelineView)
-				(Instance as TimelineView).Document.Mapper.Map<WAMPServer>().SetActiveSession(sessionID);
-			else
-				Instance.Model.Mapper.Map<WAMPServer>().SetActiveSession(sessionID);
 			SessionID = sessionID;
 		}
 		
@@ -253,11 +249,7 @@ namespace Timeliner
 		{
 			pressed = false;
 			MouseClick(sender, arg);
-			
-			if (Instance is TimelineView)
-				(Instance as TimelineView).Document.Mapper.Map<WAMPServer>().SetActiveSession("");
-			else
-				Instance.Model.Mapper.Map<WAMPServer>().SetActiveSession("");
+
 			return null;
 		}
 	}
