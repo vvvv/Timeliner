@@ -395,18 +395,16 @@ namespace Timeliner
 			return new RectangleF(); //x1, y1 - height, width, height);
 		}
 		
-		public void Evaluate(RemoteContext mainloopUpdate)
+		public void Evaluate()
 		{
 			if (Parent.Timer.TimeDelta != 0 || FViewChanged)
 			{
 				Parent.TimeBar.Transforms[0] = new SvgTranslate(TimeToXPos(Parent.Timer.Time));
-				mainloopUpdate.AddAttributeUpdate(Parent.TimeBar.ID, "transform", Parent.TimeBar.Transforms);
 			}
 			
 			if (Parent.Timer.TimeDelta != 0)
 			{
-				Label.Text = Parent.Timer.ToString();
-				mainloopUpdate.AddAttributeUpdate(Label.ID, "", Label.Text);				
+				Label.Text = Parent.Timer.ToString();	
 			}
 			
 			FViewChanged = false;

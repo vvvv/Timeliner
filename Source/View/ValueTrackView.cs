@@ -215,10 +215,9 @@ namespace Timeliner
 
 		}
 		
-		public override void Evaluate(RemoteContext mainloopUpdate)
+		public override void Evaluate()
 		{
 			CurrentValue.Text = Model.CurrentValue.ToString("f4");
-			mainloopUpdate.AddAttributeUpdate(CurrentValue.ID, "", CurrentValue.Text);
 		}
 	}
 }

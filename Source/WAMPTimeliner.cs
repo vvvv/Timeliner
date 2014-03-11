@@ -241,9 +241,9 @@ namespace Timeliner
 
 		public void Evaluate(float hosttime)
 		{
-			Timeliner.Evaluate(hosttime, FWAMPServer.MainLoopUpdateContext);
+			Timeliner.Evaluate(hosttime);
 			
-			FWAMPServer.PublishMainLoopAttributes();
+			FWAMPServer.PublishAll(this, null);
 		}
 	}
 }

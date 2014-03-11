@@ -362,7 +362,7 @@ namespace Timeliner
 			return new RectangleF(x1, y1 - height, width, height);
 		}
 		
-		public virtual void Evaluate(RemoteContext mainloopUpdate)
+		public virtual void Evaluate()
 		{}
 	}
 }

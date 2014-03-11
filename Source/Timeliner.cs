@@ -56,7 +56,7 @@ namespace Timeliner
 		}
 		#endregion constructor/destructor
 		
-		public void Evaluate(float hosttime, RemoteContext remoteContext)
+		public void Evaluate(float hosttime)
 		{
 			Timer.HostTime = hosttime;
 			if (DoSeek)
@@ -67,7 +67,7 @@ namespace Timeliner
 			
 			Timer.Evaluate();
 			Timeline.Evaluate(Timer.Time);
-			TimelineView.Evaluate(remoteContext);	
+			TimelineView.Evaluate();	
 		}
 
 		void Timeline_Tracks_OrderChanged(IViewableList<TLTrack> list)

@@ -65,8 +65,6 @@ namespace Timeliner
 			History = history;
             Document = tl;
             Timer = timer;
-            
-            Ruler = new RulerView(Document.Ruler, this);
              	
             Syncer = Tracks.SyncWith(Document.Tracks, 
                                         tm => 
@@ -102,6 +100,8 @@ namespace Timeliner
             var caller = Document.Mapper.Map<ISvgEventCaller>();
             var manager = new SvgIdManager(SvgRoot, caller, Document.Mapper.Map<RemoteContext>());
             SvgRoot.OverwriteIdManager(manager);
+            
+            Ruler = new RulerView(Document.Ruler, this);
             
             Background.Width = new SvgUnit(SvgUnitType.Percentage, 100);
             Background.Height = new SvgUnit(SvgUnitType.Percentage, 100);
@@ -291,12 +291,12 @@ namespace Timeliner
 			throw new NotImplementedException("unbuild timeliner document");
 		}
 		
-		public void Evaluate(RemoteContext mainloopUpdate)
+		public void Evaluate()
 		{
-			Ruler.Evaluate(mainloopUpdate);
+			Ruler.Evaluate();
 			
 			foreach (var track in Tracks)
-				track.Evaluate(mainloopUpdate);
+				track.Evaluate();
 		}
 		
 		//gets the right mouse handler
