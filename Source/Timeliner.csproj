@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Timeliner</RootNamespace>
     <AssemblyName>Timeliner</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -45,6 +45,18 @@
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
@@ -98,12 +110,10 @@
     <Compile Include="View\ValueTrackView.cs" />
     <Compile Include="PoshTimeliner.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="web" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\Posh\Source\Posh.csproj">
-      <Project>{15E03D5B-2054-4BA6-9561-FA259EC195F0}</Project>
+      <Project>{15e03d5b-2054-4ba6-9561-fa259ec195f0}</Project>
       <Name>Posh</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SVG\Source\Svg.csproj">
