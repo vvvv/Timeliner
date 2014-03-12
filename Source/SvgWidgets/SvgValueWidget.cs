@@ -56,7 +56,7 @@ namespace Timeliner
 		
 		void Background_MouseScroll(object sender, PointArg e)
 		{
-			Value += (e.y - 100) / 10f;
+			Value += (e.y) / 10f;
 				
 			UpdateLabel();
 			OnValueChanged();
