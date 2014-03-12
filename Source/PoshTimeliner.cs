@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
-using NWamp;
 using Svg;
 using VVVV.Core;
 using VVVV.Core.Commands;
@@ -14,9 +13,9 @@ using Posh;
 #endregion usings
 namespace Timeliner
 {
-	public class WAMPTimeliner: IDisposable
+	public class PoshTimeliner: IDisposable
 	{
-		private WAMPServer FWAMPServer;
+		private PoshServer FPoshServer;
 		private string FUrl;
 		private bool FDisposed = false;
 		
@@ -26,23 +25,23 @@ namespace Timeliner
 		public TLContext Context = new TLContext();
 		
 
-		public WAMPTimeliner(string url, int port)
+		public PoshTimeliner(string url, int port)
 		{
 			FUrl = url;
-			FWAMPServer = new WAMPServer(port);
-			FWAMPServer.AutoPublishAllAfterRemoteCall = false;
-			FWAMPServer.OnSessionCreated += FSVGTerminalProtocol_SessionCreated;
-			FWAMPServer.OnSessionClosed += FSVGTerminalProtocol_SessionClosed;
-			FWAMPServer.OnKeyDown += FSVGTerminalProtocol_OnKeyDown;
-			FWAMPServer.OnKeyUp += FSVGTerminalProtocol_OnKeyUp;
-			FWAMPServer.OnKeyPress += FSVGTerminalProtocol_OnKeyPress;
-			FWAMPServer.OnDump += FSVGTerminalProtocol_OnDump;
+			FPoshServer = new PoshServer(port);
+			FPoshServer.AutoPublishAllAfterRemoteCall = false;
+			FPoshServer.OnSessionCreated += FSVGTerminalProtocol_SessionCreated;
+			FPoshServer.OnSessionClosed += FSVGTerminalProtocol_SessionClosed;
+			FPoshServer.OnKeyDown += FSVGTerminalProtocol_OnKeyDown;
+			FPoshServer.OnKeyUp += FSVGTerminalProtocol_OnKeyUp;
+			FPoshServer.OnKeyPress += FSVGTerminalProtocol_OnKeyPress;
+			FPoshServer.OnDump += FSVGTerminalProtocol_OnDump;
 			
 			Context.Initialize();
 			Context.MappingRegistry.RegisterDefaultInstance<ICommandHistory>(Context.History);
-			Context.MappingRegistry.RegisterDefaultInstance<WAMPServer>(FWAMPServer);
-			Context.MappingRegistry.RegisterDefaultInstance<RemoteContext>(FWAMPServer.RemoteContext);
-			Context.MappingRegistry.RegisterDefaultInstance<ISvgEventCaller>(FWAMPServer.EventCaller);
+			Context.MappingRegistry.RegisterDefaultInstance<PoshServer>(FPoshServer);
+			Context.MappingRegistry.RegisterDefaultInstance<RemoteContext>(FPoshServer.RemoteContext);
+			Context.MappingRegistry.RegisterDefaultInstance<ISvgEventCaller>(FPoshServer.EventCaller);
 		
             Timeliner = new Timeliner(Context);
             
@@ -85,7 +84,7 @@ namespace Timeliner
             
             //apparently initializing the timeline with tracks adds something to the contexts but they are not flushed
             //since info goes out via initial dump. so clear them here
-            FWAMPServer.RemoteContext.ClearAll();
+            FPoshServer.RemoteContext.ClearAll();
             
             //register context sending
             Timeliner.TimelineView.History.CommandInserted += HistoryChanged;
@@ -100,7 +99,7 @@ namespace Timeliner
 				SaveData(Timeliner.Timeline.GetSerializer().Serialize(Timeliner.Timeline));
 			
 			//publish changes
-			FWAMPServer.PublishAll(sender, e);
+			FPoshServer.PublishAll("", "");
 		}
 
 		string FSVGTerminalProtocol_OnDump()
@@ -138,8 +137,8 @@ namespace Timeliner
 			{
 				if(disposing)
 				{
-					FWAMPServer.Dispose();
-					FWAMPServer = null;
+					FPoshServer.Dispose();
+					FPoshServer = null;
 				}
 				// Release unmanaged resources. If disposing is false,
 				// only the following code is executed.
@@ -160,7 +159,7 @@ namespace Timeliner
 		// does not get called.
 		// It gives your base class the opportunity to finalize.
 		// Do not provide destructors in types derived from this class.
-		~WAMPTimeliner()
+		~PoshTimeliner()
 		{ 
 			// Do not re-create Dispose clean-up code here.
 			// Calling Dispose(false) is optimal in terms of
@@ -224,14 +223,14 @@ namespace Timeliner
 			}
 		}
 		
-		void FSVGTerminalProtocol_SessionCreated(object sender, SessionEventArgs e)
+		void FSVGTerminalProtocol_SessionCreated(string sessionID)
 		{
-			Log("session created: " + e.SessionId);
+			Log("session created: " + sessionID);
 		}
 
-		void FSVGTerminalProtocol_SessionClosed(object sender, SessionEventArgs e)
+		void FSVGTerminalProtocol_SessionClosed(string sessionID)
 		{
-			Log("session closed: " + FWAMPServer.SessionNames[e.SessionId]);
+			Log("session closed: " + FPoshServer.SessionNames[sessionID]);
 		}
 		
 		public void LoadData(XElement data)
@@ -243,7 +242,7 @@ namespace Timeliner
 		{
 			Timeliner.Evaluate(hosttime);
 			
-			FWAMPServer.PublishAll(this, null);
+			FPoshServer.PublishAll("", "");
 		}
 	}
 }

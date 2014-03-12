@@ -56,9 +56,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.SocketEngine">
-      <HintPath>..\Dependencies\SuperSocket.SocketEngine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition.CodePlex">
       <HintPath>..\packages\VVVV.System.ComponentModel.Composition.Codeplex.2.5.0\lib\net40\System.ComponentModel.Composition.CodePlex.dll</HintPath>
@@ -99,16 +96,12 @@
     <Compile Include="View\TimelinerView.cs" />
     <Compile Include="View\TrackView.cs" />
     <Compile Include="View\ValueTrackView.cs" />
-    <Compile Include="WAMPTimeliner.cs" />
+    <Compile Include="PoshTimeliner.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="web" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NWamp\NWamp\NWamp.csproj">
-      <Project>{34E319A3-DC94-41A4-B09E-BCA2EFA989D5}</Project>
-      <Name>NWamp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Posh\Source\Posh.csproj">
       <Project>{15E03D5B-2054-4BA6-9561-FA259EC195F0}</Project>
       <Name>Posh</Name>
@@ -134,7 +127,7 @@
     <None Include="Resources\StopButton.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="web\timeliner.css">
+    <None Include="web\project.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
