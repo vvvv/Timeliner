@@ -14,7 +14,7 @@ namespace TimeLinerSA
 {
     public partial class Form1 : Form, IDisposable
     {
-    	private List<WAMPTimeliner> FWAMPTimeliners = new List<WAMPTimeliner>();
+    	private List<PoshTimeliner> FWAMPTimeliners = new List<PoshTimeliner>();
 		private WebBrowser FWebBrowser;
 		private Stopwatch Clock = new Stopwatch();
 		
@@ -61,7 +61,7 @@ namespace TimeLinerSA
         {
         	var _url = WebServer.AddURL(url);
 			var port = WebServer.URLPort[_url];
-			FWAMPTimeliners.Add(new WAMPTimeliner(_url, port));
+			FWAMPTimeliners.Add(new PoshTimeliner(_url, port));
 			FWAMPTimeliners.Last().Log = x => Console.WriteLine(x); //FLogger.Log(LogType.Debug, x);
         }
         
@@ -71,7 +71,7 @@ namespace TimeLinerSA
         	{
         		var _url = WebServer.AddURL(url);
 				var port = WebServer.URLPort[_url];
-				FWAMPTimeliners.Add(new WAMPTimeliner(_url, port));
+				FWAMPTimeliners.Add(new PoshTimeliner(_url, port));
 				
 				FWAMPTimeliners.Last().Log = x => Console.WriteLine(x); //FLogger.Log(LogType.Debug, x);
 				var path = Path.Combine(WebServer.TerminalPath, url) + ".xml";
