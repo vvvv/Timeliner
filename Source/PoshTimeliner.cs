@@ -30,12 +30,12 @@ namespace Timeliner
 			FUrl = url;
 			FPoshServer = new PoshServer(port);
 			FPoshServer.AutoPublishAllAfterRemoteCall = false;
-			FPoshServer.OnSessionCreated += FSVGTerminalProtocol_SessionCreated;
-			FPoshServer.OnSessionClosed += FSVGTerminalProtocol_SessionClosed;
-			FPoshServer.OnKeyDown += FSVGTerminalProtocol_OnKeyDown;
-			FPoshServer.OnKeyUp += FSVGTerminalProtocol_OnKeyUp;
-			FPoshServer.OnKeyPress += FSVGTerminalProtocol_OnKeyPress;
-			FPoshServer.OnDump += FSVGTerminalProtocol_OnDump;
+			FPoshServer.OnSessionCreated += PoshServer_SessionCreated;
+			FPoshServer.OnSessionClosed += PoshServer_SessionClosed;
+			FPoshServer.OnKeyDown += PoshServer_OnKeyDown;
+			FPoshServer.OnKeyUp += PoshServer_OnKeyUp;
+			FPoshServer.OnKeyPress += PoshServer_OnKeyPress;
+			FPoshServer.OnDump += PoshServer_OnDump;
 			
 			Context.Initialize();
 			Context.MappingRegistry.RegisterDefaultInstance<ICommandHistory>(Context.History);
@@ -102,7 +102,7 @@ namespace Timeliner
 			FPoshServer.PublishAll("", "");
 		}
 
-		string FSVGTerminalProtocol_OnDump()
+		string PoshServer_OnDump()
 		{
 			if (Log != null)
 				Log("dumping");
@@ -168,7 +168,7 @@ namespace Timeliner
 		}
 		#endregion destructor
 
-		void FSVGTerminalProtocol_OnKeyDown(bool ctrl, bool shift, bool alt, int keyCode)
+		void PoshServer_OnKeyDown(bool ctrl, bool shift, bool alt, int keyCode)
 		{
 			switch(keyCode)
 			{
@@ -204,12 +204,12 @@ namespace Timeliner
 			Log("keydown: " + keyCode.ToString());
 		}
 		
-		void FSVGTerminalProtocol_OnKeyUp(bool ctrl, bool shift, bool alt, int keyCode)
+		void PoshServer_OnKeyUp(bool ctrl, bool shift, bool alt, int keyCode)
 		{
 			Log("keyup: " + keyCode.ToString());
 		}
 		
-		void FSVGTerminalProtocol_OnKeyPress(bool ctrl, bool shift, bool alt, char key)
+		void PoshServer_OnKeyPress(bool ctrl, bool shift, bool alt, char key)
 		{
 			Log("keypress: " + key);
 			
@@ -223,12 +223,12 @@ namespace Timeliner
 			}
 		}
 		
-		void FSVGTerminalProtocol_SessionCreated(string sessionID)
+		void PoshServer_SessionCreated(string sessionID)
 		{
 			Log("session created: " + sessionID);
 		}
 
-		void FSVGTerminalProtocol_SessionClosed(string sessionID)
+		void PoshServer_SessionClosed(string sessionID)
 		{
 			Log("session closed: " + FPoshServer.SessionNames[sessionID]);
 		}
