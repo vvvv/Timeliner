@@ -94,7 +94,7 @@ namespace Timeliner
         }
         
         //default event dispatching
-		public void Default_MouseMove(object sender, PointArg e)
+		public void Default_MouseMove(object sender, MouseArg e)
 		{
 			if(CheckMouseHandler(e))
 			{
@@ -171,7 +171,7 @@ namespace Timeliner
 	public interface IMouseEventHandler
 	{
 		IMouseEventHandler MouseDown(object sender, MouseArg arg);
-		IMouseEventHandler MouseMove(object sender, PointArg arg);
+		IMouseEventHandler MouseMove(object sender, MouseArg arg);
 		IMouseEventHandler MouseUp(object sender, MouseArg arg);
 		string SessionID { get; }
 	}
@@ -204,7 +204,7 @@ namespace Timeliner
 			return this;
 		}
 		
-		public virtual IMouseEventHandler MouseMove(object sender, PointArg arg)
+		public virtual IMouseEventHandler MouseMove(object sender, MouseArg arg)
 		{
 			if(pressed)
 			{

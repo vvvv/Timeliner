@@ -92,7 +92,7 @@ namespace Timeliner
 		}
 		
 		//dipatch events to parent
-		void Background_MouseMove(object sender, PointArg e)
+		void Background_MouseMove(object sender, MouseArg e)
 		{
 			Parent.MouseMove(this, e);
 		}

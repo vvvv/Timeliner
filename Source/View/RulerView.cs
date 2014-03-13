@@ -365,7 +365,7 @@ namespace Timeliner
 			Parent.Default_MouseUp(this, e);
 		}
 
-		void Background_MouseMove(object sender, PointArg e)
+		void Background_MouseMove(object sender, MouseArg e)
 		{
 			Parent.Default_MouseMove(this, e);
 		}
