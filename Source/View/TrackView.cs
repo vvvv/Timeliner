@@ -303,13 +303,13 @@ namespace Timeliner
 			Parent.Default_MouseUp(this, e);
 		}
 
-		void Background_MouseMove(object sender, PointArg e)
+		void Background_MouseMove(object sender, MouseArg e)
 		{
 			Parent.Default_MouseMove(this, e);
 		}
 		
 		//called from child
-		public void MouseMove(object sender, PointArg e)
+		public void MouseMove(object sender, MouseArg e)
 		{
 			Parent.Default_MouseMove(sender, e);
 		}

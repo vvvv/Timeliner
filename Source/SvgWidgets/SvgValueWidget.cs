@@ -54,9 +54,9 @@ namespace Timeliner
 			Label.Text = Caption + ": " + string.Format("{0:0.00}", Value);
 		}
 		
-		void Background_MouseScroll(object sender, PointArg e)
+		void Background_MouseScroll(object sender, MouseScrollArg e)
 		{
-			Value += (e.y) / 10f;
+			Value += (e.Scroll) / (120*10f);
 				
 			UpdateLabel();
 			OnValueChanged();

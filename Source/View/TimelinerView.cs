@@ -144,10 +144,10 @@ namespace Timeliner
             
             MainMenu.AddItem(addTrack);
             
-            FRulerGroup.ID = "TimelineJS/Ruler";
+            FRulerGroup.ID = "Ruler";
             FRulerGroup.Transforms = new SvgTransformCollection();
             
-        	FTrackGroup.ID = "TimelineJS/Tracks";
+        	FTrackGroup.ID = "Tracks";
         	FTrackGroup.Transforms = new SvgTransformCollection();
         	FOverlaysGroup.ID = "Overlays";
         	FOverlaysGroup.Transforms = new SvgTransformCollection();
