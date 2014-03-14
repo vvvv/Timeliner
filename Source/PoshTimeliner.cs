@@ -41,7 +41,7 @@ namespace Timeliner
 			Context.MappingRegistry.RegisterDefaultInstance<ICommandHistory>(Context.History);
 			Context.MappingRegistry.RegisterDefaultInstance<PoshServer>(FPoshServer);
 			Context.MappingRegistry.RegisterDefaultInstance<RemoteContext>(FPoshServer.RemoteContext);
-			Context.MappingRegistry.RegisterDefaultInstance<ISvgEventCaller>(FPoshServer.EventCaller);
+			Context.MappingRegistry.RegisterDefaultInstance<ISvgEventCaller>(FPoshServer.SvgEventCaller);
 		
             Timeliner = new Timeliner(Context);
             
@@ -99,7 +99,7 @@ namespace Timeliner
 				SaveData(Timeliner.Timeline.GetSerializer().Serialize(Timeliner.Timeline));
 			
 			//publish changes
-			FPoshServer.PublishAll("", "");
+			FPoshServer.PublishAll(this, new CallInvokedArgs(""));
 		}
 
 		string PoshServer_OnDump()
@@ -242,7 +242,7 @@ namespace Timeliner
 		{
 			Timeliner.Evaluate(hosttime);
 			
-			FPoshServer.PublishAll("", "");
+			FPoshServer.PublishAll(this, new CallInvokedArgs(""));
 		}
 	}
 }
