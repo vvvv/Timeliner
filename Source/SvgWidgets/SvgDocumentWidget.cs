@@ -31,10 +31,10 @@ namespace Timeliner
 		public void ParseElements(ISvgEventCaller caller, SvgElement element)
 		{
 			//register events
-			if(element.HasNonEmptyCustomAttribute("onmousedown"))
+			if(element.HasNonEmptyCustomAttribute("onclick"))
 			{
 				element.RegisterEvents(caller);
-				element.MouseDown += child_MouseDown;
+				element.Click += child_Click;
 			}
 			
 			//gather color relevant elements
@@ -54,9 +54,9 @@ namespace Timeliner
 			}
 		}
 
-		void child_MouseDown(object sender, MouseArg e)
+		void child_Click(object sender, MouseArg e)
 		{
-			RaiseMouseDown(this, e);
+			RaiseMouseClick(this, e);
 		}
 		
 		public static SvgDocumentWidget Load(string filePath, ISvgEventCaller caller)
