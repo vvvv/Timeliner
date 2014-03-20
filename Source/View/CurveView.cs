@@ -31,44 +31,8 @@ namespace Timeliner
 	        Path.StrokeWidth = 1.0f;
 	        Path.CustomAttributes["vector-effect"] = "non-scaling-stroke";
 	        Path.CustomAttributes["pointer-events"] = "none";
-	
-	        if (Model.Name.StartsWith("Start"))
-	        {
-	            RegisterAtKeyframeListeners(Model.End);
-	        }
-	        else if (Model.Name.StartsWith("End"))
-	        {
-	            RegisterAtKeyframeListeners(Model.Start);
-	        }
-	        else
-	        {
-	            RegisterAtKeyframeListeners(Model.Start);
-	            RegisterAtKeyframeListeners(Model.End);
-	        }
 	    }
 	    
-	    private void RegisterAtKeyframeListeners(TLKeyframe kf)
-	    {
-	        kf.Time.ValueChanged += kf_ValueChanged;
-	        kf.Value.ValueChanged += kf_ValueChanged;
-	    }
-	    
-	    public override void Dispose()
-	    {
-	        if (Model.Start != null)
-	        {
-	            Model.Start.Time.ValueChanged -= kf_ValueChanged;
-	            Model.Start.Value.ValueChanged -= kf_ValueChanged;
-	        }
-	
-	        if (Model.End != null)
-	        {
-	            Model.End.Time.ValueChanged -= kf_ValueChanged;
-	            Model.End.Value.ValueChanged -= kf_ValueChanged;
-	        }
-	        
-	        base.Dispose();
-	    }
 	
 	    #region build scenegraph
 	    protected override void BuildSVG()
@@ -87,8 +51,15 @@ namespace Timeliner
 		#endregion
 		
 		#region update scenegraph
+		
+		public override void UpdateScene()
+		{
+			UpdatePathData();
+			base.UpdateScene();
+		}
+		
 		private void UpdatePathData()
-	    {
+		{
 	    	Path.PathData.Clear();
 	
 	        if (Model.Name.StartsWith("Start"))
@@ -121,19 +92,11 @@ namespace Timeliner
 	        coords.Add(-y2);
 	        SvgPathBuilder.CreatePathSegment(curveType, Path.PathData, coords, char.IsLower(curveType));
 	    }
+		
 		#endregion
 		
 	    #region model eventhandler
-	    void kf_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
-	    {
-	    	//FIsDirty = true;
-	    	UpdatePathData();
-	    }
 	    #endregion
-	    
-	    public void ResetDirty()
-	    {
-	    	FIsDirty = false;
-	    }
+
 	}
 }
