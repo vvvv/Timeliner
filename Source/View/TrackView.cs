@@ -187,8 +187,6 @@ namespace Timeliner
 			Definitions.Children.Clear();
 			TrackGroup.Children.Clear();
 			PanZoomGroup.Children.Clear();
-
-			Parent.SvgRoot.Children.Add(TrackClipPath);
 			
 			TrackGroup.Children.Add(Background);
 			TrackGroup.Children.Add(PanZoomGroup);
@@ -204,6 +202,8 @@ namespace Timeliner
 			Parent.FOverlaysGroup.Children.Add(TrackMenu);
 			SizeBarDragRect.ID = "DragRect" + IDGenerator.NewID;
 			Parent.FOverlaysGroup.Children.Add(SizeBarDragRect);
+			
+			Parent.SvgRoot.Children.Add(TrackClipPath);
 		}
 		
 		protected override void UnbuildSVG()
@@ -211,9 +211,9 @@ namespace Timeliner
 			Parent.FOverlaysGroup.Children.Remove(SizeBarDragRect);
 			Parent.FOverlaysGroup.Children.Remove(TrackMenu);
 
-			Parent.FTrackGroup.Children.Remove(MainGroup);
-			
 			Parent.SvgRoot.Children.Remove(TrackClipPath);
+			
+			Parent.FTrackGroup.Children.Remove(MainGroup);
 		}
 		#endregion
 		

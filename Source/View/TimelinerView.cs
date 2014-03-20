@@ -77,7 +77,7 @@ namespace Timeliner
 											else 
 												tv = new AudioTrackView(tm as TLAudioTrack, this, Ruler);
 											
-	                                     	tv.BuildSVGTo(FTrackGroup);
+	                                     	tv.AddToSceneGraphAt(FTrackGroup);
 	                                     	return tv;
                                         },
                                      	tv => 
@@ -194,15 +194,15 @@ namespace Timeliner
             
             FRulerGroup.Transforms.Add(new SvgTranslate(0, PlayButton.Height + 9));
             SvgRoot.Children.Add(FRulerGroup);
-            Ruler.BuildSVGTo(FRulerGroup);
+            Ruler.AddToSceneGraphAt(FRulerGroup);
             
             var menuOffset = new SvgTranslate(0, PlayButton.Height+30);
             FTrackGroup.Transforms.Add(menuOffset);
             FTrackGroup.Children.Add(Background);
 			
 			//draw tracks
-			foreach (var track in Tracks)
-                track.BuildSVGTo(FTrackGroup);
+//			foreach (var track in Tracks)
+//                track.BuildSVGTo(FTrackGroup);
 			
 			SvgRoot.Children.Add(FTrackGroup);
 			

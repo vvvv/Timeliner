@@ -47,7 +47,7 @@ namespace Timeliner
 			                              kf =>
 			                              {
 			                              	var kv = new ValueKeyframeView(kf, this);
-			                              	kv.BuildSVGTo(KeyframeGroup);
+			                              	kv.AddToSceneGraphAt(KeyframeGroup);
 			                              	return kv;
 			                              },
 			                              kv =>
@@ -59,7 +59,7 @@ namespace Timeliner
 			                              cu =>
 			                              {
 			                              	var cv = new CurveView(cu, this);
-			                              	cv.BuildSVGTo(CurveGroup);
+			                              	cv.AddToSceneGraphAt(CurveGroup);
 			                              	return cv;
 			                              },
 			                              cv =>
@@ -119,11 +119,11 @@ namespace Timeliner
 			
 			//draw curves
 			foreach (var curve in Curves)
-				curve.BuildSVGTo(CurveGroup);
+				curve.AddToSceneGraphAt(CurveGroup);
 			
 			//draw keyframes
 			foreach (var keyframe in Keyframes)
-				keyframe.BuildSVGTo(KeyframeGroup);
+				keyframe.AddToSceneGraphAt(KeyframeGroup);
 		}
 		#endregion
 		
