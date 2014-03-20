@@ -42,28 +42,26 @@ namespace Timeliner
 		}
 	}
 	
-	internal class TrackPanHandler : MouseHandlerBase<TimelineView>
+	internal class TrackPanZoomHandler : MouseHandlerBase<TimelineView>
 	{
-		public TrackPanHandler(TimelineView view, string sessionID)
+		public TrackPanZoomHandler(TimelineView view, string sessionID)
 			: base(view, sessionID)
 		{
 		}
 		
 		public override void MouseDrag(object sender, PointF arg, PointF delta, int callNr)
 		{
-			var zoom = Math.Abs(delta.X) < Math.Abs(delta.Y); 
+			var zoom = Math.Abs(delta.X) < Math.Abs(delta.Y);
 			
 			if (zoom)
 				Instance.Ruler.PanZoom(0, delta.Y, arg.X);
 			else
-				Instance.Ruler.PanZoom(delta.X, 0, arg.X);				
-					
+				Instance.Ruler.PanZoom(delta.X, 0, arg.X);
+			
 			foreach (var tv in Instance.Tracks)
-			{
 				tv.View = Instance.Ruler.PanZoomMatrix;
-				if (zoom)
-					tv.ApplyInverseScaling();
-			}
+			
+			Instance.UpdateScene();
 		}
 	}
 	
@@ -76,7 +74,6 @@ namespace Timeliner
 		{
 		}
 		
-		//delete on right click
 		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
 		{
 			if(arg.Button == 1)
@@ -88,7 +85,8 @@ namespace Timeliner
 				
 				return ret;
 			}
-			else return null;
+			else
+				return null;
 		}
 		
 		public override void MouseDrag(object sender, PointF arg, PointF delta, int dragCall)
@@ -111,6 +109,8 @@ namespace Timeliner
 					FMoveCommands.Append(cmd);
 				}
 			}
+			
+			Instance.Parent.UpdateScene();
 		}
 		
 		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)
@@ -125,8 +125,6 @@ namespace Timeliner
 	
 	internal class LabelDragMouseHandler : MouseHandlerBase<TrackView>
 	{
-		private CompoundCommand FMoveCommands;
-		
 		public LabelDragMouseHandler(TrackView tv, string sessionID)
 			: base(tv, sessionID)
 		{
@@ -169,22 +167,43 @@ namespace Timeliner
 		
 		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)
 		{
+			Instance.SizeBarDragRect.Visible = false;
+			Instance.Label.CustomAttributes["style"] = "";
+			
 			if (arg.Button == 1)
 			{
+				var oldOrder = Instance.Model.Order.Value;
+				var newOrder = -1;
 				if (sender is TrackView)
+					newOrder = (sender as TrackView).Model.Order.Value;
+				else
+					newOrder = Instance.Parent.Tracks.Count-1;
+				
+				//send a commmand to set the order of each trackview
+				var cmds = new CompoundCommand();
+				
+				if (newOrder > oldOrder)
 				{
-					var cmd = Command.Set(Instance.Model.Order, (sender as TrackView).Model.Order.Value);
-					Instance.History.Insert(cmd);
+					foreach (var track in Instance.Parent.Tracks)
+						if (track != Instance)
+							if ((track.Model.Order.Value > oldOrder) && (track.Model.Order.Value <= newOrder))
+								cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value - 1));
 				}
 				else
 				{
-					var cmd = Command.Set(Instance.Model.Order, Instance.Parent.Tracks.Count-1);
-					Instance.History.Insert(cmd);
+					foreach (var track in Instance.Parent.Tracks)
+						if (track != Instance)
+							if ((track.Model.Order.Value >= newOrder) && (track.Model.Order.Value < oldOrder))
+								cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value + 1));
 				}
 				
-				Instance.SizeBarDragRect.Visible = false;
-				Instance.Label.CustomAttributes["style"] = "";
+				cmds.Append(Command.Set(Instance.Model.Order, newOrder));
+				
+				Instance.History.Insert(cmds);
+				//resort tracks after order
+				//Instance.Parent.Tracks.Sort((t1, t2) => t1.Model.Order.Value.CompareTo(t2.Model.Order.Value));
 			}
+			
 			return base.MouseUp(sender, arg);
 		}
 	}
@@ -257,6 +276,7 @@ namespace Timeliner
 			
 			rect = new RectangleF(rect.X, rect.Y - Instance.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5], rect.Width, rect.Height);
 			Instance.Parent.SetSelectionRect(rect);
+			Instance.Parent.UpdateScene();
 		}
 		
 		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)
@@ -270,9 +290,9 @@ namespace Timeliner
 		}
 	}
 	
-	internal class KeyframeMouseHandler : MouseHandlerBase<KeyframeView>
+	internal class KeyframeMouseHandler : MouseHandlerBase<ValueKeyframeView>
 	{
-		public KeyframeMouseHandler(KeyframeView view, string sessionID)
+		public KeyframeMouseHandler(ValueKeyframeView view, string sessionID)
 			: base(view, sessionID)
 		{
 		}
@@ -350,6 +370,8 @@ namespace Timeliner
 			//collect changes for history
 			FMoveCommands.Append(cmd);
 			
+			Instance.Parent.Parent.UpdateScene();
+			
 			//check whether curves have changed
 			foreach (var track in Instance.Parent.Parent.Tracks.OfType<ValueTrackView>())
 				foreach (var cu in track.Curves)
@@ -408,6 +430,8 @@ namespace Timeliner
 				cmd.Execute();
 				//collect changes for history
 				FMoveCommands.Append(cmd);
+				
+				Instance.Parent.UpdateScene();
 			}
 		}
 		

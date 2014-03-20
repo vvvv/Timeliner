@@ -9,6 +9,7 @@ using VVVV.Core;
 using VVVV.Core.Collections;
 using VVVV.Core.Collections.Sync;
 using VVVV.Core.Commands;
+using VVVV.Utils;
 
 using Posh;
 
@@ -58,11 +59,12 @@ namespace Timeliner
         public SvgMenuWidget NodeBrowser;
         
         public Timer Timer;
-        private bool FReOrdering = false;
 		
 		public TimelineView(TLDocument tl, ICommandHistory history, Timer timer)
 		{
 			History = history;
+			History.CommandInserted += History_CommandInserted;
+			
             Document = tl;
             Timer = timer;
              	
@@ -75,14 +77,11 @@ namespace Timeliner
 											else 
 												tv = new AudioTrackView(tm as TLAudioTrack, this, Ruler);
 											
-											tv.Model.Order.ValueChanged += TrackView_Order_ValueChanged;
-											
 	                                     	tv.BuildSVGTo(FTrackGroup);
 	                                     	return tv;
                                         },
                                      	tv => 
                                      	{
-                                     		tv.Model.Order.ValueChanged -= TrackView_Order_ValueChanged;
 	                                     	var order = tv.Model.Order.Value;
 	                                     	tv.Dispose();
 	                                     	
@@ -91,7 +90,7 @@ namespace Timeliner
 	                                     	for (int i = order; i < Tracks.Count; i++)
 	                                     	{
 	                                     		Tracks[i].Model.Order.Value = i;
-	                                     		Tracks[i].UpdateTrackHeightAndPos();
+	                                     		Tracks[i].UpdateScene();
 	                                     	}
                                      	});
             
@@ -161,85 +160,24 @@ namespace Timeliner
 //			
 //			NodeBrowser.Transforms = new SvgTransformCollection();
 //			NodeBrowser.Transforms.Add(new SvgTranslate(300, 300));
-			
-        	
+
         	//initialize svg tree
         	BuildSVGRoot();
 		}
-
-		void TrackView_Order_ValueChanged(IViewableProperty<int> property, int newValue, int oldValue)
+		
+		public override void Dispose()
 		{
-			if (FReOrdering)
-				return;
-			FReOrdering = true; //prevent recursion
+			History.CommandInserted -= History_CommandInserted;
 			
-			var startTrack = Math.Min(newValue, oldValue);
-			
-			if (newValue > oldValue)
-			{
-				foreach (var track in Tracks)
-					if (track.Model != property.Owner)
-						if ((track.Model.Order.Value > oldValue) && (track.Model.Order.Value <= newValue))
-							track.Model.Order.Value -= 1;
-			}
-			else
-			{
-				foreach (var track in Tracks)
-					if (track.Model != property.Owner)
-						if ((track.Model.Order.Value >= newValue) && (track.Model.Order.Value < oldValue))
-							track.Model.Order.Value += 1;
-			}
-
-			foreach (var track in Tracks)
-				track.UpdateTrackHeightAndPos();
-			
-			//resort tracks after order
-			Tracks.Sort((t1, t2) => t1.Model.Order.Value.CompareTo(t2.Model.Order.Value));
-
-			//debugoutput
-//			for (int i = 0; i < Tracks.Count; i++)
-//         	{
-//				Tracks[i].Label.Text = Tracks[i].Model.Label.Value + " - " + Tracks[i].Model.Order.Value.ToString();
-//         	}
-			
-			FReOrdering = false;
+			base.Dispose();
 		}
 
-//		void browser_OnValueChanged()
-//		{
-//			Document.Mapper.Map<RemoveContext>().IDList.Add(NodeBrowser.ID);
-//			this.OnRemove();
-//			
-//			Document.Mapper.Map<AddContext>().AddReferenceSvgElement(NodeBrowser);
-//			this.OnAdd();
-//		}
-
-		void AddTrack()
+		void History_CommandInserted(object sender, EventArgs<Command> e)
 		{
-			var track = new TLValueTrack(Document.Tracks.Count.ToString());
-			track.Order.Value = Document.Tracks.Count;
-        	var cmd = Command.Add(Document.Tracks, track);
-        	History.Insert(cmd);
+			UpdateScene();
 		}
 		
-		void PlayButton_MouseDown(object sender, MouseArg e)
-		{
-			Timer.IsRunning = !Timer.IsRunning;
-			UpdateButtonColor();
-		}
-
-		void StopButton_MouseDown(object sender, MouseArg e)
-		{
-			Timer.IsRunning = false;
-			Timer.Time = 0;
-			UpdateButtonColor();
-		}
-		
-		void UpdateButtonColor()
-		{
-			PlayButton.SetBackColor(Timer.IsRunning ? TimelinerColors.Red : TimelinerColors.LightGray);
-		}
-		
+		#region build scenegraph
 		public SvgDocument BuildSVGRoot()
 		{
 			//draw self
@@ -290,6 +228,52 @@ namespace Timeliner
 		{
 			throw new NotImplementedException("unbuild timeliner document");
 		}
+		#endregion
+
+		#region update scenegraph
+		public override void UpdateScene()
+		{
+			base.UpdateScene();
+			
+			Ruler.UpdateScene();
+			
+			foreach (var track in Tracks)
+				track.UpdateScene();
+		}
+		
+		public void SetSelectionRect(RectangleF rect)
+		{
+			Selection.SetRectangle(rect);
+		}
+		#endregion
+		
+		#region scenegraph eventhandler
+		void AddTrack()
+		{
+			var track = new TLValueTrack(Document.Tracks.Count.ToString());
+			track.Order.Value = Document.Tracks.Count;
+        	var cmd = Command.Add(Document.Tracks, track);
+        	History.Insert(cmd);
+		}
+		
+		void PlayButton_MouseDown(object sender, MouseArg e)
+		{
+			Timer.IsRunning = !Timer.IsRunning;
+			UpdateButtonColor();
+		}
+
+		void StopButton_MouseDown(object sender, MouseArg e)
+		{
+			Timer.IsRunning = false;
+			Timer.Time = 0;
+			UpdateButtonColor();
+		}
+		
+		void UpdateButtonColor()
+		{
+			PlayButton.SetBackColor(Timer.IsRunning ? TimelinerColors.Red : TimelinerColors.LightGray);
+		}
+		#endregion
 		
 		public void Evaluate()
 		{
@@ -315,7 +299,7 @@ namespace Timeliner
 				else if (e.Button == 2)
 					return new TrackMenuHandler(sender as TrackView, e.SessionID);
 				else if (e.Button == 3)
-					return new TrackPanHandler(this, e.SessionID);
+					return new TrackPanZoomHandler(this, e.SessionID);
 				else 
 					return null;
 			}
@@ -325,7 +309,7 @@ namespace Timeliner
 				if (e.Button == 1)
 					return new SeekHandler(Ruler, e.SessionID);					
 				else if (e.Button == 3)
-					return new TrackPanHandler(this, e.SessionID);
+					return new TrackPanZoomHandler(this, e.SessionID);
 				else
 					return null;
 			}
@@ -345,10 +329,10 @@ namespace Timeliner
 				else
 					return null;					
 			}
-			else if(sender is KeyframeView)
+			else if(sender is ValueKeyframeView)
 			{
 				HideMenus();
-				return new KeyframeMouseHandler(sender as KeyframeView, e.SessionID);
+				return new KeyframeMouseHandler(sender as ValueKeyframeView, e.SessionID);
 			}
 			else if(sender == TimeBar)
 			{
@@ -367,11 +351,6 @@ namespace Timeliner
 			foreach (var track in Tracks)
 				track.TrackMenu.Hide();
 			MainMenu.Hide();
-		}
-		
-		public void SetSelectionRect(RectangleF rect)
-		{
-			Selection.SetRectangle(rect);
 		}
 	}
 }

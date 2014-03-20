@@ -79,7 +79,7 @@ namespace Timeliner
 //			MinValue.OnValueChanged += ChangeMinimum;
 //			TrackMenu.AddItem(MinValue);
 //			
-			UpdateMinMaxView();
+			UpdateScene();
 		}
 		
 		public override void Dispose()
@@ -90,6 +90,7 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
+		#region build scenegraph
 		protected override void BuildSVG()
 		{
 			base.BuildSVG();
@@ -123,6 +124,15 @@ namespace Timeliner
 		{
 			SampleGroup.Children.Remove(MainGroup);
 		}
+		#endregion
+		
+		#region update scenegraph
+		public override void UpdateScene()
+		{
+			base.UpdateScene();
+			
+			UpdateMinMaxView();
+		}
 		
 		private void UpdateMinMaxView()
 		{
@@ -137,62 +147,8 @@ namespace Timeliner
 			
 			ApplyInverseScaling();
 		}
-		
-//		void ChangeMinimum()
-//		{
-//			Model.Minimum.Value = MinValue.Value;
-//		}
-//		
-//		void ChangeMaximum()
-//		{
-//			Model.Maximum.Value = MaxValue.Value;
-//		}
-		
-//		void Model_Range_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
-//		{
-//			UpdateMinMaxView();
-//		}
-		
-//		private void UpdateMinMaxView()
-//		{
-//			//zoom to min/max
-//			var scaleY = Model.Maximum.Value - Model.Minimum.Value;
-//			
-//			var m = new Matrix();
-//			m.Scale(1, 1/scaleY);
-//			m.Translate(0, Model.Maximum.Value);
-//			
-//			PanZoomGroup.Transforms[1] = new SvgMatrix(new List<float>(m.Elements));
-//			
-//			ApplyInverseScaling();
-//		}
-		
-		public override void ApplyInverseScaling()
-		{
-//			if (SampleDefinition.Transforms.Count == 1)
-//			{
-//				//apply inverse scaling to keyframes
-//				
-//				//pan/zoom
-//				var m = PanZoomGroup.Transforms[0].Matrix;
-//				var s1 = new SvgScale(m.Elements[0], m.Elements[3]);
-//				
-//				//min/max
-//				m = PanZoomGroup.Transforms[1].Matrix;
-//				var s2 = new SvgScale(m.Elements[0], m.Elements[3]);
-//				
-//				//trackheight
-//				m = ClipGroup.Transforms[0].Matrix;
-//				
-//				m.Multiply(s2.Matrix);
-//				m.Multiply(s1.Matrix);
-//				m.Invert();
-//				
-//				SampleDefinition.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
-//			}
-		}
+		#endregion
 	}
-	
 	
 	public class SampleView : TLViewBaseTyped<TLSample, AudioTrackView>, IDisposable
 	{

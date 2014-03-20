@@ -39,6 +39,7 @@ namespace Timeliner
 		
 		private Matrix FView = new Matrix(Timer.PPS, 0, 0, 1, 100, 0);
 		private bool FViewChanged = true;
+		private float FLastZoom;
 		
 		public SvgMatrix PanZoomMatrix;
 		
@@ -186,7 +187,6 @@ namespace Timeliner
 			LoopStart.MouseDown += (s, e) => Parent.Default_MouseDown(LoopStart, e);
 			LoopStart.MouseUp += (s, e) => Parent.Default_MouseUp(LoopStart, e);
 			LoopStart.MouseMove += (s, e) => Parent.Default_MouseMove(LoopStart, e);
-			Model.LoopStart.ValueChanged += Model_LoopStart_ValueChanged;
 			
 			LoopEnd.ID = "LoopEnd";
 			LoopEnd.Transforms = new SvgTransformCollection();
@@ -203,27 +203,14 @@ namespace Timeliner
 			LoopEnd.MouseDown += (s, e) => Parent.Default_MouseDown(LoopEnd, e);
 			LoopEnd.MouseUp += (s, e) => Parent.Default_MouseUp(LoopEnd, e);
 			LoopEnd.MouseMove += (s, e) => Parent.Default_MouseMove(LoopEnd, e);
-			Model.LoopEnd.ValueChanged += Model_LoopEnd_ValueChanged;
 			
 			//init scalings
 			PanZoom(0, 0, 0);
-			ApplyInverseScaling();
-		}
-
-		void Model_LoopStart_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
-		{
-			LoopStart.Transforms[0] = new SvgTranslate(newValue);
-		}
-		
-		void Model_LoopEnd_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
-		{
-			LoopEnd.Transforms[0] = new SvgTranslate(newValue);
+			UpdateScene();
 		}
 		
 		public override void Dispose()
 		{
-			UnbuildSVG();
-			
 			Background.MouseDown -= Background_MouseDown;
 			Background.MouseMove -= Background_MouseMove;
 			Background.MouseUp -= Background_MouseUp;
@@ -231,9 +218,23 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
-		/// <summary>
-		/// Updates the visual elements
-		/// </summary>
+		#region update view
+		public void PanZoom(float delta, float scale, float xPos)
+		{
+			var scaleX = 1 + scale*0.003f;
+			
+			//update view matrix
+			var m = new Matrix(scaleX, 0, 0, 1, xPos - xPos*scaleX, 0);
+			m.Multiply(FView);
+			m.Translate(delta / m.Elements[0], 0);
+			FView = m;
+			PanZoomMatrix = new SvgMatrix(FView.Elements.ToList());
+			
+			FViewChanged = true;
+		}
+		#endregion
+		
+		#region build scenegraph
 		protected override void BuildSVG()
 		{
 			Definitions.Children.Clear();
@@ -255,23 +256,20 @@ namespace Timeliner
 			Parent.SvgRoot.Children.Remove(RulerClipPath);
 			Parent.FTrackGroup.Children.Remove(MainGroup);
 		}
-	
-		public void PanZoom(float delta, float scale, float xPos)
+		#endregion
+		
+		#region update scenegraph
+		public override void UpdateScene()
 		{
-			var scaleX = 1 + scale*0.003f;
+			base.UpdateScene();
 			
 			//PanZoomGroup
-			var m = new Matrix(scaleX, 0, 0, 1, xPos - xPos*scaleX, 0);
-			m.Multiply(FView);
-			m.Translate(delta / m.Elements[0], 0);
-			FView = m;
-			PanZoomMatrix = new SvgMatrix(FView.Elements.ToList());
 			PanZoomGroup.Transforms[0] = PanZoomMatrix;
 			
 			//TickNumGroup
 			var unit = FView.Elements[0];
 			//make sure ticks are only shifted within one unit range
-			var off = m.Elements[4] % unit;
+			var off = FView.Elements[4] % unit;
 			//make a copy of the above elements and just replace translation
 			var el = new List<float>(FView.Elements);
 			el[4] = off;
@@ -303,10 +301,14 @@ namespace Timeliner
 				start++;
 			}
 			
-			if (scaleX != 1)
+			if (FLastZoom != FView.Elements[0])
+			{
 				ApplyInverseScaling();
+				FLastZoom = FView.Elements[0];
+			}
 			
-			FViewChanged = true;
+			LoopStart.Transforms[0] = new SvgTranslate(Model.LoopStart.Value);
+			LoopEnd.Transforms[0] = new SvgTranslate(Model.LoopEnd.Value);
 		}
 		
 		protected virtual void ApplyInverseScaling()
@@ -353,7 +355,9 @@ namespace Timeliner
 			
 //			LoopStart.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
 		}
+		#endregion
 		
+		#region scenegraph eventhandler
 		//dispatch events to parent
 		void Background_MouseDown(object sender, MouseArg e)
 		{
@@ -369,6 +373,7 @@ namespace Timeliner
 		{
 			Parent.Default_MouseMove(this, e);
 		}
+		#endregion
 		
 		public float XPosToTime(float x)
 		{

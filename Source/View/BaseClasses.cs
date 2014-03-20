@@ -86,6 +86,7 @@ namespace Timeliner
 
         public virtual void Dispose()
         {
+        	UnbuildSVG();
         }
 
         protected bool CheckMouseHandler(SVGArg arg)
@@ -127,6 +128,13 @@ namespace Timeliner
 			return null;
 		}
         
+		/// <summary>
+		/// Manipulates the SceneGraph from View properties that can not directly manipulate the ScenGraph
+		/// </summary>
+		public virtual void UpdateScene()
+		{
+			
+		}
     }
 
     /// <summary>

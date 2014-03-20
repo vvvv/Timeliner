@@ -101,7 +101,7 @@
     <Compile Include="View\AudioTrackView.cs" />
     <Compile Include="View\BaseClasses.cs" />
     <Compile Include="View\CurveView.cs" />
-    <Compile Include="View\KeyframeView.cs" />
+    <Compile Include="View\ValueKeyframeView.cs" />
     <Compile Include="View\MouseHandlers.cs" />
     <Compile Include="View\RulerView.cs" />
     <Compile Include="View\TimelinerColors.cs" />
