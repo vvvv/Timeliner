@@ -19,7 +19,7 @@
             }
             base.Dispose(disposing);
             
-            foreach (var t in FWAMPTimeliners)
+            foreach (var t in FPoshTimeliners)
             	t.Dispose();
         }
 
