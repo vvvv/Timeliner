@@ -380,16 +380,6 @@ namespace Timeliner
 			
 			Instance.Parent.Parent.UpdateScene();
 			
-			//check whether curves have changed
-			foreach (var track in Instance.Parent.Parent.Tracks.OfType<ValueTrackView>())
-				foreach (var cu in track.Curves)
-			{
-				if (cu.IsDirty)
-				{
-					//cu.SetupSVG();
-					cu.ResetDirty();
-				}
-			}
 		}
 
 		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)
