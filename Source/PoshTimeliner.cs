@@ -23,7 +23,6 @@ namespace Timeliner
 		public Action<XElement> SaveData;
 		public Timeliner Timeliner;
 		public TLContext Context = new TLContext();
-		
 
 		public PoshTimeliner(string url, int port)
 		{
@@ -242,7 +241,8 @@ namespace Timeliner
 		{
 			Timeliner.Evaluate(hosttime);
 			
-			FPoshServer.PublishAll(this, new CallInvokedArgs(""));
+			FPoshServer.PublishUpdate();
+			FPoshServer.PublishContent();
 		}
 	}
 }
