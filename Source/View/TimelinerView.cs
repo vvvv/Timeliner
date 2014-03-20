@@ -85,13 +85,10 @@ namespace Timeliner
 	                                     	var order = tv.Model.Order.Value;
 	                                     	tv.Dispose();
 	                                     	
-	                                     	//assign new Order value to each track
-	                                     	//and update their position
-	                                     	for (int i = order; i < Tracks.Count; i++)
-	                                     	{
-	                                     		Tracks[i].Model.Order.Value = i;
-	                                     		Tracks[i].UpdateScene();
-	                                     	}
+	                                     	//update Order on all tracks below the one removed
+	                                     	foreach (var track in Tracks)
+	                                     		if (track.Model.Order.Value > order)
+	                                     			track.Model.Order.Value -= 1;
                                      	});
             
             
@@ -247,13 +244,13 @@ namespace Timeliner
 		}
 		#endregion
 		
+		int FTrackCount = 0;
 		#region scenegraph eventhandler
 		void AddTrack()
 		{
-			var track = new TLValueTrack(Document.Tracks.Count.ToString());
+			var track = new TLValueTrack(FTrackCount++.ToString());
 			track.Order.Value = Document.Tracks.Count;
-        	var cmd = Command.Add(Document.Tracks, track);
-        	History.Insert(cmd);
+        	History.Insert(Command.Add(Document.Tracks, track));
 		}
 		
 		void PlayButton_MouseDown(object sender, MouseArg e)
