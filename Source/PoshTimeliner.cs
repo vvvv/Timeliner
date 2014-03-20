@@ -241,6 +241,7 @@ namespace Timeliner
 		{
 			Timeliner.Evaluate(hosttime);
 			
+			//here we can only publis updates, no adds since those start pulling status from the scenegraph while user-action can insert at the same time
 			FPoshServer.PublishUpdate();
 			FPoshServer.PublishContent();
 		}
