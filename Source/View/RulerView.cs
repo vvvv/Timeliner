@@ -16,8 +16,6 @@ namespace Timeliner
 	/// </summary>
 	public class RulerView: TLViewBase
 	{
-		protected SvgDefinitionList Definitions = new SvgDefinitionList();
-		
 		//MainGroup has a clippath set 
 		public SvgClipPath RulerClipPath = new SvgClipPath();
 		protected SvgRectangle ClipRect = new SvgRectangle();
@@ -29,15 +27,14 @@ namespace Timeliner
 		
 		public SvgGroup TickNumGroup = new SvgGroup();
 		public SvgGroup PanZoomGroup = new SvgGroup();
-		private SvgLine TickDefinition = new SvgLine();
-		private SvgLine SubTickDefinition = new SvgLine();
 		
-		public SvgPolygon LoopStart = new SvgPolygon();
-		public SvgPolygon LoopEnd = new SvgPolygon();
+		public SvgRectangle LoopStart = new SvgRectangle();
+		public SvgRectangle LoopEnd = new SvgRectangle();
+        public SvgRectangle LoopRegion = new SvgRectangle();
 		
-		private float FOffset = 0;
+		private const float CLeftOffset = 250;
 		
-		private Matrix FView = new Matrix(Timer.PPS, 0, 0, 1, 100, 0);
+		private Matrix FView = new Matrix(Timer.PPS, 0, 0, 1, CLeftOffset, 0);
 		private bool FViewChanged = true;
 		
 		public SvgMatrix PanZoomMatrix;
@@ -65,6 +62,11 @@ namespace Timeliner
                 base.Parent = value;
             }
         }
+        
+        public float Height
+        {
+            get {return Background.Height;}
+        }
 		
 		public RulerView(TLRuler ruler, TimelineView tv)
 			: base(ruler, tv)
@@ -80,47 +82,29 @@ namespace Timeliner
 			var width = new SvgUnit(SvgUnitType.Percentage, 100);
 			
 			Background.Width = width;
-			Background.Height = 20; 
+			Background.Height = 25; 
 			Background.Fill = TimelinerColors.LightGray;
 			Background.ID = "bg";
+            Background.CustomAttributes["class"] = "back";
 			
 			//register event handlers
 			Background.MouseDown += Background_MouseDown;
 			Background.MouseUp += Background_MouseUp;
 			Background.MouseMove += Background_MouseMove;
 			
-			LabelBackground.Width = 95;
-			LabelBackground.Height = 20;
+			LabelBackground.Width = CLeftOffset;
+			LabelBackground.Height = Background.Height;
 			LabelBackground.Fill = TimelinerColors.LightGray;
+            LabelBackground.CustomAttributes["class"] = "back";
 						
-			Label.FontSize = 12;
+			Label.FontSize = 20;
 			Label.FontFamily = "Lucida Console";
-			Label.X = 2;
-			Label.Y = Label.FontSize + 2;
+			Label.X = 55;
+			Label.Y = Label.FontSize;
 			Label.Fill = TimelinerColors.Black;
 			Label.ID = Model.GetID() + "/label";
 			Label.Text = "\u00A00:00:00:000";
 			
-			TickDefinition.ID = Model.GetID() + "/tick";
-			TickDefinition.Stroke = TimelinerColors.DarkGray;
-			TickDefinition.StartX = 0;
-			TickDefinition.StartY = 0;
-			TickDefinition.EndX = 0;
-			TickDefinition.EndY = 20;
-			TickDefinition.Transforms = new SvgTransformCollection();
-			TickDefinition.Transforms.Add(new SvgScale(1, 1));
-			TickDefinition.CustomAttributes["class"] = "hair";
-			
-			SubTickDefinition.ID = Model.GetID() + "/subtick";
-			SubTickDefinition.Stroke = TimelinerColors.DarkGray;
-			SubTickDefinition.StartX = 0;
-			SubTickDefinition.StartY = 14;
-			SubTickDefinition.EndX = 0;
-			SubTickDefinition.EndY = 20;
-			SubTickDefinition.Transforms = new SvgTransformCollection();
-			SubTickDefinition.Transforms.Add(new SvgScale(1, 1));
-			SubTickDefinition.CustomAttributes["class"] = "hair";
-	
 			ClipRect.Width = width;
 			ClipRect.Height = Background.Height;
 			ClipRect.ID = "ClipRect";
@@ -142,29 +126,30 @@ namespace Timeliner
 			
 			for (int i=0; i<70; i++)
 			{
-				var tick = new SvgUse();
-				tick.ReferencedElement = new Uri("#" + TickDefinition.ID, UriKind.Relative);
-				tick.X = i;
-				TickNumGroup.Children.Add(tick);
-				
-				var subrange = 1 / 10f;
-				for (int j=1; j<10; j++)
-				{
-					var subtick = new SvgUse();
-					subtick.ReferencedElement = new Uri("#" + SubTickDefinition.ID, UriKind.Relative);
-					subtick.X = tick.X + j * subrange;
-					TickNumGroup.Children.Add(subtick);
-				}
+//				var tick = new SvgUse();
+//				tick.ReferencedElement = new Uri("#" + TickDefinition.ID, UriKind.Relative);
+//				tick.X = i;
+//				TickNumGroup.Children.Add(tick);
+//				
+//				var subrange = 1 / 10f;
+//				for (int j=1; j<10; j++)
+//				{
+//					var subtick = new SvgUse();
+//					subtick.ReferencedElement = new Uri("#" + SubTickDefinition.ID, UriKind.Relative);
+//					subtick.X = tick.X + j * subrange;
+//					TickNumGroup.Children.Add(subtick);
+//				}
 				
 				var num = new SvgText(i.ToString());
-				num.FontSize = 8;
-				num.FontFamily = "Lucida Sans Unicode";
-				num.Fill = TimelinerColors.DarkGray;
+                num.FontSize = 20;
+                num.FontFamily = "Lucida Console";
+                num.Y = num.FontSize;
+				num.Fill = TimelinerColors.Black;
 				num.CustomAttributes["pointer-events"] = "none";
 				//num.X = tick.X * 10 + 1f; 
-				num.Y = 10;
+//				num.Y = 10;
 				num.Transforms = new SvgTransformCollection();
-				num.Transforms.Add(new SvgTranslate(tick.X + 0.1f));
+				num.Transforms.Add(new SvgTranslate(i + 0.1f));
 				num.Transforms.Add(new SvgScale(1/Timer.PPS, 1));
 				
 				num.CustomAttributes["class"] = "hair";
@@ -172,39 +157,42 @@ namespace Timeliner
 			}
 			
 			LoopStart.ID = "LoopStart";
-			LoopStart.Transforms = new SvgTransformCollection();
+            LoopStart.Visible = false;
+			LoopStart.Width = 0.5f;
+            LoopStart.Height = Background.Height;
+            LoopStart.Transforms = new SvgTransformCollection();
 			LoopStart.Transforms.Add(new SvgTranslate(0, 0)); 
-			var points1 = new SvgUnitCollection();
-			points1.Add(0);
-			points1.Add(0);
-			points1.Add(0.3f);
-			points1.Add(10);
-			points1.Add(0);
-			points1.Add(20);
-			LoopStart.Points = points1;
 			PanZoomGroup.Children.Add(LoopStart);
 			LoopStart.MouseDown += (s, e) => Parent.Default_MouseDown(LoopStart, e);
 			LoopStart.MouseUp += (s, e) => Parent.Default_MouseUp(LoopStart, e);
 			LoopStart.MouseMove += (s, e) => Parent.Default_MouseMove(LoopStart, e);
+            LoopStart.CustomAttributes["pointer-events"] = "all";
 			Model.LoopStart.ValueChanged += Model_LoopStart_ValueChanged;
 			
 			LoopEnd.ID = "LoopEnd";
-			LoopEnd.Transforms = new SvgTransformCollection();
-			LoopEnd.Transforms.Add(new SvgTranslate(10, 0)); 
-			var points2 = new SvgUnitCollection();
-			points2.Add(0);
-			points2.Add(0);
-			points2.Add(-0.3f);
-			points2.Add(10);
-			points2.Add(0);
-			points2.Add(20);
-			LoopEnd.Points = points2;
+            LoopEnd.Visible = false;
+			LoopEnd.Width = 0.5f;
+            LoopEnd.Height = Background.Height;
+            LoopEnd.Transforms = new SvgTransformCollection();
+			LoopEnd.Transforms.Add(new SvgTranslate(10 - LoopEnd.Width, 0)); 
 			PanZoomGroup.Children.Add(LoopEnd);
 			LoopEnd.MouseDown += (s, e) => Parent.Default_MouseDown(LoopEnd, e);
 			LoopEnd.MouseUp += (s, e) => Parent.Default_MouseUp(LoopEnd, e);
 			LoopEnd.MouseMove += (s, e) => Parent.Default_MouseMove(LoopEnd, e);
+            LoopEnd.CustomAttributes["pointer-events"] = "all";
 			Model.LoopEnd.ValueChanged += Model_LoopEnd_ValueChanged;
 			
+            LoopRegion.ID = "LoopRegion";
+            LoopRegion.X = LoopStart.Transforms[0].Matrix.OffsetX;
+            LoopRegion.Y = Background.Height / 4;
+            LoopRegion.Width = LoopEnd.Transforms[0].Matrix.OffsetX;
+            LoopRegion.Height = Background.Height / 2;
+            LoopRegion.Fill = TimelinerColors.DarkGray;
+            LoopRegion.FillOpacity = 0.7f;
+            LoopRegion.CustomAttributes["pointer-events"] = "none";
+            LoopRegion.CustomAttributes["class"] = "front";
+            PanZoomGroup.Children.Add(LoopRegion);
+            
 			//init scalings
 			PanZoom(0, 0, 0);
 			ApplyInverseScaling();
@@ -213,11 +201,14 @@ namespace Timeliner
 		void Model_LoopStart_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
 		{
 			LoopStart.Transforms[0] = new SvgTranslate(newValue);
+            LoopRegion.X = LoopStart.Transforms[0].Matrix.OffsetX;
+            LoopRegion.Width = LoopEnd.Transforms[0].Matrix.OffsetX - LoopRegion.X;
 		}
 		
 		void Model_LoopEnd_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
 		{
 			LoopEnd.Transforms[0] = new SvgTranslate(newValue);
+            LoopRegion.Width = LoopEnd.Transforms[0].Matrix.OffsetX;
 		}
 		
 		public override void Dispose()
@@ -236,16 +227,11 @@ namespace Timeliner
 		/// </summary>
 		protected override void BuildSVG()
 		{
-			Definitions.Children.Clear();
-			Definitions.Children.Add(TickDefinition);
-			Definitions.Children.Add(SubTickDefinition);
-			
 			Parent.SvgRoot.Children.Add(RulerClipPath);
 			
-			MainGroup.Children.Add(Definitions);
 			MainGroup.Children.Add(Background);
-			MainGroup.Children.Add(TickNumGroup);
 			MainGroup.Children.Add(PanZoomGroup);
+            MainGroup.Children.Add(TickNumGroup);
 			MainGroup.Children.Add(LabelBackground);
 			MainGroup.Children.Add(Label);
 		}
@@ -296,9 +282,9 @@ namespace Timeliner
 				DateTime dt = new DateTime(2008, 1, 1, h + 1, mm, ss, 0);
 				
 				if (showMinus)
-					num.Text = "-" + dt.ToString("mm:ss"); 
+					num.Text = "-" + dt.ToString("%s"); 
 				else
-					num.Text = " " + dt.ToString("mm:ss");
+					num.Text = " " + dt.ToString("%s");
 				
 				start++;
 			}
@@ -316,9 +302,9 @@ namespace Timeliner
 			var m = TickNumGroup.Transforms[0].Matrix;
 			var z = 1.0f / m.Elements[0];
 			
-			//zoom only
-			TickDefinition.Transforms[0] = new SvgMatrix(new List<float>(new float[]{z, 0, 0, 1, 0, 0}));
-			SubTickDefinition.Transforms[0] = new SvgMatrix(new List<float>(new float[]{z, 0, 0, 1, 0, 0}));
+//			//zoom only
+//			TickDefinition.Transforms[0] = new SvgMatrix(new List<float>(new float[]{z, 0, 0, 1, 0, 0}));
+//			SubTickDefinition.Transforms[0] = new SvgMatrix(new List<float>(new float[]{z, 0, 0, 1, 0, 0}));
 			
 //			var nums = PanZoomGroup.Children.Where(x => x is SvgText);
 //			foreach (var num in nums)
