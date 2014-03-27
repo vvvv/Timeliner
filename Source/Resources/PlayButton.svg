@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
+   width="25"
+   height="50"
    id="svg5997"
    version="1.1"
    inkscape:version="0.48.4 r"
-   sodipodi:docname="StopButton.svg">
+   sodipodi:docname="PlayButton.svg">
   <defs
      id="defs5999" />
   <sodipodi:namedview
@@ -24,17 +24,21 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="318.65893"
-     inkscape:cy="599.16218"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="60.478102"
+     inkscape:cy="44.459762"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="758"
      inkscape:window-height="498"
-     inkscape:window-x="737"
-     inkscape:window-y="150"
-     inkscape:window-maximized="0" />
+     inkscape:window-x="1059"
+     inkscape:window-y="209"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <metadata
      id="metadata6002">
     <rdf:RDF>
@@ -43,17 +47,18 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(0,-1002.3622)">
     <rect
-       y="425.57648"
-       x="283.92856"
+       y="1002.3622"
+       x="0"
        height="25"
        width="25"
        id="rect6153"
@@ -66,8 +71,8 @@
        id="rect6140"
        width="25"
        height="25"
-       x="283.92856"
-       y="450.57648"
+       x="0"
+       y="1027.3622"
        onclick="x"
        onmouseover="x"
        class="buttonback" />
@@ -76,8 +81,8 @@
        id="rect5959"
        width="4.5"
        height="12.5"
-       x="290.17856"
-       y="457.07648"
+       x="6.2500005"
+       y="1033.8622"
        onclick="x"
        onmouseover="x"
        class="buttonfront" />
@@ -86,14 +91,14 @@
        id="rect5961"
        width="4.5"
        height="12.5"
-       x="298.17856"
-       y="457.07648"
+       x="14.250007"
+       y="1033.8622"
        onclick="x"
        onmouseover="x"
        class="buttonfront" />
     <path
        style="opacity:0.92000002;fill:#000000;fill-opacity:1;stroke:none;display:inline"
-       d="m 290.17857,444.51396 0,-12.625 12.5,6.625 z"
+       d="m 6.2500109,1021.2997 0,-12.625 12.5000051,6.625 z"
        id="path5963"
        inkscape:connector-curvature="0"
        onmouseover="x"

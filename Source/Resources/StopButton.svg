@@ -12,7 +12,9 @@
    id="svg5997"
    version="1.1"
    inkscape:version="0.48.4 r"
-   sodipodi:docname="PlayButton.svg">
+   sodipodi:docname="StopButton.svg"
+   width="25"
+   height="25">
   <defs
      id="defs5999" />
   <sodipodi:namedview
@@ -22,17 +24,28 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="318.65893"
-     inkscape:cy="599.16218"
+     inkscape:zoom="15.839192"
+     inkscape:cx="11.041746"
+     inkscape:cy="17.049707"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="758"
-     inkscape:window-height="498"
-     inkscape:window-x="737"
-     inkscape:window-y="150"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="999"
+     inkscape:window-height="926"
+     inkscape:window-x="122"
+     inkscape:window-y="49"
+     inkscape:window-maximized="0"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <sodipodi:guide
+       orientation="0,1"
+       position="14.142136,18.713917"
+       id="guide2992" />
+  </sodipodi:namedview>
   <metadata
      id="metadata6002">
     <rdf:RDF>
@@ -41,7 +54,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -50,23 +63,23 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="opacity:1;fill:#008080;fill-opacity:1;stroke:none;display:inline"
+       style="fill:#008080;fill-opacity:1;stroke:none;display:inline"
        id="rect6155"
        width="25"
        height="25"
-       x="271.78571"
-       y="428.79074"
+       x="0"
+       y="0"
        onmouseover="x"
        onclick="x"
        class="buttonback" />
     <rect
-       style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;display:inline"
+       style="fill:#000000;fill-opacity:1;stroke:none;display:inline"
        id="rect5953"
        width="12.5"
        height="12.5"
-       x="278.03571"
-       y="435.04074"
-	   onmouseover="x"
+       x="6"
+       y="6"
+       onmouseover="x"
        onclick="x"
        class="buttonfront" />
   </g>
