@@ -126,7 +126,7 @@ namespace Timeliner
 			ClipRect.ID = "ClipRect";
 			
 			//document roots id is "svg". this is where the trackclips are added to
-			TrackClipPath.ID = "svg/clip" + IDGenerator.NewID;
+			TrackClipPath.ID = "svg_clip" + IDGenerator.NewID;
 			TrackClipPath.Children.Add(ClipRect);
 			
 			TrackGroup.ID = "Clip";

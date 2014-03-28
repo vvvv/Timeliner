@@ -158,7 +158,7 @@ namespace Timeliner
 			: base(s, trackview)
 		{
 			//configure svg
-			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "/Sample", UriKind.Relative);
+			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_Sample", UriKind.Relative);
 			Background.ID = "bg";
 			Background.CustomAttributes["class"] = "kf";
 			Background.Transforms = new SvgTransformCollection();

@@ -73,7 +73,7 @@ namespace Timeliner
 			KeyframeDefinition.CenterX = 0;
 			KeyframeDefinition.CenterY = 0;
 			KeyframeDefinition.Radius = 3;
-			KeyframeDefinition.ID = Model.GetID() + "/Keyframe";
+			KeyframeDefinition.ID = Model.GetID() + "_Keyframe";
 			KeyframeDefinition.Transforms = new SvgTransformCollection();
 			KeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
             KeyframeDefinition.CustomAttributes["class"] = "front";

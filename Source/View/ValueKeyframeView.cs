@@ -17,7 +17,7 @@ namespace Timeliner
 			: base(kf, trackview)
 		{
 			//configure svg
-			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "/Keyframe", UriKind.Relative);
+			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_Keyframe", UriKind.Relative);
 			Background.ID = "bg";
 			Background.CustomAttributes["class"] = "kf";
 			

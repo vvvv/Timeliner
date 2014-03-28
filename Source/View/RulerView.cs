@@ -32,7 +32,7 @@ namespace Timeliner
         public SvgRectangle LoopEnd = new SvgRectangle();
         public SvgRectangle LoopRegion = new SvgRectangle();
 		
-        private const float CLeftOffset = 250;
+        private const float CLeftOffset = 220;
         private const float CHandlerWidth = 20;
 		
         private Matrix FView = new Matrix(Timer.PPS, 0, 0, 1, CLeftOffset, 0);
@@ -102,15 +102,15 @@ namespace Timeliner
             Label.X = 55;
             Label.Y = Label.FontSize;
             Label.CustomAttributes["class"] = "time";
-            Label.ID = Model.GetID() + "/label";
-            Label.Text = "\u00A00:00:00:000";
+            Label.ID = Model.GetID() + "_label";
+            Label.Text = "00:00:00:000";
 			
             ClipRect.Width = width;
             ClipRect.Height = Background.Height;
             ClipRect.ID = "ClipRect";
 			
             //document roots id is "svg". this is where the trackclips are added to
-            RulerClipPath.ID = "svg/clip" + IDGenerator.NewID;
+            RulerClipPath.ID = "svg_clip" + IDGenerator.NewID;
             RulerClipPath.Children.Add(ClipRect);
 			
             var uri = new Uri("url(#" + RulerClipPath.ID + ")", UriKind.Relative);

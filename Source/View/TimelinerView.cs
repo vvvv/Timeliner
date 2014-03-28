@@ -78,7 +78,7 @@ namespace Timeliner
             Background.Width = new SvgUnit(SvgUnitType.Percentage, 100);
             Background.Height = new SvgUnit(SvgUnitType.Percentage, 100);
             Background.Opacity = 0.1f;
-            Background.ID = Document.GetID() + "/Background";
+            Background.ID = Document.GetID() + "_Background";
             
             Background.MouseDown += Default_MouseDown;
             Background.MouseMove += Default_MouseMove;
@@ -88,12 +88,12 @@ namespace Timeliner
             Selection.CustomAttributes["pointer-events"] = "none";
             Selection.CustomAttributes["class"] = "selection";
             
-            TimeBar.ID = "TimeBar";
+            TimeBar.ID = "Timebar";
             TimeBar.StartX = 0;
             TimeBar.StartY = 0;
             TimeBar.EndX = 0;
             TimeBar.EndY = new SvgUnit(SvgUnitType.Percentage, 100);
-            TimeBar.CustomAttributes["style"] = "cursor:col-resize";
+//            TimeBar.CustomAttributes["style"] = "cursor:col-resize";
             TimeBar.Transforms = new SvgTransformCollection();
             TimeBar.Transforms.Add(new SvgTranslate(0, 0));
             

@@ -82,7 +82,7 @@ namespace Timeliner
 			if (showMinus)
 				return "-" + dt.ToString("H:mm:ss:fff"); 
 			else
-				return "\u00A0" + dt.ToString("H:mm:ss:fff");
+				return dt.ToString("H:mm:ss:fff");
 		}
 		
 		public void Evaluate()

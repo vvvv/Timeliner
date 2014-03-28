@@ -50,7 +50,7 @@ namespace Timeliner
         
         protected virtual string GetGroupID()
         {
-        	return Model.GetID();
+            return Model.GetID().Replace('/', '_');
         }
         
         /// <summary>

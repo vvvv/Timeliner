@@ -75,8 +75,20 @@
 	fill-opacity: 1;
 }
 
-.selection
+#_Overlays_Selection
 {
 	fill: #FFFFFF;
 	fill-opacity: 0.1;
+}
+
+#_Overlays_Timebar
+{
+	stroke: #000000;
+	cursor: col-resize;
+}
+
+#_Ruler_1_PanZoom_LoopRegion
+{
+	fill: #FFFFFF;
+	fill-opacity: 0.2;
 }
