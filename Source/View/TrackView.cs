@@ -101,16 +101,16 @@ namespace Timeliner
 			
 			var width = new SvgUnit(SvgUnitType.Percentage, 100);
 			
-			Label.FontSize = 12;
-			Label.FontFamily = "Lucida Sans Unicode";
-			Label.X = 2;
-			Label.Y = Label.FontSize + 2;
-			Label.Fill = TimelinerColors.Black;
+			Label.FontSize = 20;
+			Label.FontFamily = "Lucida Console";
+			Label.X = 5;
+			Label.Y = Label.FontSize;
 			Label.Text = Model.Label.Value;
 			Label.ID = "label";
 			Label.Change += Label_Change;
 			Label.MouseDown += Background_MouseDown;
 			Label.MouseUp += Background_MouseUp;
+            Label.CustomAttributes["class"] = "middle";
 			
 			SizeBarDragRect.FillOpacity = 0.3f;
 			SizeBarDragRect.Visible = false;
@@ -118,8 +118,8 @@ namespace Timeliner
 			
 			Background.Width = width;
 			Background.Height = 1; // this is the value range, not the actual track size
-			Background.Fill = TimelinerColors.LightGray;
 			Background.ID ="bg";
+            Background.CustomAttributes["class"] = "back";
 			
 			ClipRect.Width = width;
 			ClipRect.Height = Background.Height;
@@ -142,9 +142,9 @@ namespace Timeliner
 			
 			SizeBar.Width = width;
 			SizeBar.Height = 5;
-			SizeBar.Fill = TimelinerColors.DarkGray;
 			SizeBar.ID = "SizeBar";
 			SizeBar.CustomAttributes["style"] = "cursor:row-resize";
+            SizeBar.CustomAttributes["class"] = "front";
 			SizeBar.Y = Background.Height.Value;
 			
 			//register event handlers
@@ -157,7 +157,7 @@ namespace Timeliner
 			SizeBar.MouseUp += Background_MouseUp;
 			
 			//track menu
-			TrackMenu = new SvgMenuWidget(100);
+			TrackMenu = new SvgMenuWidget(110);
 			
 			var collapseTrack = new SvgButtonWidget("Collapse");
 			collapseTrack.OnButtonPressed += CollapseTrack;
@@ -266,10 +266,10 @@ namespace Timeliner
 		void CollapseTrack()
 		{
 			var newHeight = 0f;
-			if (Model.Height.Value > 20)
+			if (Model.Height.Value > 30)
 			{
 				Model.UncollapsedHeight.Value = Model.Height.Value; 
-				newHeight = 20;
+				newHeight = 30;
 			}
 			else
 				newHeight = Model.UncollapsedHeight.Value;

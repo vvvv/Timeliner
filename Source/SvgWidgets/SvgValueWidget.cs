@@ -30,6 +30,7 @@ namespace Timeliner
 			Caption = label;
 			
 			Background.MouseScroll += Background_MouseScroll;
+            //over/out need to be registered for scrolling to work
 			Background.MouseOver += Background_MouseOver;
 			Background.MouseOut += Background_MouseOut;
 			//Background.CustomAttributes["capturemouse"] = "true";
@@ -38,7 +39,8 @@ namespace Timeliner
 			Label.FontSize = 12;
 			Label.X = 2;
 			Label.Y = Label.FontSize + 2;
-            Label.FontFamily = "Lucida Sans Unicode";
+            Label.FontFamily = "Lucida Console";
+            Label.CustomAttributes["class"] = "front";
             //Label.ID ="/label";
             Label.CustomAttributes["pointer-events"] = "none";
             
@@ -64,12 +66,10 @@ namespace Timeliner
 		
 		void Background_MouseOver(object sender, EventArgs e)
 		{
-			Background.Fill = TimelinerColors.DarkGray;
 		}
 		
 		void Background_MouseOut(object sender, EventArgs e)
 		{
-			Background.Fill = TimelinerColors.LightGray;
 		}
 		
 		void Background_MouseUp(object sender, MouseArg e)

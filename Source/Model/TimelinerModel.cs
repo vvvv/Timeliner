@@ -65,7 +65,7 @@ namespace Timeliner
             Order = new EditableProperty<int>("Order");
             Height = new EditableProperty<float>("Height");
             Height.Value = 100;
-            Height.AllowChange = (p, v) => v >= 20;
+            Height.AllowChange = (p, v) => v >= 30;
             
             UncollapsedHeight = new EditableProperty<float>("Uncollapsed Height");
             UncollapsedHeight.Value = Height.Value;

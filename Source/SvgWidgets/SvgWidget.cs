@@ -27,7 +27,7 @@ namespace Timeliner
 		public SvgWidget()
 		{
 			Background = new SvgRectangle();
-			Background.Fill = TimelinerColors.LightGray;
+			Background.CustomAttributes["class"] = "wback";
 			
 			this.Children.Add(Background);
             this.Visible = true;

@@ -98,11 +98,13 @@ namespace Timeliner
 		
 		public void Load(XElement data)
 		{
-			Timeline = Timeline.GetSerializer().Deserialize<TLDocument>(data);
-			Timeline.CreateMapper(Context.MappingRegistry);
-			Timeline.Initialize();
-			
-			TimelineView = new TimelineView(Timeline, Timeline.Mapper.Map<ICommandHistory>(), Timer);
+            //first tear down existing model/view gracefully...
+            
+//			Timeline = Timeline.GetSerializer().Deserialize<TLDocument>(data);
+//			Timeline.CreateMapper(Context.MappingRegistry);
+//			Timeline.Initialize();
+//			
+//			TimelineView = new TimelineView(Timeline, Timeline.Mapper.Map<ICommandHistory>(), Timer);
 		}
 	}
 }

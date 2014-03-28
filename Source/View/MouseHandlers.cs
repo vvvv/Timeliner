@@ -22,10 +22,7 @@ namespace Timeliner
 		public override void MouseClick(object sender, MouseArg arg)
 		{
 			if (arg.Button == 2)
-			{
-				Instance.MainMenu.Transforms[0] = new SvgTranslate(arg.x, arg.y - 50);
-				Instance.MainMenu.Visible = true;
-			}
+                Instance.MainMenu.Show(new PointF(arg.x, arg.y - Instance.FTrackGroup.Transforms[0].Matrix.Elements[5]));
 		}
 	}
 	
@@ -218,10 +215,7 @@ namespace Timeliner
 		public override void MouseClick(object sender, MouseArg arg)
 		{
 			if (arg.Button == 2)
-			{
-				Instance.TrackMenu.Transforms[0] = new SvgTranslate(arg.x, arg.y - 50);
-				Instance.TrackMenu.Visible = true;
-			}
+                Instance.TrackMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
 		}
 	}
 	

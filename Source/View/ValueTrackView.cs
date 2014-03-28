@@ -72,10 +72,11 @@ namespace Timeliner
 			
 			KeyframeDefinition.CenterX = 0;
 			KeyframeDefinition.CenterY = 0;
-			KeyframeDefinition.Radius = 2;
+			KeyframeDefinition.Radius = 3;
 			KeyframeDefinition.ID = Model.GetID() + "/Keyframe";
 			KeyframeDefinition.Transforms = new SvgTransformCollection();
 			KeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
+            KeyframeDefinition.CustomAttributes["class"] = "front";
 			
 			CurveGroup.ID = "Curves";
 			KeyframeGroup.ID = "Keyframes";
@@ -88,10 +89,12 @@ namespace Timeliner
 			MinValue.OnValueChanged += ChangeMinimum;
 			TrackMenu.AddItem(MinValue);
 			
-			CurrentValue.FontSize = 10;
-			CurrentValue.FontFamily = "Lucida Sans Unicode";
-			CurrentValue.Fill = TimelinerColors.Black;
-			CurrentValue.Y = 25;
+			CurrentValue.FontSize = 20;
+            CurrentValue.X = 5;
+			CurrentValue.FontFamily = "Lucida Console";
+            CurrentValue.CustomAttributes["class"] = "middle";
+            CurrentValue.CustomAttributes["pointer-events"] = "none";
+			CurrentValue.Y = 40;
 						
 			UpdateScene();
 		}

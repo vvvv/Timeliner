@@ -68,6 +68,64 @@ namespace Timeliner
             Document = tl;
             Timer = timer;
              	
+            //replace id manager before any svg element was added
+            var caller = Document.Mapper.Map<ISvgEventCaller>();
+            var manager = new SvgIdManager(SvgRoot, caller, Document.Mapper.Map<RemoteContext>());
+            SvgRoot.OverwriteIdManager(manager);
+            
+            Ruler = new RulerView(Document.Ruler, this);
+            
+            Background.Width = new SvgUnit(SvgUnitType.Percentage, 100);
+            Background.Height = new SvgUnit(SvgUnitType.Percentage, 100);
+            Background.Opacity = 0.1f;
+            Background.ID = Document.GetID() + "/Background";
+            
+            Background.MouseDown += Default_MouseDown;
+            Background.MouseMove += Default_MouseMove;
+            Background.MouseUp += Default_MouseUp;
+            
+            Selection.ID = "Selection";
+            Selection.CustomAttributes["pointer-events"] = "none";
+            Selection.CustomAttributes["class"] = "selection";
+            
+            TimeBar.ID = "TimeBar";
+            TimeBar.StartX = 0;
+            TimeBar.StartY = 0;
+            TimeBar.EndX = 0;
+            TimeBar.EndY = new SvgUnit(SvgUnitType.Percentage, 100);
+            TimeBar.CustomAttributes["style"] = "cursor:col-resize";
+            TimeBar.Transforms = new SvgTransformCollection();
+            TimeBar.Transforms.Add(new SvgTranslate(0, 0));
+            
+            TimeBar.MouseDown += Default_MouseDown;
+            TimeBar.MouseMove += Default_MouseMove;
+            TimeBar.MouseUp += Default_MouseUp;
+            
+            PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller, 2);
+            StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller, 1);
+            StopButton.CustomAttributes["x"] = "25"; //TODO: fix in svg lib
+            
+            PlayButton.Click += PlayButton_Click;
+            StopButton.Click += StopButton_Click;
+            
+            MainMenu = new SvgMenuWidget(100);
+            MainMenu.ID = "MainMenu";
+            var addTrack = new SvgButtonWidget("Add Track");
+            addTrack.OnButtonPressed += AddTrack;
+            
+            MainMenu.AddItem(addTrack);
+            
+            FRulerGroup.ID = "Ruler";
+            FRulerGroup.Transforms = new SvgTransformCollection();
+            
+        	FTrackGroup.ID = "Tracks";
+        	FTrackGroup.Transforms = new SvgTransformCollection();
+        	FOverlaysGroup.ID = "Overlays";
+        	FOverlaysGroup.Transforms = new SvgTransformCollection();
+
+        	//initialize svg tree
+        	BuildSVGRoot();
+            
             Syncer = Tracks.SyncWith(Document.Tracks, 
                                         tm => 
                                         {
@@ -90,76 +148,6 @@ namespace Timeliner
 	                                     		if (track.Model.Order.Value > order)
 	                                     			track.Model.Order.Value -= 1;
                                      	});
-            
-            
-            //replace id manager before any svg element was added
-            var caller = Document.Mapper.Map<ISvgEventCaller>();
-            var manager = new SvgIdManager(SvgRoot, caller, Document.Mapper.Map<RemoteContext>());
-            SvgRoot.OverwriteIdManager(manager);
-            
-            Ruler = new RulerView(Document.Ruler, this);
-            
-            Background.Width = new SvgUnit(SvgUnitType.Percentage, 100);
-            Background.Height = new SvgUnit(SvgUnitType.Percentage, 100);
-            Background.Opacity = 0.1f;
-            Background.ID = Document.GetID() + "/Background";
-            
-            Background.MouseDown += Default_MouseDown;
-            Background.MouseMove += Default_MouseMove;
-            Background.MouseUp += Default_MouseUp;
-            
-            Selection.ID = "Selection";
-            Selection.FillOpacity = 0.1f;
-            Selection.CustomAttributes["pointer-events"] = "none";
-            
-            TimeBar.ID = "TimeBar";
-            TimeBar.Stroke = TimelinerColors.Black;
-            TimeBar.StartX = 0;
-            TimeBar.StartY = 0;
-            TimeBar.EndX = 0;
-            TimeBar.EndY = new SvgUnit(SvgUnitType.Percentage, 100);
-            TimeBar.CustomAttributes["style"] = "cursor:col-resize";
-            TimeBar.Transforms = new SvgTransformCollection();
-            TimeBar.Transforms.Add(new SvgTranslate(0, 0));
-            
-            TimeBar.MouseDown += Default_MouseDown;
-            TimeBar.MouseMove += Default_MouseMove;
-            TimeBar.MouseUp += Default_MouseUp;
-            
-            PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller);
-            StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller);
-            StopButton.CustomAttributes["x"] = "50"; //TODO: fix in svg lib
-            
-            PlayButton.MouseDown += PlayButton_MouseDown;
-            StopButton.MouseDown += StopButton_MouseDown;
-            
-            MainMenu = new SvgMenuWidget(100);
-            MainMenu.ID = "MainMenu";
-            var addTrack = new SvgButtonWidget("Add Track");
-            addTrack.OnButtonPressed += AddTrack;
-            
-            MainMenu.AddItem(addTrack);
-            
-            FRulerGroup.ID = "Ruler";
-            FRulerGroup.Transforms = new SvgTransformCollection();
-            
-        	FTrackGroup.ID = "Tracks";
-        	FTrackGroup.Transforms = new SvgTransformCollection();
-        	FOverlaysGroup.ID = "Overlays";
-        	FOverlaysGroup.Transforms = new SvgTransformCollection();
-        	
-
-//        	NodeBrowser = new SvgMenuWidget(400);
-//			var browser = new SvgTextListWidget("bla");
-//			browser.OnValueChanged += browser_OnValueChanged;
-//			NodeBrowser.AddItem(browser);
-//			NodeBrowser.Visible = true;
-//			
-//			NodeBrowser.Transforms = new SvgTransformCollection();
-//			NodeBrowser.Transforms.Add(new SvgTranslate(300, 300));
-
-        	//initialize svg tree
-        	BuildSVGRoot();
 		}
 		
 		public override void Dispose()
@@ -188,21 +176,14 @@ namespace Timeliner
             FOverlaysGroup.Transforms.Clear();
             
             SvgRoot.Children.Add(Definitions);
-            //SvgRoot.ViewBox = new SvgViewBox(0, 0, 1000, 200);
+            SvgRoot.Children.Add(FRulerGroup);
+            Ruler.AddToSceneGraphAt(FRulerGroup);
             SvgRoot.Children.Add(PlayButton);
             SvgRoot.Children.Add(StopButton);
             
-            FRulerGroup.Transforms.Add(new SvgTranslate(0, PlayButton.Height + 9));
-            SvgRoot.Children.Add(FRulerGroup);
-            Ruler.AddToSceneGraphAt(FRulerGroup);
-            
-            var menuOffset = new SvgTranslate(0, PlayButton.Height+30);
+            var menuOffset = new SvgTranslate(0, Ruler.Height+5);
             FTrackGroup.Transforms.Add(menuOffset);
             FTrackGroup.Children.Add(Background);
-			
-			//draw tracks
-//			foreach (var track in Tracks)
-//                track.BuildSVGTo(FTrackGroup);
 			
 			SvgRoot.Children.Add(FTrackGroup);
 			
@@ -210,7 +191,6 @@ namespace Timeliner
 			FOverlaysGroup.Children.Add(Selection);
 			FOverlaysGroup.Children.Add(TimeBar);
 			FOverlaysGroup.Children.Add(MainMenu);
-			//FOverlaysGroup.Children.Add(NodeBrowser);
 			SvgRoot.Children.Add(FOverlaysGroup);			
 			
 			return SvgRoot;
@@ -253,22 +233,16 @@ namespace Timeliner
         	History.Insert(Command.Add(Document.Tracks, track));
 		}
 		
-		void PlayButton_MouseDown(object sender, MouseArg e)
+		void PlayButton_Click(object sender, MouseArg e)
 		{
 			Timer.IsRunning = !Timer.IsRunning;
-			UpdateButtonColor();
+            PlayButton.SetViewBox(Convert.ToInt32(Timer.IsRunning));
 		}
 
-		void StopButton_MouseDown(object sender, MouseArg e)
+		void StopButton_Click(object sender, MouseArg e)
 		{
 			Timer.IsRunning = false;
 			Timer.Time = 0;
-			UpdateButtonColor();
-		}
-		
-		void UpdateButtonColor()
-		{
-			PlayButton.SetBackColor(Timer.IsRunning ? TimelinerColors.Red : TimelinerColors.LightGray);
 		}
 		#endregion
 		

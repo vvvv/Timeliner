@@ -65,7 +65,7 @@
        style="opacity:0.92000002;fill:#008080;fill-opacity:1;stroke:none;display:inline"
        onmouseover="x"
        onclick="x"
-       class="buttonback" />
+       class="back" />
     <rect
        style="opacity:0.92000002;fill:#008080;fill-opacity:1;stroke:none;display:inline"
        id="rect6140"
@@ -75,7 +75,7 @@
        y="1027.3622"
        onclick="x"
        onmouseover="x"
-       class="buttonback" />
+       class="back" />
     <rect
        style="opacity:0.92000002;fill:#000000;fill-opacity:1;stroke:none;display:inline"
        id="rect5959"
@@ -85,7 +85,7 @@
        y="1033.8622"
        onclick="x"
        onmouseover="x"
-       class="buttonfront" />
+       class="front" />
     <rect
        style="opacity:0.92000002;fill:#000000;fill-opacity:1;stroke:none;display:inline"
        id="rect5961"
@@ -95,7 +95,7 @@
        y="1033.8622"
        onclick="x"
        onmouseover="x"
-       class="buttonfront" />
+       class="front" />
     <path
        style="opacity:0.92000002;fill:#000000;fill-opacity:1;stroke:none;display:inline"
        d="m 6.2500109,1021.2997 0,-12.625 12.5000051,6.625 z"
@@ -103,6 +103,6 @@
        inkscape:connector-curvature="0"
        onmouseover="x"
        onclick="x"
-       class="buttonfront" />
+       class="front" />
   </g>
 </svg>

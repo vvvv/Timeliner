@@ -104,7 +104,6 @@
     <Compile Include="View\ValueKeyframeView.cs" />
     <Compile Include="View\MouseHandlers.cs" />
     <Compile Include="View\RulerView.cs" />
-    <Compile Include="View\TimelinerColors.cs" />
     <Compile Include="View\TimelinerView.cs" />
     <Compile Include="View\TrackView.cs" />
     <Compile Include="View\ValueTrackView.cs" />

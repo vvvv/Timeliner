@@ -13,7 +13,7 @@ namespace Timeliner
 		
 		public SvgButtonWidget(string label): base()
 		{
-			Background.MouseOver += Background_MouseOver;
+            Background.MouseOver += Background_MouseOver;
 			Background.MouseOut += Background_MouseOut;
 			Background.MouseDown += Background_MouseDown;
 			
@@ -21,31 +21,28 @@ namespace Timeliner
 			Label.FontSize = 12;
 			Label.X = 2;
 			Label.Y = Label.FontSize + 2;
-            Label.FontFamily = "Lucida Sans Unicode";
+            Label.FontFamily = "Lucida Console";
             //Label.ID ="/label";
             Label.CustomAttributes["pointer-events"] = "none";
+            Label.CustomAttributes["class"] = "front";
             
             this.Children.Add(Label);
 		}
-		
-		
 		
 		public SvgButtonWidget(float width, float height, string label): this(label)
 		{
 			Width = width;
 			Height = height;
 		}
-
-		void Background_MouseOver(object sender, EventArgs e)
+        
+        void Background_MouseOver(object sender, EventArgs e)
 		{
-			Background.Fill = TimelinerColors.DarkGray;
 		}
 		
 		void Background_MouseOut(object sender, EventArgs e)
 		{
-			Background.Fill = TimelinerColors.LightGray;
 		}
-		
+	
 		void Background_MouseDown(object sender, EventArgs e)
 		{
 			OnButtonPressed.Invoke();

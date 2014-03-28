@@ -36,6 +36,47 @@
 .buttonback:hover, .buttonback:hover ~ .buttonfront
 {
 	fill: #000000;
-	fill-opacity:0.1;
+	fill-opacity: 0.1;
 }
 
+.back
+{
+	fill: #646464;
+	fill-opacity: 1;
+}
+
+.front
+{
+	fill: #FFFFFF;
+	fill-opacity: 1;
+}
+
+.sfront
+{
+	stroke: #FFFFFF;
+	stroke-opacity: 1;
+}
+
+.middle
+{
+	fill: #808080;
+	fill-opacity: 1;
+}
+
+.wback
+{
+	fill: #646464;
+	fill-opacity: 1;
+}
+
+.wback:hover 
+{
+	fill: #808080;
+	fill-opacity: 1;
+}
+
+.selection
+{
+	fill: #FFFFFF;
+	fill-opacity: 0.1;
+}

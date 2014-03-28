@@ -12,22 +12,11 @@ namespace Timeliner
 		protected List<SvgVisualElement> BackgroundElements = new List<SvgVisualElement>();
 		protected List<SvgVisualElement> ForegroundElements = new List<SvgVisualElement>();
 		
-		public void SetBackColor(SvgColourServer col)
+		public void SetViewBox(int view)
 		{
-			foreach (var element in BackgroundElements)
-			{
-				element.Fill = col;
-			}
+            ViewBox = new SvgViewBox(0, Height * view, Width, Height);
 		}
 
-		public void SetForeColor(SvgColourServer col)
-		{
-			foreach (var element in ForegroundElements)
-			{
-				element.Fill = col;
-			}
-		}
-		
 		public void ParseElements(ISvgEventCaller caller, SvgElement element)
 		{
 			//register events
@@ -59,11 +48,16 @@ namespace Timeliner
 			RaiseMouseClick(this, e);
 		}
 		
-		public static SvgDocumentWidget Load(string filePath, ISvgEventCaller caller)
+		public static SvgDocumentWidget Load(string filePath, ISvgEventCaller caller, int viewCount)
 		{
 			var newWidget = SvgDocument.Open<SvgDocumentWidget>(filePath);
 			newWidget.AutoPublishEvents = false;
 			newWidget.ParseElements(caller, newWidget);
+            
+            newWidget.Height = newWidget.Height / viewCount;
+            newWidget.SetViewBox(0);
+            newWidget.Overflow = SvgOverflow.hidden;
+            
 			return newWidget;
 		}
 		

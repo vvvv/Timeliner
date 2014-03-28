@@ -5,7 +5,7 @@ namespace Timeliner
 	public sealed class Timer
 	{
 		public const float MinTimeStep = 0.0001f;
-		public const float PPS = 30f; //pixels per second
+		public const float PPS = 50f; //pixels per second
 		private float FCurrentTime;
 		private float FHostTime;
 		private float FSpeed = 1;

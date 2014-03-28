@@ -71,7 +71,7 @@
        y="0"
        onmouseover="x"
        onclick="x"
-       class="buttonback" />
+       class="back" />
     <rect
        style="fill:#000000;fill-opacity:1;stroke:none;display:inline"
        id="rect5953"
@@ -81,6 +81,6 @@
        y="6"
        onmouseover="x"
        onclick="x"
-       class="buttonfront" />
+       class="front" />
   </g>
 </svg>
