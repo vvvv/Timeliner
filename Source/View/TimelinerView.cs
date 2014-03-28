@@ -236,7 +236,6 @@ namespace Timeliner
 		void PlayButton_Click(object sender, MouseArg e)
 		{
 			Timer.IsRunning = !Timer.IsRunning;
-            PlayButton.SetViewBox(Convert.ToInt32(Timer.IsRunning));
 		}
 
 		void StopButton_Click(object sender, MouseArg e)
@@ -249,6 +248,8 @@ namespace Timeliner
 		public void Evaluate()
 		{
 			Ruler.Evaluate();
+            
+            PlayButton.SetViewBox(Convert.ToInt32(Timer.IsRunning));
 			
 			foreach (var track in Tracks)
 				track.Evaluate();
