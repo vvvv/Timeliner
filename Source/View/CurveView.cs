@@ -14,6 +14,15 @@ namespace Timeliner
 	{
 	    public SvgPath Path = new SvgPath();
 	
+	    private bool FIsDirty;
+	    public bool IsDirty
+	    {
+	    	get
+	    	{
+	    		return FIsDirty;
+	    	}
+	    }
+	    
 	    public CurveView(TLCurve curve, ValueTrackView tv)
 	        : base(curve, tv)
 	    {
@@ -22,50 +31,35 @@ namespace Timeliner
 	        Path.StrokeWidth = 1.0f;
 	        Path.CustomAttributes["vector-effect"] = "non-scaling-stroke";
 	        Path.CustomAttributes["pointer-events"] = "none";
-	
-	        RegisterListeners();
-	    }
-	
-	    private void RegisterListeners()
-	    {
-	    	if (Model.Name.StartsWith("Start"))
-	        {
-	            RegisterAtKeyframeListeners(Model.End);
-	        }
-	        else if (Model.Name.StartsWith("End"))
-	        {
-	            RegisterAtKeyframeListeners(Model.Start);
-	        }
-	        else
-	        {
-	            RegisterAtKeyframeListeners(Model.Start);
-	            RegisterAtKeyframeListeners(Model.End);
-	        }
-	    }
-	
-	    private void RegisterAtKeyframeListeners(TLKeyframe kf)
-	    {
-	        kf.Time.ValueChanged += kf_ValueChanged;
-	        kf.Value.ValueChanged += kf_ValueChanged;
 	    }
 	    
-	    public bool IsDirty
-	    {
-	    	get
-	    	{
-	    		return FIsDirty;
-	    	}
-	    }
 	
-	    private bool FIsDirty;
-	    void kf_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
+	    #region build scenegraph
+	    protected override void BuildSVG()
 	    {
-	    	//FIsDirty = true;
+	    	MainGroup.Children.Clear();
+	    	
 	    	UpdatePathData();
+	
+	        MainGroup.Children.Add(Path);
 	    }
 	    
-	    protected void UpdatePathData()
-	    {
+		protected override void UnbuildSVG()
+		{
+			Parent.CurveGroup.Children.Remove(MainGroup);
+		}
+		#endregion
+		
+		#region update scenegraph
+		
+		public override void UpdateScene()
+		{
+			UpdatePathData();
+			base.UpdateScene();
+		}
+		
+		private void UpdatePathData()
+		{
 	    	Path.PathData.Clear();
 	
 	        if (Model.Name.StartsWith("Start"))
@@ -81,27 +75,8 @@ namespace Timeliner
 	            CreatePath(Model.Start.Time.Value, Model.Start.Value.Value, Model.End.Time.Value, Model.End.Value.Value);
 	        }
 	    }
-	    
-	    public void ResetDirty()
-	    {
-	    	FIsDirty = false;
-	    }
-	
-	    protected override void BuildSVG()
-	    {
-	    	MainGroup.Children.Clear();
-	    	
-	    	UpdatePathData();
-	
-	        MainGroup.Children.Add(Path);
-	    }
-	    
-		protected override void UnbuildSVG()
-		{
-			Parent.CurveGroup.Children.Remove(MainGroup);
-		}
-	
-	    private void CreatePath(float x1, float y1, float x2, float y2)
+		
+		private void CreatePath(float x1, float y1, float x2, float y2)
 	    {
 	        var coords = new List<float>();
 	        var curveMove = 'M';
@@ -117,25 +92,11 @@ namespace Timeliner
 	        coords.Add(-y2);
 	        SvgPathBuilder.CreatePathSegment(curveType, Path.PathData, coords, char.IsLower(curveType));
 	    }
-	
-	
-	    public override void Dispose()
-	    {
-	        if (Model.Start != null)
-	        {
-	            Model.Start.Time.ValueChanged -= kf_ValueChanged;
-	            Model.Start.Value.ValueChanged -= kf_ValueChanged;
-	        }
-	
-	        if (Model.End != null)
-	        {
-	            Model.End.Time.ValueChanged -= kf_ValueChanged;
-	            Model.End.Value.ValueChanged -= kf_ValueChanged;
-	        }
-	        
-	        UnbuildSVG();
-	
-	        base.Dispose();
-	    }
+		
+		#endregion
+		
+	    #region model eventhandler
+	    #endregion
+
 	}
 }

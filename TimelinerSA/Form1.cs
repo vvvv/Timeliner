@@ -12,18 +12,18 @@ using Posh;
 
 namespace TimeLinerSA
 {
-    public partial class Form1 : Form, IDisposable
-    {
-    	private List<PoshTimeliner> FWAMPTimeliners = new List<PoshTimeliner>();
+	public partial class Form1 : Form, IDisposable
+	{
+		private List<PoshTimeliner> FPoshTimeliners = new List<PoshTimeliner>();
 		private WebBrowser FWebBrowser;
 		private Stopwatch Clock = new Stopwatch();
 		
-        public Form1()
-        {
-            InitializeComponent();
-
-            //register url on http server
-            WebServer.TerminalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location), @"web");
+		public Form1()
+		{
+			InitializeComponent();
+			
+			//register url on http server
+			WebServer.TerminalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location), @"web");
 			WebServer.UnknownURL += AddUrl;
 			WebServer.OpenURL += OpenUrl;
 							
@@ -39,45 +39,55 @@ namespace TimeLinerSA
 			
 			//dispose web- and wampserver
 			this.Disposed += (s, e) => 
+			{
+				WebServer.Stop();
+				foreach (var tl in FPoshTimeliners) 
 				{
-					WebServer.Stop();
-					foreach (var tl in FWAMPTimeliners) 
-					{
-						tl.Dispose();
-					}
-				};
+					tl.Dispose();
+				}
+			};
 			
-        }
-
-        void timer1_Tick(object sender, EventArgs e)
-        {
-        	var hosttime = Clock.ElapsedMilliseconds / 1000f;
+		}
+		
+		void timer1_Tick(object sender, EventArgs e)
+		{
+			var hosttime = Clock.ElapsedMilliseconds / 1000f;
         	
-        	foreach (var timeliner in FWAMPTimeliners)
-        		timeliner.Evaluate(hosttime);
-        }
-        
-        private void AddUrl(string url)
-        {
-        	var _url = WebServer.AddURL(url);
+			lock(FPoshTimeliners)
+				foreach (var timeliner in FPoshTimeliners)
+					timeliner.Evaluate(hosttime);
+		}
+		
+		private PoshTimeliner AddTimeliner(string url)
+		{
+			var _url = WebServer.AddURL(url);
 			var port = WebServer.URLPort[_url];
-			FWAMPTimeliners.Add(new PoshTimeliner(_url, port));
-			FWAMPTimeliners.Last().Log = x => Console.WriteLine(x); //FLogger.Log(LogType.Debug, x);
-        }
+			PoshTimeliner timeliner;
+			lock(FPoshTimeliners)
+			{
+				FPoshTimeliners.Add(new PoshTimeliner(_url, port));
+				timeliner = FPoshTimeliners.Last(); 
+			}
+			
+			timeliner.Log = x => Console.WriteLine(x);
+			return timeliner;
+		}
         
-        private void OpenUrl(string url)
-        {
-        	if (! WebServer.URLPort.ContainsKey(url))
-        	{
-        		var _url = WebServer.AddURL(url);
-				var port = WebServer.URLPort[_url];
-				FWAMPTimeliners.Add(new PoshTimeliner(_url, port));
-				
-				FWAMPTimeliners.Last().Log = x => Console.WriteLine(x); //FLogger.Log(LogType.Debug, x);
+		private void AddUrl(string url)
+		{
+			if (!url.Contains("."))
+				AddTimeliner(url);
+		}
+        
+		private void OpenUrl(string url)
+		{
+			if (!WebServer.URLPort.ContainsKey(url))
+			{
+				var timeliner = AddTimeliner(url);
 				var path = Path.Combine(WebServer.TerminalPath, url) + ".xml";
 				var element = XElement.Load(path);
-				FWAMPTimeliners.Last().LoadData(element);
-        	}
-        }
-    }
+				timeliner.LoadData(element);
+			}
+		}
+	}
 }

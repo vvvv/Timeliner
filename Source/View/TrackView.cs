@@ -78,11 +78,13 @@ namespace Timeliner
             }
         }
         
+        protected bool FScalingChanged;
         protected RulerView FRuler;
         public SvgMatrix View
         {
         	set
         	{
+        		FScalingChanged |= PanZoomGroup.Transforms[0].Matrix.Elements[0] != value.Matrix.Elements[0];
         		PanZoomGroup.Transforms[0] = value;
         	}
         }
@@ -105,7 +107,7 @@ namespace Timeliner
 			Label.Y = Label.FontSize + 2;
 			Label.Fill = TimelinerColors.Black;
 			Label.Text = Model.Label.Value;
-			Label.ID = Model.GetID() + "/label";
+			Label.ID = "label";
 			Label.Change += Label_Change;
 			Label.MouseDown += Background_MouseDown;
 			Label.MouseUp += Background_MouseUp;
@@ -154,8 +156,6 @@ namespace Timeliner
 			SizeBar.MouseMove += Background_MouseMove;
 			SizeBar.MouseUp += Background_MouseUp;
 			
-			Model.Height.ValueChanged += Model_Height_ValueChanged;
-
 			//track menu
 			TrackMenu = new SvgMenuWidget(100);
 			
@@ -166,31 +166,10 @@ namespace Timeliner
 			var removeTrack = new SvgButtonWidget("Remove");
 			removeTrack.OnButtonPressed += RemoveTrack;
 			TrackMenu.AddItem(removeTrack);
-			
-			UpdateTrackHeightAndPos();
-		}
-		
-		void CollapseTrack()
-		{
-			if (Model.Height.Value > 20)
-			{
-				Model.UncollapsedHeight.Value = Model.Height.Value; 
-				Model.Height.Value = 20;
-			}
-			else
-				Model.Height.Value = Model.UncollapsedHeight.Value;
-		}
-		
-		void RemoveTrack()
-		{
-			var cmd = Command.Remove(Parent.Document.Tracks, Model);
-			History.Insert(cmd);
 		}
 		
 		public override void Dispose()
 		{
-			UnbuildSVG();
-			
 			Background.MouseDown -= Background_MouseDown;
 			Background.MouseMove -= Background_MouseMove;
 			Background.MouseUp -= Background_MouseUp;
@@ -199,21 +178,15 @@ namespace Timeliner
 			Label.MouseUp -= Background_MouseUp;
 			Label.Change -= Label_Change;
 			
-			Model.Height.ValueChanged -= Model_Height_ValueChanged;
-			
 			base.Dispose();
 		}
 		
-		/// <summary>
-		/// Updates the visual elements
-		/// </summary>
+		#region build scenegraph
 		protected override void BuildSVG()
 		{
 			Definitions.Children.Clear();
 			TrackGroup.Children.Clear();
 			PanZoomGroup.Children.Clear();
-
-			Parent.SvgRoot.Children.Add(TrackClipPath);
 			
 			TrackGroup.Children.Add(Background);
 			TrackGroup.Children.Add(PanZoomGroup);
@@ -229,6 +202,8 @@ namespace Timeliner
 			Parent.FOverlaysGroup.Children.Add(TrackMenu);
 			SizeBarDragRect.ID = "DragRect" + IDGenerator.NewID;
 			Parent.FOverlaysGroup.Children.Add(SizeBarDragRect);
+			
+			Parent.SvgRoot.Children.Add(TrackClipPath);
 		}
 		
 		protected override void UnbuildSVG()
@@ -236,28 +211,29 @@ namespace Timeliner
 			Parent.FOverlaysGroup.Children.Remove(SizeBarDragRect);
 			Parent.FOverlaysGroup.Children.Remove(TrackMenu);
 
-			Parent.FTrackGroup.Children.Remove(MainGroup);
-			
 			Parent.SvgRoot.Children.Remove(TrackClipPath);
+			
+			Parent.FTrackGroup.Children.Remove(MainGroup);
 		}
+		#endregion
 		
-		/// <summary>
-		/// Update self and all sibling tracks
-		/// </summary>
-		void Model_Height_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
+		#region update scenegraph
+		public override void UpdateScene()
 		{
-			//first set new value
+			base.UpdateScene();
+			
 			UpdateTrackHeightAndPos();
 			
-			//recalc others
-			foreach (var tv in Parent.Tracks)
+			if (FScalingChanged)
 			{
-				if(tv.Model.Order.Value > Model.Order.Value)
-					tv.UpdateTrackHeightAndPos();
+				ApplyInverseScaling();
+				FScalingChanged = false;
 			}
+			
+			Label.Text = Model.Label.Value;
 		}
 		
-		public void UpdateTrackHeightAndPos()
+		private void UpdateTrackHeightAndPos()
 		{
 			//calc y position
 			var y = 0.0f;
@@ -274,17 +250,36 @@ namespace Timeliner
 			TrackGroup.Transforms[0] = new SvgScale(1, yScale);
 			SizeBar.Y = yScale;
 			
-			if (yScale != oldScale.Y)
-				ApplyInverseScaling();
+			FScalingChanged |= yScale != oldScale.Y;
 		}
 	
-		public virtual void ApplyInverseScaling()
+		protected virtual void ApplyInverseScaling()
 		{}
+		#endregion
 		
+		#region scenegraph eventhandler
 		void Label_Change(object sender, StringArg e)
 		{
-			Model.Label.Value = e.s;
-			Label.Text = e.s;
+			History.Insert(Command.Set(Model.Label, e.s));
+		}
+		
+		void CollapseTrack()
+		{
+			var newHeight = 0f;
+			if (Model.Height.Value > 20)
+			{
+				Model.UncollapsedHeight.Value = Model.Height.Value; 
+				newHeight = 20;
+			}
+			else
+				newHeight = Model.UncollapsedHeight.Value;
+			
+			History.Insert(Command.Set(Model.Height, newHeight));
+		}
+		
+		void RemoveTrack()
+		{
+			History.Insert(Command.Remove(Parent.Document.Tracks, Model));
 		}
 		
 		//dispatch events to parent
@@ -323,6 +318,7 @@ namespace Timeliner
 		{
 			Parent.Default_MouseDown(sender, e);
 		}
+		#endregion
 		
 		public float YPosToValue(float y)
 		{

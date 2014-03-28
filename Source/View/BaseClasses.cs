@@ -67,25 +67,16 @@ namespace Timeliner
         /// Put graphical elements into a given group and rebuild the svg tree.
         /// </summary>
         /// <param name="parentGroup"></param>
-        public void BuildSVGTo(SvgGroup parentGroup)
+        public void AddToSceneGraphAt(SvgGroup parentGroup)
         {
             FGroup.Children.Clear();
             parentGroup.Children.Add(FGroup);
             BuildSVG();
         }
         
-        /// <summary>
-        /// Put svg elements into a given group without rebuilding the svg tree.
-        /// This is used for the add context.
-        /// </summary>
-        /// <param name="parentGroup"></param>
-        public virtual void DeepCopySVGTo(SvgGroup parentGroup)
-        {
-        	parentGroup.Children.Add(FGroup.DeepCopy());
-        }
-
         public virtual void Dispose()
         {
+        	UnbuildSVG();
         }
 
         protected bool CheckMouseHandler(SVGArg arg)
@@ -127,6 +118,13 @@ namespace Timeliner
 			return null;
 		}
         
+		/// <summary>
+		/// Manipulates the SceneGraph from View properties that can not directly manipulate the ScenGraph
+		/// </summary>
+		public virtual void UpdateScene()
+		{
+			
+		}
     }
 
     /// <summary>
