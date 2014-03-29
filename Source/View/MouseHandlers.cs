@@ -96,7 +96,7 @@ namespace Timeliner
 					h += delta.Y;
 					
 					//scale this track
-					var cmd = Command.Set(Command.Set(Instance.Model.Height, Instance.Model.Height.Value + delta.Y));
+					var cmd = Command.Set(Instance.Model.Height, Instance.Model.Height.Value + delta.Y);
 					
 					//execute changes immediately
 					cmd.Execute();
