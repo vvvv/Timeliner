@@ -69,7 +69,7 @@ path
 
 .collapsed
 {
-	stroke-opacity: 0.3;
+	stroke-opacity: 0.2;
 }
 
 #_Overlays_Selection
@@ -155,4 +155,10 @@ path
 	font-family: "Lucida Console";
 	fill: #ffffff;
 	pointer-events: none;
+}
+
+.labelmenufont
+{
+	font-family: "Lucida Console";
+	fill: #ffffff;
 }

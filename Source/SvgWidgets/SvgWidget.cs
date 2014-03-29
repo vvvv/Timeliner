@@ -10,24 +10,20 @@ namespace Timeliner
 		
 		public float Width
 		{
-			set 
-			{ 
-				Background.Width = value;
-			}
+			get {return Background.Width;}
+			set {Background.Width = value;}
 		}
 		
 		public float Height
 		{
-			set 
-			{ 
-				Background.Height = value;
-			}
+			get {return Background.Height;}
+			set {Background.Height = value;}
 		}
 		
 		public SvgWidget()
 		{
 			Background = new SvgRectangle();
-			Background.CustomAttributes["class"] = "wback";
+			Background.CustomAttributes["class"] = "menu";
 			
 			this.Children.Add(Background);
             this.Visible = true;

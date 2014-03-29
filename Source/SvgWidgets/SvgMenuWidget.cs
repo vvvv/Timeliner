@@ -11,7 +11,6 @@ namespace Timeliner
 	/// </summary>
 	public class SvgMenuWidget: SvgWidget
 	{
-		private const float CLineHeight = 20;
 		private float FWidth;
         private float FHeight = 0;
 		private List<SvgGroup> MenuItems;
@@ -31,11 +30,10 @@ namespace Timeliner
 			if (item is SvgButtonWidget)
 				(item as SvgButtonWidget).OnButtonPressed += item_OnButtonPressed;
 			item.Transforms = new SvgTransformCollection();
-			item.Transforms.Add(new SvgTranslate(0, MenuItems.Count * CLineHeight));
+			item.Transforms.Add(new SvgTranslate(0, FHeight));
 			item.Width = FWidth;
-			item.Height = CLineHeight;
             
-            FHeight += CLineHeight;
+            FHeight += item.Height;
 			                    
 			MenuItems.Add(item);
 			this.Children.Add(item);

@@ -166,15 +166,17 @@ namespace Timeliner
 			//track menu
 			TrackMenu = new SvgMenuWidget(110);
             
-            TrackLabelEdit = new SvgStringWidget(Model.Label.Value);
+            TrackLabelEdit = new SvgStringWidget(0, 30, Model.Label.Value);
             TrackLabelEdit.OnValueChanged += RenameTrack;
             TrackMenu.AddItem(TrackLabelEdit);
 			
-			CollapseButton = new SvgButtonWidget("Collapse");
+			CollapseButton = new SvgButtonWidget(0, 20, "Collapse");
 			CollapseButton.OnButtonPressed += CollapseTrack;
 			TrackMenu.AddItem(CollapseButton);
+            
+            FillMenu();
 			
-			RemoveButton = new SvgButtonWidget("Remove");
+			RemoveButton = new SvgButtonWidget(0, 20, "Remove");
 		    RemoveButton.OnButtonPressed += RemoveTrack;
 			TrackMenu.AddItem(RemoveButton);
 		}
@@ -369,6 +371,9 @@ namespace Timeliner
 			return new RectangleF(x1, y1 - height, width, height);
 		}
 		
+        protected virtual void FillMenu()
+        {}
+        
 		public virtual void Evaluate()
 		{}
 	}

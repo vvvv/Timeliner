@@ -22,7 +22,6 @@ namespace Timeliner
             Background.MouseOver += Background_MouseOver;
 			Background.MouseOut += Background_MouseOut;
 			Background.MouseDown += Background_MouseDown;
-            Background.CustomAttributes["class"] = "menu";
 			
 			FLabel = new SvgText(label);
 			FLabel.FontSize = 12;

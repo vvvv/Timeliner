@@ -33,7 +33,6 @@ namespace Timeliner
             //over/out need to be registered for scrolling to work
 			Background.MouseOver += Background_MouseOver;
 			Background.MouseOut += Background_MouseOut;
-			Background.CustomAttributes["class"] = "menu";
 			
 			Label.FontSize = 12;
 			Label.X = 2;
@@ -45,6 +44,12 @@ namespace Timeliner
             UpdateLabel();
             
             this.Children.Add(Label);
+		}
+		
+		public SvgValueWidget(float width, float height, string label, float value): this(label, value)
+		{
+			Width = width;
+			Height = height;
 		}
 
 		void UpdateLabel()

@@ -89,14 +89,6 @@ namespace Timeliner
 			CurveGroup.ID = "Curves";
 			KeyframeGroup.ID = "Keyframes";
 			
-			MaxValue = new SvgValueWidget("Maximum", 1);
-			MaxValue.OnValueChanged += ChangeMaximum;
-			TrackMenu.AddItem(MaxValue);
-			
-			MinValue = new SvgValueWidget("Minimum", -1);
-			MinValue.OnValueChanged += ChangeMinimum;
-			TrackMenu.AddItem(MinValue);
-			
 			CurrentValue.FontSize = 20;
             CurrentValue.X = 5;
             CurrentValue.CustomAttributes["class"] = "trackfont";
@@ -220,7 +212,18 @@ namespace Timeliner
 			}
 		}
 		#endregion
-		
+        
+        protected override void FillMenu()
+        {
+            MaxValue = new SvgValueWidget(0, 20, "Maximum", 1);
+			MaxValue.OnValueChanged += ChangeMaximum;
+			TrackMenu.AddItem(MaxValue);
+			
+			MinValue = new SvgValueWidget(0, 20, "Minimum", -1);
+			MinValue.OnValueChanged += ChangeMinimum;
+			TrackMenu.AddItem(MinValue);
+        }
+        
 		public override void Evaluate()
 		{
 			CurrentValue.Text = Model.CurrentValue.ToString("f4");
