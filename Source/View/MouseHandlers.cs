@@ -88,8 +88,6 @@ namespace Timeliner
 		
 		public override void MouseDrag(object sender, PointF arg, PointF delta, int dragCall)
 		{
-			var cmd = new CompoundCommand();
-			
 			if(delta.Y != 0)
 			{
 				var h = Instance.Model.Height.Value;
@@ -98,7 +96,7 @@ namespace Timeliner
 					h += delta.Y;
 					
 					//scale this track
-					cmd.Append(Command.Set(Instance.Model.Height, Instance.Model.Height.Value + delta.Y));
+					var cmd = Command.Set(Command.Set(Instance.Model.Height, Instance.Model.Height.Value + delta.Y));
 					
 					//execute changes immediately
 					cmd.Execute();

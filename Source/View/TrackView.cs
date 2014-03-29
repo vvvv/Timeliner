@@ -187,8 +187,15 @@ namespace Timeliner
 			Background.MouseMove -= Background_MouseMove;
 			Background.MouseUp -= Background_MouseUp;
 			
+			SizeBar.MouseDown -= Background_MouseDown;
+			SizeBar.MouseMove -= Background_MouseMove;
+			SizeBar.MouseUp -= Background_MouseUp;
+			
 			Label.MouseDown -= Background_MouseDown;
 			Label.MouseUp -= Background_MouseUp;
+			
+			CollapseButton.OnButtonPressed -= CollapseTrack;
+			TrackLabelEdit.OnValueChanged -= RenameTrack;
 			
 			base.Dispose();
 		}
