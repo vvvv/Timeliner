@@ -22,7 +22,7 @@ namespace Timeliner
 		public override void MouseClick(object sender, MouseArg arg)
 		{
 			if (arg.Button == 2)
-                Instance.MainMenu.Show(new PointF(arg.x, arg.y - Instance.FTrackGroup.Transforms[0].Matrix.Elements[5]));
+				Instance.MainMenu.Show(new PointF(arg.x, arg.y - Instance.FTrackGroup.Transforms[0].Matrix.Elements[5]));
 		}
 	}
 	
@@ -213,7 +213,7 @@ namespace Timeliner
 		public override void MouseClick(object sender, MouseArg arg)
 		{
 			if (arg.Button == 2)
-                Instance.TrackMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
+				Instance.TrackMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
 		}
 	}
 	
@@ -230,7 +230,8 @@ namespace Timeliner
 		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
 		{
 			//deselect keyframes
-			foreach (var kf in (Instance as ValueTrackView).Keyframes)
+			foreach (var track in Instance.Parent.Tracks.OfType<ValueTrackView>())
+				foreach (var kf in track.Keyframes)
 			{
 				if (kf.Model.Selected.Value)
 				{
@@ -253,7 +254,7 @@ namespace Timeliner
 				foreach (var kf in track.Keyframes)
 				{
 					var wasSelected = kf.Model.Selected.Value;
-                    var isSelected = kf.IsSelectedBy(trackRect); 
+					var isSelected = kf.IsSelectedBy(trackRect);
 					if (isSelected != wasSelected)
 					{
 						cmd.Append(Command.Set(kf.Model.Selected, isSelected));
@@ -360,8 +361,8 @@ namespace Timeliner
 				FActualValues[i] += dy;
 
 				cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + dx));
-                if (!FAffectedTracks.Any(x => x.Collapsed))
-				    cmd.Append(Command.Set(kf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
+				if (!FAffectedTracks.Any(x => x.Collapsed))
+					cmd.Append(Command.Set(kf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
 				
 				i++;
 			}
