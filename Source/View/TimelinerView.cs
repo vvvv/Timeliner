@@ -54,7 +54,9 @@ namespace Timeliner
 		
 		public SvgGroup FOverlaysGroup = new SvgGroup();
 		public SvgRectangle Selection = new SvgRectangle();
-        public SvgLine TimeBar = new SvgLine();
+        public SvgRectangle TimeBar = new SvgRectangle();
+        public SvgLine MouseTimeLine = new SvgLine();
+        public SvgText MouseTimeLabel = new SvgText();
         public SvgMenuWidget MainMenu;
         
         public SvgMenuWidget NodeBrowser;
@@ -86,27 +88,33 @@ namespace Timeliner
             Background.MouseUp += Default_MouseUp;
             
             SizeBar.Width = Background.Width;
-			SizeBar.Height = 5;
+			SizeBar.Height = 10;
 			SizeBar.ID = "SizeBar";
-            SizeBar.CustomAttributes["class"] = "sizebar";
 			SizeBar.Y = Ruler.Height;
+            SizeBar.MouseDown += Default_MouseDown;
+            SizeBar.MouseMove += Default_MouseMove;
+            SizeBar.MouseUp += Default_MouseUp;
             
             Selection.ID = "Selection";
             Selection.CustomAttributes["pointer-events"] = "none";
             Selection.CustomAttributes["class"] = "selection";
             
             TimeBar.ID = "Timebar";
-            TimeBar.StartX = 0;
-            TimeBar.StartY = 0;
-            TimeBar.EndX = 0;
-            TimeBar.EndY = new SvgUnit(SvgUnitType.Percentage, 100);
-//            TimeBar.CustomAttributes["style"] = "cursor:col-resize";
-            TimeBar.Transforms = new SvgTransformCollection();
-            TimeBar.Transforms.Add(new SvgTranslate(0, 0));
-            
+            TimeBar.X = -1;
+            TimeBar.Width = 2;
+            TimeBar.Height = Background.Height;
             TimeBar.MouseDown += Default_MouseDown;
             TimeBar.MouseMove += Default_MouseMove;
             TimeBar.MouseUp += Default_MouseUp;
+            
+            MouseTimeLine.ID = "MouseTime";
+            MouseTimeLine.StartX = 0;
+            MouseTimeLine.StartY = 0;
+            MouseTimeLine.EndX = 0;
+            MouseTimeLine.EndY = Background.Height;
+            
+            MouseTimeLabel.ID = "MouseTimeLabel";
+            MouseTimeLabel.FontSize = 14;
             
             PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller, 2);
             StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller, 1);
@@ -160,6 +168,14 @@ namespace Timeliner
 		public override void Dispose()
 		{
 			History.CommandInserted -= History_CommandInserted;
+            
+            SizeBar.MouseDown -= Default_MouseDown;
+            SizeBar.MouseMove -= Default_MouseMove;
+            SizeBar.MouseUp -= Default_MouseUp;
+            
+            Background.MouseDown += Default_MouseDown;
+            Background.MouseMove += Default_MouseMove;
+            Background.MouseUp += Default_MouseUp;
 			
 			base.Dispose();
 		}
@@ -190,7 +206,7 @@ namespace Timeliner
             
             SvgRoot.Children.Add(SizeBar);
             
-            var menuOffset = new SvgTranslate(0, Ruler.Height+5);
+            var menuOffset = new SvgTranslate(0, Ruler.Height+SizeBar.Height);
             FTrackGroup.Transforms.Add(menuOffset);
             FTrackGroup.Children.Add(Background);
 			
@@ -199,6 +215,8 @@ namespace Timeliner
 			FOverlaysGroup.Transforms.Add(menuOffset);
 			FOverlaysGroup.Children.Add(Selection);
 			FOverlaysGroup.Children.Add(TimeBar);
+            FOverlaysGroup.Children.Add(MouseTimeLine);
+            FOverlaysGroup.Children.Add(MouseTimeLabel);
 			FOverlaysGroup.Children.Add(MainMenu);
 			SvgRoot.Children.Add(FOverlaysGroup);			
 			
@@ -325,6 +343,17 @@ namespace Timeliner
 				HideMenus();
 				return new MainMenuHandler(this, e.SessionID);
 			}
+		}
+        
+        public override void Default_MouseMove(object sender, MouseArg e)
+		{
+            base.Default_MouseMove(sender, e);
+            
+            MouseTimeLine.StartX = e.x;
+            MouseTimeLine.EndX = e.x;
+            
+            MouseTimeLabel.X = e.x - 110;
+            MouseTimeLabel.Text = Timer.TimeToString(Ruler.XPosToTime(e.x));
 		}
 		
 		private void HideMenus()

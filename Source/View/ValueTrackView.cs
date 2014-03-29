@@ -19,6 +19,7 @@ namespace Timeliner
 		public EditableList<CurveView> Curves = new EditableList<CurveView>();
 		
 		public SvgCircle KeyframeDefinition = new SvgCircle();
+        public SvgLine CollapsedKeyframeDefinition = new SvgLine();
 		public SvgGroup CurveGroup = new SvgGroup();
 		public SvgGroup KeyframeGroup = new SvgGroup();
 		
@@ -73,10 +74,17 @@ namespace Timeliner
 			KeyframeDefinition.CenterX = 0;
 			KeyframeDefinition.CenterY = 0;
 			KeyframeDefinition.Radius = 3;
-			KeyframeDefinition.ID = Model.GetID() + "_Keyframe";
+			KeyframeDefinition.ID = Model.GetID() + "_KF";
 			KeyframeDefinition.Transforms = new SvgTransformCollection();
 			KeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
-            KeyframeDefinition.CustomAttributes["class"] = "front";
+            
+            CollapsedKeyframeDefinition.ID = Model.GetID() + "_CKF";
+            CollapsedKeyframeDefinition.StartX = 0;
+            CollapsedKeyframeDefinition.StartY = -25f;
+            CollapsedKeyframeDefinition.EndX = 0;
+            CollapsedKeyframeDefinition.EndY = 25f;
+            CollapsedKeyframeDefinition.Transforms = new SvgTransformCollection();
+			CollapsedKeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
 			
 			CurveGroup.ID = "Curves";
 			KeyframeGroup.ID = "Keyframes";
@@ -114,6 +122,7 @@ namespace Timeliner
 			KeyframeGroup.Children.Clear();
 			
 			Definitions.Children.Add(KeyframeDefinition);
+            Definitions.Children.Add(CollapsedKeyframeDefinition);
 			PanZoomGroup.Children.Add(CurveGroup);
 			PanZoomGroup.Children.Add(KeyframeGroup);
 			
@@ -183,6 +192,7 @@ namespace Timeliner
 			m.Invert();
 			
 			KeyframeDefinition.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
+            CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
 		#endregion
 		

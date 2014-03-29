@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 
 using Svg;
@@ -11,35 +12,53 @@ namespace Timeliner
 	public class ValueKeyframeView : TLViewBaseTyped<TLKeyframe, ValueTrackView>, IDisposable
 	{
 		public SvgUse Background = new SvgUse();
+        public SvgUse CollapsedView = new SvgUse();
 		private SvgText Label = new SvgText();
 		
 		public ValueKeyframeView(TLKeyframe kf, ValueTrackView trackview)
 			: base(kf, trackview)
 		{
 			//configure svg
-			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_Keyframe", UriKind.Relative);
+			Background.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_KF", UriKind.Relative);
 			Background.ID = "bg";
 			Background.CustomAttributes["class"] = "kf";
-			
 			Background.MouseDown += Background_MouseDown;
 			Background.MouseUp += Background_MouseUp;
 			Background.MouseMove += Background_MouseMove;
 			
-			Label.FontSize = 10;
+			Label.FontSize = 12;
 			Label.ID = "label";
-			Label.CustomAttributes["class"] = "time";
+			Label.CustomAttributes["class"] = "trackfont";
+            Label.CustomAttributes["pointer-events"] = "none";
 			Label.Visible = false;
 			Label.Transforms = new SvgTransformCollection();
 			Label.Transforms.Add(new SvgScale(1, 1));
+            
+            CollapsedView.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_CKF", UriKind.Relative);
+            CollapsedView.ID = "fg";
+            CollapsedView.CustomAttributes["class"] = "ckf";
+            CollapsedView.MouseDown += Background_MouseDown;
+			CollapsedView.MouseUp += Background_MouseUp;
+			CollapsedView.MouseMove += Background_MouseMove;
 		}
+        
+        public override void Dispose()
+        {
+            Background.MouseDown -= Background_MouseDown;
+			Background.MouseUp -= Background_MouseUp;
+			Background.MouseMove -= Background_MouseMove;
+            CollapsedView.MouseDown -= Background_MouseDown;
+			CollapsedView.MouseUp -= Background_MouseUp;
+			CollapsedView.MouseMove -= Background_MouseMove;
+            
+            base.Dispose();
+        }
 		
 		#region build scenegraph
 		protected override void BuildSVG()
 		{
-			Background.X = Model.Time.Value;
-			Background.Y = -Model.Value.Value;
-			
-			MainGroup.Children.Add(Background);
+    		MainGroup.Children.Add(Background);
+            MainGroup.Children.Add(CollapsedView);
 			MainGroup.Children.Add(Label);
 		}
 		
@@ -56,7 +75,9 @@ namespace Timeliner
 			
 			Background.X = Model.Time.Value;
 			Background.Y = -Model.Value.Value;
-			
+            CollapsedView.X = Background.X;
+            CollapsedView.X = Background.X;
+            
 			var isSelected = Model.Selected.Value;
 			Label.Visible = isSelected;			
 			if (isSelected)
@@ -68,7 +89,12 @@ namespace Timeliner
 				Label.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
 				Label.Text = string.Format("{0:0.0000}", Model.Value.Value);
 			}
+            
 			Background.CustomAttributes["class"] = isSelected ? "kf selected" : "kf";
+            CollapsedView.CustomAttributes["class"] = isSelected ? "ckf selected" : "ckf";
+            
+            Background.Visible = !Parent.Collapsed;
+            CollapsedView.Visible = Parent.Collapsed;
 		}
 		#endregion
 
@@ -89,5 +115,17 @@ namespace Timeliner
 			Parent.MouseDown(this, e);
 		}
 		#endregion
+        
+        public Boolean IsSelectedBy(RectangleF rect)
+        {
+            if (Parent.Collapsed)
+            {
+                return rect.IntersectsWith(new RectangleF(Model.Time.Value, 0, 0.1f, float.MaxValue));
+            }
+            else
+            {
+                return rect.Contains(Model.Time.Value, Model.Value.Value);
+            }
+        }
 	}
 }

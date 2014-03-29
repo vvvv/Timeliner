@@ -10,7 +10,7 @@ namespace Timeliner
 	/// </summary>
 	public class SvgValueWidget: SvgWidget
 	{
-		private SvgText Label;
+		private SvgText Label = new SvgText();
 		public Action OnValueChanged;	
 		private bool FMouseDown = false;
 		private PointF FMouseDownPos;
@@ -35,14 +35,10 @@ namespace Timeliner
 			Background.MouseOut += Background_MouseOut;
 			Background.CustomAttributes["class"] = "menu";
 			
-			Label = new SvgText();
 			Label.FontSize = 12;
 			Label.X = 2;
 			Label.Y = Label.FontSize + 2;
-            Label.FontFamily = "Lucida Console";
             Label.CustomAttributes["class"] = "menufont";
-            //Label.ID ="/label";
-            Label.CustomAttributes["pointer-events"] = "none";
             
             Value = value;
             

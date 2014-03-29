@@ -85,7 +85,7 @@ namespace Timeliner
         }
         
         //default event dispatching
-		public void Default_MouseMove(object sender, MouseArg e)
+		public virtual void Default_MouseMove(object sender, MouseArg e)
 		{
 			if(CheckMouseHandler(e))
 			{

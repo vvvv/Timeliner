@@ -94,6 +94,7 @@
     <Compile Include="SvgWidgets\SvgButtonWidget.cs" />
     <Compile Include="SvgWidgets\SvgDocumentWidget.cs" />
     <Compile Include="SvgWidgets\SvgMenuWidget.cs" />
+    <Compile Include="SvgWidgets\SvgStringWidget.cs" />
     <Compile Include="SvgWidgets\SvgTextList.cs" />
     <Compile Include="SvgWidgets\SvgValueWidget.cs" />
     <Compile Include="SvgWidgets\SvgWidget.cs" />

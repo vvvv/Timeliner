@@ -37,6 +37,11 @@ namespace Timeliner
 		//parent.OverlayGroup holds:				
 		public SvgRectangle SizeBarDragRect = new SvgRectangle();
 		public SvgMenuWidget TrackMenu;
+        
+        //trackmenu
+        protected SvgStringWidget TrackLabelEdit;
+        protected SvgButtonWidget CollapseButton;
+        protected SvgButtonWidget RemoveButton;
 
 		public float Top
 		{
@@ -88,6 +93,11 @@ namespace Timeliner
         		PanZoomGroup.Transforms[0] = value;
         	}
         }
+        
+        public bool Collapsed
+        {
+            get {return Model.Height.Value == Model.CollapsedHeight;}
+        }
 		
 		public TrackView(TLTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv)
@@ -106,7 +116,6 @@ namespace Timeliner
 			Label.Y = Label.FontSize;
 			Label.Text = Model.Label.Value;
 			Label.ID = "label";
-			Label.Change += Label_Change;
 			Label.MouseDown += Background_MouseDown;
 			Label.MouseUp += Background_MouseUp;
             Label.CustomAttributes["class"] = "trackfont";
@@ -118,7 +127,7 @@ namespace Timeliner
 			Background.Width = width;
 			Background.Height = 1; // this is the value range, not the actual track size
 			Background.ID ="bg";
-            Background.CustomAttributes["class"] = "back";
+            Background.CustomAttributes["class"] = "track";
 			
 			ClipRect.Width = width;
 			ClipRect.Height = Background.Height;
@@ -156,14 +165,18 @@ namespace Timeliner
 			
 			//track menu
 			TrackMenu = new SvgMenuWidget(110);
+            
+            TrackLabelEdit = new SvgStringWidget(Model.Label.Value);
+            TrackLabelEdit.OnValueChanged += RenameTrack;
+            TrackMenu.AddItem(TrackLabelEdit);
 			
-			var collapseTrack = new SvgButtonWidget("Collapse");
-			collapseTrack.OnButtonPressed += CollapseTrack;
-			TrackMenu.AddItem(collapseTrack);
+			CollapseButton = new SvgButtonWidget("Collapse");
+			CollapseButton.OnButtonPressed += CollapseTrack;
+			TrackMenu.AddItem(CollapseButton);
 			
-			var removeTrack = new SvgButtonWidget("Remove");
-			removeTrack.OnButtonPressed += RemoveTrack;
-			TrackMenu.AddItem(removeTrack);
+			RemoveButton = new SvgButtonWidget("Remove");
+		    RemoveButton.OnButtonPressed += RemoveTrack;
+			TrackMenu.AddItem(RemoveButton);
 		}
 		
 		public override void Dispose()
@@ -174,7 +187,6 @@ namespace Timeliner
 			
 			Label.MouseDown -= Background_MouseDown;
 			Label.MouseUp -= Background_MouseUp;
-			Label.Change -= Label_Change;
 			
 			base.Dispose();
 		}
@@ -229,6 +241,7 @@ namespace Timeliner
 			}
 			
 			Label.Text = Model.Label.Value;
+            CollapseButton.Label = Collapsed ? "Uncollapse" : "Collapse";
 		}
 		
 		private void UpdateTrackHeightAndPos()
@@ -256,18 +269,18 @@ namespace Timeliner
 		#endregion
 		
 		#region scenegraph eventhandler
-		void Label_Change(object sender, StringArg e)
+        void RenameTrack(string label)
 		{
-			History.Insert(Command.Set(Model.Label, e.s));
+			History.Insert(Command.Set(Model.Label, label));
 		}
 		
 		void CollapseTrack()
 		{
 			var newHeight = 0f;
-			if (Model.Height.Value > 30)
+			if (Model.Height.Value > 50)
 			{
 				Model.UncollapsedHeight.Value = Model.Height.Value; 
-				newHeight = 30;
+				newHeight = 50;
 			}
 			else
 				newHeight = Model.UncollapsedHeight.Value;

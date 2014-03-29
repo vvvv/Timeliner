@@ -1,62 +1,114 @@
-.posh{
-	background: #646464;
-}
-
-.back
+.posh
 {
-	fill: #646464;
+	background: #646464;
 }
 
 .kf 
 {
-	fill: #eeeeee;
+	fill: #ffffff;
 	stroke-width: 7;
 	stroke: #00000000;
 }
 
 .kf:hover 
 {
-	fill: #aaaaaa;
+	fill: #959595;
 	stroke-width: 7;
-	stroke: #aaaaaa;
+	stroke: #959595;
+}
+
+.ckf 
+{
+	stroke-width: 5;
+	stroke: #ffffff;
+}
+
+.ckf :hover
+{
+	stroke-width: 7;
+	stroke: #959595;
 }
 
 .selected 
 {	
-	fill: #aaaaaa;
+	fill: #959595;
+	stroke: #959595;
+	stroke-width: 3;
 }
 
-.front
+.ckf.selected 
+{	
+	fill: #959595;
+	stroke: #959595;
+	stroke-width: 10;
+}
+
+.ruler
 {
-	fill: #FFFFFF;
-	fill-opacity: 1;
+	fill: #646464;
+}
+
+.button
+{
+	fill: #ffffff;
+}
+
+.track
+{
+	fill: #646464;
 }
 
 path
 {
-	stroke: #FFFFFF;
+	stroke: #ffffff;
 	stroke-width: 2;
 	stroke-opacity: 1;
 	vector-effect: non-scaling-stroke;
 	pointer-events: none;
 }
 
-.middle
+.collapsed
 {
-	fill: #808080;
-	fill-opacity: 1;
+	stroke-opacity: 0.3;
 }
 
 #_Overlays_Selection
 {
-	fill: #FFFFFF;
+	fill: #ffffff;
 	fill-opacity: 0.1;
 }
 
 #_Overlays_Timebar
 {
-	stroke: #000000;
+	fill: #000000;
+	stroke-opacity: 0;
+	stroke-width: 4;
 	cursor: col-resize;
+}
+
+#_Overlays_Timebar:hover
+{
+	fill: #000000;
+	stroke: #000000;
+	stroke-opacity: 0.5;
+	stroke-width: 4;
+	cursor: col-resize;
+}
+
+#_Overlays_MouseTime
+{
+	stroke: #ffffff;
+	stroke-opacity: 0.3;
+	stroke-width: 1;
+	pointer-events: none;
+	shape-rendering : crispEdges;
+}
+
+#_Overlays_MouseTimeLabel
+{
+	fill: #ffffff;
+	font-family: "Lucida Console";
+	pointer-events: none;
 }
 
 #_Ruler_1_PanZoom_LoopRegion
@@ -64,10 +116,15 @@ path
 	fill: #959595;
 }
 
+#_SizeBar
+{
+	fill: #404040;
+}
+
 .sizebar
 {
 	cursor:row-resize;
-	fill: #cccccc;
+	fill: #404040;
 }
 
 .trackfont

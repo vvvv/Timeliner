@@ -28,7 +28,6 @@ namespace Timeliner
         {
             Path.ID = "path";
             Path.StrokeWidth = 1.0f;
-            Path.CustomAttributes["class"] = "path";
             
             if (Model.Start != null)
             {
@@ -81,6 +80,8 @@ namespace Timeliner
 		
         public override void UpdateScene()
         {
+            Path.CustomAttributes["class"] = Parent.Collapsed ? "collapsed" : "";
+            
             UpdatePathData();
             base.UpdateScene();
         }

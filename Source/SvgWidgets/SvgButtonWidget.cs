@@ -8,7 +8,13 @@ namespace Timeliner
 	/// </summary>
 	public class SvgButtonWidget: SvgWidget
 	{
-		private SvgText Label;
+		private SvgText FLabel;
+        public string Label
+        {
+            get { return FLabel.Text;}
+            set { FLabel.Text = value;}
+        }
+        
 		public Action OnButtonPressed;		
 		
 		public SvgButtonWidget(string label): base()
@@ -18,16 +24,13 @@ namespace Timeliner
 			Background.MouseDown += Background_MouseDown;
             Background.CustomAttributes["class"] = "menu";
 			
-			Label = new SvgText(label);
-			Label.FontSize = 12;
-			Label.X = 2;
-			Label.Y = Label.FontSize + 2;
-            Label.FontFamily = "Lucida Console";
-            //Label.ID ="/label";
-            Label.CustomAttributes["pointer-events"] = "none";
-            Label.CustomAttributes["class"] = "menufont";
+			FLabel = new SvgText(label);
+			FLabel.FontSize = 12;
+			FLabel.X = 2;
+			FLabel.Y = FLabel.FontSize + 2;
+            FLabel.CustomAttributes["class"] = "menufont";
             
-            this.Children.Add(Label);
+            this.Children.Add(FLabel);
 		}
 		
 		public SvgButtonWidget(float width, float height, string label): this(label)

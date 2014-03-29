@@ -66,8 +66,13 @@ namespace Timeliner
 		
 		public override string ToString()
 		{
-			var showMinus = false;
-			var time = Math.Abs(FCurrentTime);
+            return TimeToString(FCurrentTime);
+		}
+        
+        public string TimeToString(float time)
+        {
+            var showMinus = false;
+			time = Math.Abs(time);
 			
 			if (FCurrentTime < 0)
 				showMinus = true;
@@ -83,7 +88,7 @@ namespace Timeliner
 				return "-" + dt.ToString("H:mm:ss:fff"); 
 			else //add empty char for - placeholder
 				return "\u00A0" + dt.ToString("H:mm:ss:fff");
-		}
+        }
 		
 		public void Evaluate()
 		{

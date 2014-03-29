@@ -86,7 +86,7 @@ namespace Timeliner
             Background.Width = width;
             Background.Height = 25; 
             Background.ID = "bg";
-            Background.CustomAttributes["class"] = "back";
+            Background.CustomAttributes["class"] = "ruler";
 			
             //register event handlers
             Background.MouseDown += Background_MouseDown;
@@ -95,7 +95,7 @@ namespace Timeliner
 			
             LabelBackground.Width = CLeftOffset;
             LabelBackground.Height = Background.Height;
-            LabelBackground.CustomAttributes["class"] = "back";
+            LabelBackground.CustomAttributes["class"] = "ruler";
 						
             Label.FontSize = 20;
             Label.X = 55;
@@ -334,7 +334,7 @@ namespace Timeliner
         {
             if (Parent.Timer.TimeDelta != 0 || FViewChanged)
             {
-                Parent.TimeBar.Transforms[0] = new SvgTranslate(TimeToXPos(Parent.Timer.Time));
+                Parent.TimeBar.X = TimeToXPos(Parent.Timer.Time);
             }
 			
             if (Parent.Timer.TimeDelta != 0)

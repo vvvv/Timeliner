@@ -255,7 +255,7 @@ namespace Timeliner
 				foreach (var kf in track.Keyframes)
 				{
 					var wasSelected = kf.Model.Selected.Value;
-					var isSelected = trackRect.Contains(kf.Model.Time.Value, kf.Model.Value.Value);
+                    var isSelected = kf.IsSelectedBy(trackRect); 
 					if (isSelected != wasSelected)
 					{
 						cmd.Append(Command.Set(kf.Model.Selected, isSelected));
@@ -362,7 +362,8 @@ namespace Timeliner
 				FActualValues[i] += dy;
 
 				cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + dx));
-				cmd.Append(Command.Set(kf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
+                if (!FAffectedTracks.Any(x => x.Collapsed))
+				    cmd.Append(Command.Set(kf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
 				
 				i++;
 			}

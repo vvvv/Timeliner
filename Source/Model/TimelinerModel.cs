@@ -54,6 +54,11 @@ namespace Timeliner
         	}
         }
         
+        public float CollapsedHeight
+        {
+            get {return 50;}
+        }
+        
         public TLTrack()
         	: this(IDGenerator.NewID)
         {
@@ -64,11 +69,11 @@ namespace Timeliner
         {
             Order = new EditableProperty<int>("Order");
             Height = new EditableProperty<float>("Height");
-            Height.Value = 100;
-            Height.AllowChange = (p, v) => v >= 30;
+            Height.Value = CollapsedHeight;
+            Height.AllowChange = (p, v) => v >= CollapsedHeight;
             
             UncollapsedHeight = new EditableProperty<float>("Uncollapsed Height");
-            UncollapsedHeight.Value = Height.Value;
+            UncollapsedHeight.Value = 150;
             
             Label = new EditableProperty<string>("Label");
             Label.Value = this.GetID();
