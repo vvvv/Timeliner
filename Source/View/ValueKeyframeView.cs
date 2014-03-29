@@ -28,8 +28,7 @@ namespace Timeliner
 			
 			Label.FontSize = 12;
 			Label.ID = "label";
-			Label.CustomAttributes["class"] = "trackfont";
-            Label.CustomAttributes["pointer-events"] = "none";
+			Label.CustomAttributes["class"] = "kffont";
 			Label.Visible = false;
 			Label.Transforms = new SvgTransformCollection();
 			Label.Transforms.Add(new SvgScale(1, 1));

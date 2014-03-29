@@ -80,8 +80,18 @@ namespace Timeliner
 		
         public override void UpdateScene()
         {
-            Path.CustomAttributes["class"] = Parent.Collapsed ? "collapsed" : "";
+        	var cls = Parent.Collapsed ? "collapsed " : "";
+            var selected = false;
+            if (Model.Start == null) 
+            	selected = Model.End.Selected.Value;
+            else if (Model.End == null)
+            	selected = Model.Start.Selected.Value;
+            else 
+            	selected = Model.Start.Selected.Value || Model.End.Selected.Value;
+            cls += selected ? "pathsel" : "";
             
+             Path.CustomAttributes["class"] = cls.Trim();
+             
             UpdatePathData();
             base.UpdateScene();
         }

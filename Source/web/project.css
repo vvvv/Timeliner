@@ -36,6 +36,13 @@
 	stroke-width: 3;
 }
 
+.pathsel
+{	
+	fill: #959595;
+	stroke: #959595;
+	stroke-width: 3;
+}
+
 .ckf.selected 
 {	
 	fill: #959595;
@@ -131,6 +138,13 @@ path
 {
 	font-family: "Lucida Console";
 	fill: #959595;	
+}
+
+.kffont
+{
+	font-family: "Lucida Console";
+	fill: #ffffff;	
+	pointer-events: none;
 }
 
 .time
