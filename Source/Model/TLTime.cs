@@ -81,8 +81,8 @@ namespace Timeliner
 
 			if (showMinus)
 				return "-" + dt.ToString("H:mm:ss:fff"); 
-			else
-				return dt.ToString("H:mm:ss:fff");
+			else //add empty char for - placeholder
+				return "\u00A0" + dt.ToString("H:mm:ss:fff");
 		}
 		
 		public void Evaluate()

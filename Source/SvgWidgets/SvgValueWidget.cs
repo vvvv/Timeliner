@@ -33,14 +33,14 @@ namespace Timeliner
             //over/out need to be registered for scrolling to work
 			Background.MouseOver += Background_MouseOver;
 			Background.MouseOut += Background_MouseOut;
-			//Background.CustomAttributes["capturemouse"] = "true";
+			Background.CustomAttributes["class"] = "menu";
 			
 			Label = new SvgText();
 			Label.FontSize = 12;
 			Label.X = 2;
 			Label.Y = Label.FontSize + 2;
             Label.FontFamily = "Lucida Console";
-            Label.CustomAttributes["class"] = "front";
+            Label.CustomAttributes["class"] = "menufont";
             //Label.ID ="/label";
             Label.CustomAttributes["pointer-events"] = "none";
             

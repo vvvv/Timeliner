@@ -98,12 +98,12 @@ namespace Timeliner
             LabelBackground.CustomAttributes["class"] = "back";
 						
             Label.FontSize = 20;
-            Label.FontFamily = "Lucida Console";
             Label.X = 55;
             Label.Y = Label.FontSize;
             Label.CustomAttributes["class"] = "time";
             Label.ID = Model.GetID() + "_label";
             Label.Text = "00:00:00:000";
+            Label.CustomAttributes["class"] = "time";
 			
             ClipRect.Width = width;
             ClipRect.Height = Background.Height;
@@ -128,15 +128,11 @@ namespace Timeliner
             {
                 var num = new SvgText(i.ToString());
                 num.FontSize = 20;
-                num.FontFamily = "Lucida Console";
                 num.Y = num.FontSize;
-                num.CustomAttributes["class"] = "time";
-                num.CustomAttributes["pointer-events"] = "none";
+                num.CustomAttributes["class"] = "time hair";
                 num.Transforms = new SvgTransformCollection();
                 num.Transforms.Add(new SvgTranslate(i));
                 num.Transforms.Add(new SvgScale(1/Timer.PPS, 1));
-				
-                num.CustomAttributes["class"] = "hair";
                 NumberGroup.Children.Add(num);
             }
 			

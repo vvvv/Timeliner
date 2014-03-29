@@ -50,6 +50,7 @@ namespace Timeliner
         
 		public SvgGroup FTrackGroup = new SvgGroup();
 		private SvgRectangle Background = new SvgRectangle();
+        private SvgRectangle SizeBar = new SvgRectangle();
 		
 		public SvgGroup FOverlaysGroup = new SvgGroup();
 		public SvgRectangle Selection = new SvgRectangle();
@@ -83,6 +84,12 @@ namespace Timeliner
             Background.MouseDown += Default_MouseDown;
             Background.MouseMove += Default_MouseMove;
             Background.MouseUp += Default_MouseUp;
+            
+            SizeBar.Width = Background.Width;
+			SizeBar.Height = 5;
+			SizeBar.ID = "SizeBar";
+            SizeBar.CustomAttributes["class"] = "sizebar";
+			SizeBar.Y = Ruler.Height;
             
             Selection.ID = "Selection";
             Selection.CustomAttributes["pointer-events"] = "none";
@@ -180,6 +187,8 @@ namespace Timeliner
             Ruler.AddToSceneGraphAt(FRulerGroup);
             SvgRoot.Children.Add(PlayButton);
             SvgRoot.Children.Add(StopButton);
+            
+            SvgRoot.Children.Add(SizeBar);
             
             var menuOffset = new SvgTranslate(0, Ruler.Height+5);
             FTrackGroup.Transforms.Add(menuOffset);

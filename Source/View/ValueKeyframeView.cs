@@ -25,10 +25,9 @@ namespace Timeliner
 			Background.MouseUp += Background_MouseUp;
 			Background.MouseMove += Background_MouseMove;
 			
-			Label.FontSize = 8;
-			Label.FontFamily = "Lucida Sans Unicode";
+			Label.FontSize = 10;
 			Label.ID = "label";
-			Label.CustomAttributes["pointer-events"] = "none";
+			Label.CustomAttributes["class"] = "time";
 			Label.Visible = false;
 			Label.Transforms = new SvgTransformCollection();
 			Label.Transforms.Add(new SvgScale(1, 1));
@@ -63,7 +62,7 @@ namespace Timeliner
 			if (isSelected)
 			{
 				var m = new Matrix();
-				m.Translate(Background.X + 0.5f, Background.Y);
+				m.Translate(Background.X + 0.1f, Background.Y);
 				m.Multiply(Parent.KeyframeDefinition.Transforms[0].Matrix);
 
 				Label.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));

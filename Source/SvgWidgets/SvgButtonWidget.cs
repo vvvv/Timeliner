@@ -16,6 +16,7 @@ namespace Timeliner
             Background.MouseOver += Background_MouseOver;
 			Background.MouseOut += Background_MouseOut;
 			Background.MouseDown += Background_MouseDown;
+            Background.CustomAttributes["class"] = "menu";
 			
 			Label = new SvgText(label);
 			Label.FontSize = 12;
@@ -24,7 +25,7 @@ namespace Timeliner
             Label.FontFamily = "Lucida Console";
             //Label.ID ="/label";
             Label.CustomAttributes["pointer-events"] = "none";
-            Label.CustomAttributes["class"] = "front";
+            Label.CustomAttributes["class"] = "menufont";
             
             this.Children.Add(Label);
 		}

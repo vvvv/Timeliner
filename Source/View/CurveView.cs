@@ -28,9 +28,7 @@ namespace Timeliner
         {
             Path.ID = "path";
             Path.StrokeWidth = 1.0f;
-            Path.CustomAttributes["vector-effect"] = "non-scaling-stroke";
-            Path.CustomAttributes["pointer-events"] = "none";
-            Path.CustomAttributes["class"] = "sfront";
+            Path.CustomAttributes["class"] = "path";
             
             if (Model.Start != null)
             {

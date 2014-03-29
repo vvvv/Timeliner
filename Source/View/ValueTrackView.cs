@@ -91,8 +91,7 @@ namespace Timeliner
 			
 			CurrentValue.FontSize = 20;
             CurrentValue.X = 5;
-			CurrentValue.FontFamily = "Lucida Console";
-            CurrentValue.CustomAttributes["class"] = "middle";
+            CurrentValue.CustomAttributes["class"] = "trackfont";
             CurrentValue.CustomAttributes["pointer-events"] = "none";
 			CurrentValue.Y = 40;
 						

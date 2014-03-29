@@ -102,7 +102,6 @@ namespace Timeliner
 			var width = new SvgUnit(SvgUnitType.Percentage, 100);
 			
 			Label.FontSize = 20;
-			Label.FontFamily = "Lucida Console";
 			Label.X = 5;
 			Label.Y = Label.FontSize;
 			Label.Text = Model.Label.Value;
@@ -110,7 +109,7 @@ namespace Timeliner
 			Label.Change += Label_Change;
 			Label.MouseDown += Background_MouseDown;
 			Label.MouseUp += Background_MouseUp;
-            Label.CustomAttributes["class"] = "middle";
+            Label.CustomAttributes["class"] = "trackfont";
 			
 			SizeBarDragRect.FillOpacity = 0.3f;
 			SizeBarDragRect.Visible = false;
@@ -143,8 +142,7 @@ namespace Timeliner
 			SizeBar.Width = width;
 			SizeBar.Height = 5;
 			SizeBar.ID = "SizeBar";
-			SizeBar.CustomAttributes["style"] = "cursor:row-resize";
-            SizeBar.CustomAttributes["class"] = "front";
+            SizeBar.CustomAttributes["class"] = "sizebar";
 			SizeBar.Y = Background.Height.Value;
 			
 			//register event handlers

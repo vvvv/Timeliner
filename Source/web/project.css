@@ -1,3 +1,12 @@
+.posh{
+	background: #646464;
+}
+
+.back
+{
+	fill: #646464;
+}
+
 .kf 
 {
 	fill: #eeeeee;
@@ -12,37 +21,9 @@
 	stroke: #aaaaaa;
 }
 
-.widgetback, .widgetback ~ .widgetfore
-{
-	stroke-width: 1;
-}
-
-.widgetback:hover, .widgetback:hover ~ .widgetfore
-{
-	stroke-width: 2;
-}
-
 .selected 
 {	
 	fill: #aaaaaa;
-}
-
-.buttonback
-{
-	fill: #000000;
-	fill-opacity:0;
-}
-
-.buttonback:hover, .buttonback:hover ~ .buttonfront
-{
-	fill: #000000;
-	fill-opacity: 0.1;
-}
-
-.back
-{
-	fill: #646464;
-	fill-opacity: 1;
 }
 
 .front
@@ -51,25 +32,16 @@
 	fill-opacity: 1;
 }
 
-.sfront
+path
 {
 	stroke: #FFFFFF;
+	stroke-width: 2;
 	stroke-opacity: 1;
+	vector-effect: non-scaling-stroke;
+	pointer-events: none;
 }
 
 .middle
-{
-	fill: #808080;
-	fill-opacity: 1;
-}
-
-.wback
-{
-	fill: #646464;
-	fill-opacity: 1;
-}
-
-.wback:hover 
 {
 	fill: #808080;
 	fill-opacity: 1;
@@ -89,6 +61,41 @@
 
 #_Ruler_1_PanZoom_LoopRegion
 {
-	fill: #FFFFFF;
-	fill-opacity: 0.2;
+	fill: #959595;
+}
+
+.sizebar
+{
+	cursor:row-resize;
+	fill: #cccccc;
+}
+
+.trackfont
+{
+	font-family: "Lucida Console";
+	fill: #959595;	
+}
+
+.time
+{
+	font-family: "Lucida Console";
+	fill: #000000;	
+	pointer-events: none;
+}
+
+.menu
+{
+	fill: #646464; 
+}
+
+.menu:hover 
+{
+	fill: #959595;
+}
+
+.menufont
+{
+	font-family: "Lucida Console";
+	fill: #ffffff;
+	pointer-events: none;
 }
