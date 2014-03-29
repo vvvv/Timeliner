@@ -66,7 +66,9 @@ namespace Timeliner
 		public TimelineView(TLDocument tl, ICommandHistory history, Timer timer)
 		{
 			History = history;
-			History.CommandInserted += History_CommandInserted;
+			History.CommandInserted += History_Changed;
+			History.Undone += History_Changed;
+			History.Redone += History_Changed;
 			
             Document = tl;
             Timer = timer;
@@ -167,20 +169,22 @@ namespace Timeliner
 		
 		public override void Dispose()
 		{
-			History.CommandInserted -= History_CommandInserted;
+			History.CommandInserted -= History_Changed;
+			History.Undone -= History_Changed;
+			History.Redone -= History_Changed;
             
             SizeBar.MouseDown -= Default_MouseDown;
             SizeBar.MouseMove -= Default_MouseMove;
             SizeBar.MouseUp -= Default_MouseUp;
             
-            Background.MouseDown += Default_MouseDown;
-            Background.MouseMove += Default_MouseMove;
-            Background.MouseUp += Default_MouseUp;
+            Background.MouseDown -= Default_MouseDown;
+            Background.MouseMove -= Default_MouseMove;
+            Background.MouseUp -= Default_MouseUp;
 			
 			base.Dispose();
 		}
 
-		void History_CommandInserted(object sender, EventArgs<Command> e)
+		void History_Changed(object sender, EventArgs<Command> e)
 		{
 			UpdateScene();
 		}

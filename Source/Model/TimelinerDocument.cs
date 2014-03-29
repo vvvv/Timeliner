@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Xml.Linq;
+using System.Collections.Generic;
 using System.IO;
+using System.Xml.Linq;
 
 using VVVV.Core;
-using VVVV.Core.Model;
 using VVVV.Core.Collections;
-using VVVV.Core.Serialization;
 using VVVV.Core.Commands;
+using VVVV.Core.Model;
+using VVVV.Core.Serialization;
 
 namespace Timeliner
 {
@@ -112,16 +113,47 @@ namespace Timeliner
 
     public class TLHistory : CommandHistory
     {
+    	private List<Command> InsertedCommands = new List<Command>();
+    	private int FCommandPointer = 0;
+    	
         public TLHistory(Serializer s)
             : base(s)
         {
         }
-
+        
         public override void Insert(Command command)
         {
+        	if(command is CompoundCommand)
+        	{
+        		var compound = (command as CompoundCommand);
+        		if(compound.CommandCount == 0)
+        			throw new Exception("empty compound command");
+        	}
+        	
             base.Insert(command);
+            InsertedCommands.Add(command);
+            FCommandPointer++;
             //TODO: send JSON to GUI
         }
+        
+		public override void Undo()
+		{
+			if(this.PreviousCommand != null)
+				FCommandPointer--;
+			
+			base.Undo();
+			
+		}
+        
+		public override void Redo()
+		{
+			if(this.NextCommand != null)
+				FCommandPointer++;
+			
+			base.Redo();
+			
+		}
+        
     }
 
     public class TLContext

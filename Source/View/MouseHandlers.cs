@@ -221,7 +221,7 @@ namespace Timeliner
 	
 	internal class SelectionMouseHandler : MouseHandlerBase<ValueTrackView>
 	{
-		private CompoundCommand FMoveCommands;
+		private CompoundCommand FSelectionCommands;
 		
 		public SelectionMouseHandler(ValueTrackView view, string sessionID)
 			
@@ -241,7 +241,7 @@ namespace Timeliner
 			}
 			
 			//start collecting movecommands in drag
-			FMoveCommands = new CompoundCommand();
+			FSelectionCommands = new CompoundCommand();
 			
 			return base.MouseDown(sender, arg);
 		}
@@ -255,7 +255,7 @@ namespace Timeliner
 				foreach (var kf in track.Keyframes)
 				{
 					var wasSelected = kf.Model.Selected.Value;
-                    var isSelected = kf.IsSelectedBy(trackRect); 
+                    var isSelected = kf.IsSelectedBy(trackRect);
 					if (isSelected != wasSelected)
 					{
 						cmd.Append(Command.Set(kf.Model.Selected, isSelected));
@@ -263,10 +263,14 @@ namespace Timeliner
 				}
 			}
 			
-			//execute changes immediately
-			cmd.Execute();
-			//collect changes for history
-			FMoveCommands.Append(cmd);
+			if(cmd.CommandCount > 0)
+			{
+				//execute changes immediately
+				cmd.Execute();
+				
+				//collect changes for history
+				FSelectionCommands.Append(cmd);
+			}
 			
 			rect = new RectangleF(rect.X, rect.Y - Instance.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5], rect.Width, rect.Height);
 			Instance.Parent.SetSelectionRect(rect);
@@ -278,7 +282,7 @@ namespace Timeliner
 			Instance.Parent.SetSelectionRect(new RectangleF(0, 0, 0, 0));
 			
 			//add collected commands to history
-			Instance.History.InsertOnly(FMoveCommands);
+			Instance.History.InsertOnly(FSelectionCommands);
 			
 			return base.MouseUp(sender, arg);
 		}
@@ -392,7 +396,8 @@ namespace Timeliner
 				}
 				
 				//add collected commands to history
-				Instance.History.InsertOnly(FMoveCommands);
+				if(FMoveCommands.CommandCount > 0)
+					Instance.History.InsertOnly(FMoveCommands);
 				
 			}
 			
