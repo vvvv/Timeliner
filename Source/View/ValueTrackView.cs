@@ -137,6 +137,9 @@ namespace Timeliner
 			
 			UpdateMinMaxView();
 			
+			CollapsedKeyframeDefinition.StartY = - Model.CollapsedHeight * PanZoomGroup.Transforms[1].Matrix.Elements[5];
+			CollapsedKeyframeDefinition.EndY = CollapsedKeyframeDefinition.StartY + Model.CollapsedHeight;
+			
 			foreach (var kf in Keyframes)
 				kf.UpdateScene();
 			
@@ -147,7 +150,7 @@ namespace Timeliner
 		private void UpdateMinMaxView()
 		{
 			//zoom to min/max
-			var oldScale = PanZoomGroup.Transforms[1].Matrix.Elements[4];
+			var oldScale = PanZoomGroup.Transforms[1].Matrix.Elements[3];
 			var oldOffset = PanZoomGroup.Transforms[1].Matrix.Elements[5];
 			
 			var scaleY = Model.Maximum.Value - Model.Minimum.Value;
@@ -158,7 +161,7 @@ namespace Timeliner
 			
 			PanZoomGroup.Transforms[1] = new SvgMatrix(new List<float>(m.Elements));
 			
-			var newScale = PanZoomGroup.Transforms[1].Matrix.Elements[4];
+			var newScale = PanZoomGroup.Transforms[1].Matrix.Elements[3];
 			var newOffset = PanZoomGroup.Transforms[1].Matrix.Elements[5];
 			
 			FScalingChanged |= (oldScale != newScale) || (oldOffset != newOffset);
