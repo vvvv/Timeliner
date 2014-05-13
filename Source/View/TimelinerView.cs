@@ -355,7 +355,7 @@ namespace Timeliner
             MouseTimeLine.StartX = e.x;
             MouseTimeLine.EndX = e.x;
             
-            MouseTimeLabel.X = e.x - 110;
+            MouseTimeLabel.X = Math.Max(0, e.x - 110);
             MouseTimeLabel.Text = Timer.TimeToString(Ruler.XPosToTime(e.x));
 		}
 		
