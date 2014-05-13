@@ -76,10 +76,10 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="VVVV.Core">
-      <HintPath>..\packages\VVVV.Core.31.7.1-develop-175\lib\net40\VVVV.Core.dll</HintPath>
+      <HintPath>..\packages\VVVV.Core.32.0.0\lib\net40\VVVV.Core.dll</HintPath>
     </Reference>
     <Reference Include="VVVV.Utils">
-      <HintPath>..\packages\VVVV.Utils.31.7.1-develop-175\lib\net40\VVVV.Utils.dll</HintPath>
+      <HintPath>..\packages\VVVV.Utils.32.0.0\lib\net40\VVVV.Utils.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
