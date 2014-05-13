@@ -106,6 +106,18 @@ namespace Timeliner
 			
 			FLastHostTime = FHostTime;
 		}
+        
+        public void Play(bool run)
+        {
+            IsRunning = run;
+        }
+        
+        public void Stop()
+        {
+            IsRunning = false;
+            Time = 0;
+        }
+        
 	}
 }
 

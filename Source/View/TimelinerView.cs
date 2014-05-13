@@ -266,13 +266,12 @@ namespace Timeliner
 		
 		void PlayButton_Click(object sender, MouseArg e)
 		{
-			Timer.IsRunning = !Timer.IsRunning;
+            Timer.Play(!Timer.IsRunning);
 		}
 
 		void StopButton_Click(object sender, MouseArg e)
 		{
-			Timer.IsRunning = false;
-			Timer.Time = 0;
+            Timer.Stop();
 		}
 		#endregion
 		
