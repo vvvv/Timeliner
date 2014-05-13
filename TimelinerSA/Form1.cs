@@ -112,8 +112,7 @@ namespace TimeLinerSA
             {
                 var timeliner = AddTimeliner(url);
                 var path = Path.Combine(WebServer.TerminalPath, url) + ".xml";
-				var element = XElement.Load(path);
-				timeliner.LoadData(element);
+                timeliner.Load(path);
             }
         }
         
