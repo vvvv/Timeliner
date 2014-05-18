@@ -16,7 +16,7 @@ namespace TimeLinerSA
 {
     public partial class Form1 : Form, IDisposable
     {
-        List<PoshTimeliner> FPoshTimeliners = new List<PoshTimeliner>();
+        List<Timeliner.PoshTimeliner> FPoshTimeliners = new List<PoshTimeliner>();
         WebBrowser FWebBrowser;
         Stopwatch Clock = new Stopwatch();
         OSCTransmitter FOSCTransmitter;
@@ -36,7 +36,7 @@ namespace TimeLinerSA
             webBrowser1.Navigate("about:blank");
             webBrowser1.Navigate(new Uri("http://localhost:4444/timeliner"));
             
-            OpenTransmitter();
+            StartOSCTransmitter();
 			StartOSCReceiver();
 			
             timer1.Interval = 1000 / 30;
@@ -50,14 +50,13 @@ namespace TimeLinerSA
             this.Disposed += (s, e) => 
             {
                 WebServer.Stop();
-                CloseTransmitter();
+                StopOSCTransmitter();
                 
                 foreach (var tl in FPoshTimeliners) 
                 {
                     tl.Dispose();
                 }
             };
-			
         }
         		
         void timer1_Tick(object sender, EventArgs e)
@@ -134,11 +133,11 @@ namespace TimeLinerSA
         #region OSC
         void UpdateTransmitter()
         {
-            CloseTransmitter();
-            OpenTransmitter();
+            StopOSCTransmitter();
+            StartOSCTransmitter();
         }
         
-        void CloseTransmitter()
+        void StopOSCTransmitter()
         {
             if (FOSCTransmitter != null)
             {
@@ -147,7 +146,7 @@ namespace TimeLinerSA
             }
         }
         
-        void OpenTransmitter()
+        void StartOSCTransmitter()
         {
             var ip = TargetIPTextBox.Text.Trim();
             try
@@ -169,17 +168,25 @@ namespace TimeLinerSA
         
 		void StartOSCReceiver()
 		{
-            FOSCReceiver = new OSCReceiver((int) ReceivePortNumberBox.Value);
-			FOSCListener = new Thread(new ThreadStart(ListenToOSC));
+			try
+            {
+            	FOSCReceiver = new OSCReceiver((int) ReceivePortNumberBox.Value);
+            	FOSCListener = new Thread(new ThreadStart(ListenToOSC));
 			
-            FListening = true;
-            FOSCListener.Start();
+	            FListening = true;
+	            FOSCListener.Start();
+            }
+            catch
+            {}
 		}
 		
 		void StopOSCReceiver()
 		{
 			FListening = false;
-            FOSCListener.Abort();
+
+            //should join here but oscreiver blocks
+            //todo: add receivetimeout to oscreceiver
+//            FOSCListener.Join();
 			if (FOSCReceiver != null)
 				FOSCReceiver.Close();
 
@@ -193,7 +200,7 @@ namespace TimeLinerSA
 				try
 				{
 					var packet = FOSCReceiver.Receive();
-					if (packet!=null)
+					if (packet != null)
 					{
 						if (packet.IsBundle())
 						{
@@ -248,7 +255,40 @@ namespace TimeLinerSA
             }
 		}
 		#endregion OSC
-            }
+        
+		#region menu
+		void OSCToolStripMenuItemClick(object sender, System.EventArgs e)
+		{
+			OSCPanel.Visible = !OSCPanel.Visible;
+			oSCToolStripMenuItem.Checked = OSCPanel.Visible;
 		}
+        
+		void ExitToolStripMenuItemClick(object sender, System.EventArgs e)
+		{
+        	Close();
+		}
+        
+		void Form1FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+		{
+			StopOSCReceiver();
+            StopOSCTransmitter();
+		}
+        
+        void LoadToolStripMenuItemClick(object sender, EventArgs e)
+        {
+        	if (FOpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FPoshTimeliners[0].Load(FOpenFileDialog.FileName);
+            }
+        }
+        
+        void SaveToolStripMenuItemClick(object sender, EventArgs e)
+        {
+        	if (FSaveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FPoshTimeliners[0].Save(FSaveFileDialog.FileName);
+            }
+        }
+        #endregion
     }
 }
