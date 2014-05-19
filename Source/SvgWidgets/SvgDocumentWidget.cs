@@ -42,6 +42,21 @@ namespace Timeliner
 				ParseElements(caller, child);
 			}
 		}
+		
+		public void UnregisterEvents(ISvgEventCaller caller)
+		{
+			UnregisterElementEvents(caller, this);
+		}
+		
+		void UnregisterElementEvents(ISvgEventCaller caller, SvgElement element)
+		{
+			element.UnregisterEvents(caller);
+			
+			foreach (var child in element.Children)
+			{
+				UnregisterElementEvents(caller, child);
+			}
+		}
 
 		void child_Click(object sender, MouseArg e)
 		{
@@ -51,6 +66,7 @@ namespace Timeliner
 		public static SvgDocumentWidget Load(string filePath, ISvgEventCaller caller, int viewCount)
 		{
 			var newWidget = SvgDocument.Open<SvgDocumentWidget>(filePath);
+			
 			newWidget.AutoPublishEvents = false;
 			newWidget.ParseElements(caller, newWidget);
             
