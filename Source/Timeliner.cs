@@ -9,7 +9,7 @@ using Posh;
 #endregion usings
 namespace Timeliner
 {
-	public class Timeliner
+    public class Timeliner: IDisposable
 	{
 		//public bool Play;
 		public float SeekTime;
@@ -49,12 +49,18 @@ namespace Timeliner
 			TimelineView.Tracks.OrderChanged += TimelineView_Tracks_OrderChanged;
 		}
 
-		void TimelineView_Tracks_OrderChanged(IViewableList<TrackView> list)
+		public void Dispose()
+		{
+            TimelineView.Dispose();
+            Timeline.Dispose();			
+		}
+		#endregion constructor/destructor
+        
+        void TimelineView_Tracks_OrderChanged(IViewableList<TrackView> list)
 		{
 			if (TrackOrderChanged != null)
 				TrackOrderChanged();
 		}
-		#endregion constructor/destructor
 		
 		public void Evaluate(float hosttime)
 		{
