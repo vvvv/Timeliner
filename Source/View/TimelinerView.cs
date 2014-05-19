@@ -180,6 +180,8 @@ namespace Timeliner
             Background.MouseDown -= Default_MouseDown;
             Background.MouseMove -= Default_MouseMove;
             Background.MouseUp -= Default_MouseUp;
+            
+            UnbuildSVG();
 			
 			base.Dispose();
 		}
@@ -229,13 +231,27 @@ namespace Timeliner
 		
 		protected override void BuildSVG()
 		{
-			throw new NotImplementedException("should not call this draw method of the timeline root");
+			throw new NotImplementedException("should not call this method of the timeline root");
 		}
 		
 		protected override void UnbuildSVG()
 		{
-			throw new NotImplementedException("unbuild timeliner document");
+			if(SvgRoot != null)
+			{
+				var caller = Document.Mapper.Map<ISvgEventCaller>();
+				foreach (var element in SvgRoot.Children)
+				{
+					if(element is SvgDocumentWidget)
+					{
+						(element as SvgDocumentWidget).UnregisterEvents(caller);
+					}
+				}
+				
+				SvgRoot.Children.Clear();
+				SvgRoot = null;
+			}
 		}
+		
 		#endregion
 
 		#region update scenegraph
