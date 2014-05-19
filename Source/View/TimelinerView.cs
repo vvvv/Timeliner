@@ -243,8 +243,9 @@ namespace Timeliner
 		{
 			base.UpdateScene();
 			
+            PlayButton.SetViewBox(Convert.ToInt32(Timer.IsRunning));
 			Ruler.UpdateScene();
-			
+            			
 			foreach (var track in Tracks)
 				track.UpdateScene();
 		}
@@ -279,8 +280,6 @@ namespace Timeliner
 		{
 			Ruler.Evaluate();
             
-            PlayButton.SetViewBox(Convert.ToInt32(Timer.IsRunning));
-			
 			foreach (var track in Tracks)
 				track.Evaluate();
 		}
