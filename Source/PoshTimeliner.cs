@@ -17,6 +17,10 @@ namespace Timeliner
     {
         private PoshServer FPoshServer;
         private string FUrl;
+        public string Url
+        {
+        	get {return FUrl;}
+        }
         private bool FDisposed = false;
 		
         public Action<string> Log;
@@ -136,6 +140,9 @@ namespace Timeliner
             {
                 if(disposing)
                 {
+                	Timeliner.Dispose();
+                	Timeliner = null;
+                	
                     FPoshServer.Dispose();
                     FPoshServer = null;
                 }

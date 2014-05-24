@@ -23,6 +23,7 @@ namespace TimeLinerSA
         OSCReceiver FOSCReceiver;
         bool FListening = false;
         Thread FOSCListener;
+        private string FFilename;
 		
         public Form1()
         {
@@ -257,6 +258,21 @@ namespace TimeLinerSA
 		#endregion OSC
         
 		#region menu
+		void NewToolStripMenuItemClick(object sender, EventArgs e)
+        {
+			CloseCurrent();
+			
+			//loading same url again now opens new timeliner
+			webBrowser1.Refresh();
+        }
+		
+		void CloseCurrent()
+		{
+			WebServer.RemoveURL(FPoshTimeliners[0].Url);
+			FPoshTimeliners[0].Dispose();
+			FPoshTimeliners.RemoveAt(0);
+		}
+		
 		void OSCToolStripMenuItemClick(object sender, System.EventArgs e)
 		{
 			OSCPanel.Visible = !OSCPanel.Visible;
@@ -278,16 +294,32 @@ namespace TimeLinerSA
         {
         	if (FOpenFileDialog.ShowDialog() == DialogResult.OK)
             {
-                FPoshTimeliners[0].Load(FOpenFileDialog.FileName);
+        		CloseCurrent();
+        		
+        		FFilename = FOpenFileDialog.FileName;
+        		
+        		var url = "http://localhost:4444/" + Path.GetFileNameWithoutExtension(FFilename);
+        		var timeliner = AddTimeliner(url);
+        		timeliner.Load(FFilename);
+        		webBrowser1.Navigate(new Uri(url));
+            }
+        }
+        
+        void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
+        {
+        	if (FSaveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+        		FFilename = FSaveFileDialog.FileName;
+                FPoshTimeliners[0].Save(FSaveFileDialog.FileName);
             }
         }
         
         void SaveToolStripMenuItemClick(object sender, EventArgs e)
         {
-        	if (FSaveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                FPoshTimeliners[0].Save(FSaveFileDialog.FileName);
-            }
+        	if (string.IsNullOrEmpty(FFilename))
+        		SaveAsToolStripMenuItemClick(sender, e);
+        	else
+                FPoshTimeliners[0].Save(FFilename);
         }
         #endregion
     }
