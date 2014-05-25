@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace TimeLinerSA
         bool FListening = false;
         Thread FOSCListener;
         private string FFilename;
-		
+        
         public Form1()
         {
             InitializeComponent();
@@ -297,12 +298,24 @@ namespace TimeLinerSA
         		CloseCurrent();
         		
         		FFilename = FOpenFileDialog.FileName;
+        		var shorturl = Path.GetFileNameWithoutExtension(FFilename);
+        		Text = shorturl;
         		
-        		var url = "http://localhost:4444/" + Path.GetFileNameWithoutExtension(FFilename);
-        		var timeliner = AddTimeliner(url);
-        		timeliner.Load(FFilename);
-        		webBrowser1.Navigate(new Uri(url));
+        		var timeliner = AddTimeliner(shorturl);
+                timeliner.Load(FFilename);
+                
+                var url = "http://localhost:4444/" + shorturl;
+                webBrowser1.Navigate(new Uri(url));
+                
+                //needs an extra refresh
+                webBrowser1.DocumentCompleted += webBrowser1_DocumentCompleted;
             }
+        }
+
+        void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+        	webBrowser1.Refresh(WebBrowserRefreshOption.Completely);
+        	webBrowser1.DocumentCompleted -= webBrowser1_DocumentCompleted;
         }
         
         void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
@@ -310,6 +323,12 @@ namespace TimeLinerSA
         	if (FSaveFileDialog.ShowDialog() == DialogResult.OK)
             {
         		FFilename = FSaveFileDialog.FileName;
+        		
+        		var shorturl = Path.GetFileNameWithoutExtension(FFilename);
+        		Text = shorturl;
+        		
+        		WebServer.RenameURL(FPoshTimeliners[0].Url, shorturl);
+        		                    
                 FPoshTimeliners[0].Save(FSaveFileDialog.FileName);
             }
         }

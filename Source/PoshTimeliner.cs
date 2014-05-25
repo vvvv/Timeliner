@@ -241,14 +241,12 @@ namespace Timeliner
         
         public void Save(string path)
         {
+        	FUrl = Path.GetFileNameWithoutExtension(path);
             Timeliner.Timeline.SaveTo(path);
         }
         
         public void Load(string path)
         {
-            Timeliner.Dispose();
-            Timeliner = new Timeliner(Context);
-            
             var xml = XElement.Load(path);
             Timeliner.Timeline.LoadFromXML(xml, Timeliner.Timeline.GetSerializer());
         }
