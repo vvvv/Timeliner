@@ -127,7 +127,6 @@ namespace Timeliner
 			Background.Width = width;
 			Background.Height = 1; // this is the value range, not the actual track size
 			Background.ID ="bg";
-            Background.CustomAttributes["class"] = "track";
 			
 			ClipRect.Width = width;
 			ClipRect.Height = Background.Height;
@@ -271,6 +270,8 @@ namespace Timeliner
 			SizeBar.Y = yScale;
 			
 			FScalingChanged |= yScale != oldScale.Y;
+			
+			Background.CustomAttributes["class"] = Model.Order.Value % 2 == 0 ? "even": "odd";
 		}
 	
 		protected virtual void ApplyInverseScaling()

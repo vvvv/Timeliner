@@ -60,7 +60,12 @@
 	fill: #ffffff;
 }
 
-.track
+.even
+{
+	fill: #646464;
+}
+
+.odd
 {
 	fill: #646464;
 }
