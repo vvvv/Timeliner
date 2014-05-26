@@ -24,6 +24,7 @@ namespace Timeliner
         private bool FDisposed = false;
 		
         public Action<string> Log;
+        public Action Changed;
         public Action<XElement> SaveData;
         public Timeliner Timeliner;
         public TLContext Context = new TLContext();
@@ -97,12 +98,11 @@ namespace Timeliner
         
         void HistoryChanged(object sender, EventArgs<Command> e)
         {
-            //save current state
-            if (SaveData != null)
-                SaveData(Timeliner.Timeline.GetSerializer().Serialize(Timeliner.Timeline));
-			
             //publish changes
             FPoshServer.PublishAll(this, new CallInvokedArgs(""));
+            
+            if (Changed != null)
+            	Changed();
         }
         
         string PoshServer_OnDump()

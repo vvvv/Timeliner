@@ -224,9 +224,9 @@
         	// loadToolStripMenuItem
         	// 
         	this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-        	this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+        	this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
         	this.loadToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-        	this.loadToolStripMenuItem.Text = "Load";
+        	this.loadToolStripMenuItem.Text = "Open";
         	this.loadToolStripMenuItem.Click += new System.EventHandler(this.LoadToolStripMenuItemClick);
         	// 
         	// saveToolStripMenuItem
@@ -290,7 +290,6 @@
         	this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
         	this.MainMenuStrip = this.menuStrip1;
         	this.Name = "Form1";
-        	this.Text = "TimelinerSA";
         	this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1FormClosed);
         	this.OSCPanel.ResumeLayout(false);
         	this.OSCPanel.PerformLayout();

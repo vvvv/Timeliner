@@ -34,9 +34,6 @@ namespace TimeLinerSA
             WebServer.TerminalPath = Path.Combine(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location), @"web");
             WebServer.UnknownURL += AddUrl;
             WebServer.OpenURL += OpenUrl;
-							
-            webBrowser1.Navigate("about:blank");
-            webBrowser1.Navigate(new Uri("http://localhost:4444/timeliner"));
             
             StartOSCTransmitter();
 			StartOSCReceiver();
@@ -44,9 +41,11 @@ namespace TimeLinerSA
             timer1.Interval = 1000 / 30;
             timer1.Tick += timer1_Tick;
             timer1.Start();
-            //FWAMPTimeliner.SaveData = xml => FData[0] = xml.ToString();
 			
             Clock.Start();
+            
+            webBrowser1.Navigate("about:blank");
+            webBrowser1.Navigate(new Uri("http://localhost:4444/callmenames"));
 			
             //dispose web- and wampserver
             this.Disposed += (s, e) => 
@@ -98,6 +97,7 @@ namespace TimeLinerSA
             }
 			
             timeliner.Log = x => Console.WriteLine(x);
+            timeliner.Changed = () => UpdateCaption(true);
             return timeliner;
         }
         
@@ -265,6 +265,8 @@ namespace TimeLinerSA
 			
 			//loading same url again now opens new timeliner
 			webBrowser1.Refresh();
+			
+			UpdateCaption(false);
         }
 		
 		void CloseCurrent()
@@ -299,23 +301,41 @@ namespace TimeLinerSA
         		
         		FFilename = FOpenFileDialog.FileName;
         		var shorturl = Path.GetFileNameWithoutExtension(FFilename);
-        		Text = shorturl;
         		
         		var timeliner = AddTimeliner(shorturl);
                 timeliner.Load(FFilename);
                 
-                var url = "http://localhost:4444/" + shorturl;
-                webBrowser1.Navigate(new Uri(url));
-                
-                //needs an extra refresh
-                webBrowser1.DocumentCompleted += webBrowser1_DocumentCompleted;
+                NavigateTo(shorturl);
             }
+        }
+        
+        void NavigateTo(string shorturl)
+        {
+        	var url = "http://localhost:4444/" + shorturl;
+            webBrowser1.Navigate(new Uri(url));
+                
+            //needs an extra refresh
+            webBrowser1.DocumentCompleted += webBrowser1_DocumentCompleted;
+            
+            UpdateCaption(false);
         }
 
         void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
         	webBrowser1.Refresh(WebBrowserRefreshOption.Completely);
         	webBrowser1.DocumentCompleted -= webBrowser1_DocumentCompleted;
+        }
+        
+        void UpdateCaption(bool isChanged)
+        {
+        	var caption = Path.GetFileName(FFilename);
+        	caption += isChanged ? " * " : "   ";
+        	caption += Path.GetDirectoryName(FFilename);        	
+        	
+        	if (InvokeRequired)
+        		BeginInvoke((MethodInvoker)(() => { Text = caption; }));
+        	else
+        		Text = caption;
         }
         
         void SaveAsToolStripMenuItemClick(object sender, EventArgs e)
@@ -325,7 +345,7 @@ namespace TimeLinerSA
         		FFilename = FSaveFileDialog.FileName;
         		
         		var shorturl = Path.GetFileNameWithoutExtension(FFilename);
-        		Text = shorturl;
+        		UpdateCaption(false);
         		
         		WebServer.RenameURL(FPoshTimeliners[0].Url, shorturl);
         		                    
@@ -338,7 +358,10 @@ namespace TimeLinerSA
         	if (string.IsNullOrEmpty(FFilename))
         		SaveAsToolStripMenuItemClick(sender, e);
         	else
-                FPoshTimeliners[0].Save(FFilename);
+        	{
+        		FPoshTimeliners[0].Save(FFilename);
+        		UpdateCaption(false);
+        	}
         }
         #endregion
     }
