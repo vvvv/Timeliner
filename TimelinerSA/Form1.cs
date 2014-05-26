@@ -249,8 +249,8 @@ namespace TimeLinerSA
                     }
                 case  "loop":
                     {
-                        FPoshTimeliners[0].Timeliner.Timeline.Ruler.LoopStart.Value = (float) args[0];
-                        FPoshTimeliners[0].Timeliner.Timeline.Ruler.LoopEnd.Value = (float) args[1];
+                        FPoshTimeliners[0].Timeliner.TimelineModel.Ruler.LoopStart.Value = (float) args[0];
+                        FPoshTimeliners[0].Timeliner.TimelineModel.Ruler.LoopEnd.Value = (float) args[1];
                         FPoshTimeliners[0].Timeliner.TimelineView.UpdateScene();
                         break;
                     }

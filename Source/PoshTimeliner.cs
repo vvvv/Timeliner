@@ -59,7 +59,7 @@ namespace Timeliner
                 t = new TLValueTrack();
                 t.Loading = true;
                 t.Order.Value = trackOrder++;
-                cmd = Command.Add(Timeliner.Timeline.Tracks, t);
+                cmd = Command.Add(Timeliner.TimelineModel.Tracks, t);
                 Timeliner.TimelineView.History.Insert(cmd);
             	
                 for (int j = 0; j < 100; j++)
@@ -79,7 +79,7 @@ namespace Timeliner
                 at.Loading = true;
                 at.LoadFile();
                 at.Order.Value = trackOrder++;
-                cmd = Command.Add(Timeliner.Timeline.Tracks, at);
+                cmd = Command.Add(Timeliner.TimelineModel.Tracks, at);
                 Timeliner.TimelineView.History.Insert(cmd);
                 
                 at.Loading = false;
@@ -187,7 +187,7 @@ namespace Timeliner
                     {
                         Context.History.Redo();
                         //HACK to build curves
-                        foreach (var track in Timeliner.Timeline.Tracks) 
+                        foreach (var track in Timeliner.TimelineModel.Tracks) 
                         {
                             if (track is TLValueTrack)
                                 (track as TLValueTrack).BuildCurves();
@@ -198,7 +198,7 @@ namespace Timeliner
                     {
                         Context.History.Undo();
                         //HACK to build curves
-                        foreach (var track in Timeliner.Timeline.Tracks) 
+                        foreach (var track in Timeliner.TimelineModel.Tracks) 
                         {
                             if (track is TLValueTrack)
                                 (track as TLValueTrack).BuildCurves();
@@ -242,13 +242,13 @@ namespace Timeliner
         public void Save(string path)
         {
         	FUrl = Path.GetFileNameWithoutExtension(path);
-            Timeliner.Timeline.SaveTo(path);
+        	Timeliner.Save(path);
         }
         
         public void Load(string path)
         {
             var xml = XElement.Load(path);
-            Timeliner.Timeline.LoadFromXML(xml, Timeliner.Timeline.GetSerializer());
+            Timeliner.Load(xml);
         }
         
         public void Evaluate(float hosttime)

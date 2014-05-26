@@ -1,10 +1,10 @@
 #region usings
 using System;
 using System.Xml.Linq;
-
+using Posh;
 using VVVV.Core;
 using VVVV.Core.Commands;
-using Posh;
+using VVVV.Core.Model;
 
 #endregion usings
 namespace Timeliner
@@ -15,7 +15,7 @@ namespace Timeliner
 		public float SeekTime;
 		public bool DoSeek;
 		
-        public TLDocument Timeline;
+        public TLDocument TimelineModel;
         public TimelineView TimelineView;
        
         public Timer Timer = new Timer();
@@ -32,19 +32,19 @@ namespace Timeliner
 		{
 			Context = context;
 			
-            Timeline = new TLDocument("", @"timeline.xml");
-            Shell.Instance.Root = Timeline;
+            TimelineModel = new TLDocument("", @"timeline.xml");
+            Shell.Instance.Root = TimelineModel;
             
-            Timeline.CreateMapper(context.MappingRegistry);
+            TimelineModel.CreateMapper(context.MappingRegistry);
             //only after mapper and root are set
-            Timeline.Initialize();
+            TimelineModel.Initialize();
 
-            var commandHistory = Timeline.Mapper.Map<ICommandHistory>();
-            TimelineView = new TimelineView(Timeline, commandHistory, Timer);
+            var commandHistory = TimelineModel.Mapper.Map<ICommandHistory>();
+            TimelineView = new TimelineView(TimelineModel, commandHistory, Timer);
             
-            Timeline.Tracks.Added += Timeline_Tracks_Added;
-			Timeline.Tracks.Removed += Timeline_Tracks_Removed;
-			Timeline.Tracks.OrderChanged += Timeline_Tracks_OrderChanged;
+            TimelineModel.Tracks.Added += Timeline_Tracks_Added;
+			TimelineModel.Tracks.Removed += Timeline_Tracks_Removed;
+			TimelineModel.Tracks.OrderChanged += Timeline_Tracks_OrderChanged;
 			
 			TimelineView.Tracks.OrderChanged += TimelineView_Tracks_OrderChanged;
 		}
@@ -52,7 +52,7 @@ namespace Timeliner
 		public void Dispose()
 		{
             TimelineView.Dispose();
-            Timeline.Dispose();			
+            TimelineModel.Dispose();			
 		}
 		#endregion constructor/destructor
         
@@ -68,11 +68,11 @@ namespace Timeliner
 			if (DoSeek)
 				Timer.Time = SeekTime;
 
-			Timer.LoopStart = Timeline.Ruler.LoopStart.Value;
-			Timer.LoopEnd = Timeline.Ruler.LoopEnd.Value;
+			Timer.LoopStart = TimelineModel.Ruler.LoopStart.Value;
+			Timer.LoopEnd = TimelineModel.Ruler.LoopEnd.Value;
 			
 			Timer.Evaluate();
-			Timeline.Evaluate(Timer.Time);
+			TimelineModel.Evaluate(Timer.Time);
 			TimelineView.Evaluate();	
 		}
 
@@ -104,13 +104,12 @@ namespace Timeliner
 		
 		public void Load(XElement data)
 		{
-            //first tear down existing model/view gracefully...
-            
-//			Timeline = Timeline.GetSerializer().Deserialize<TLDocument>(data);
-//			Timeline.CreateMapper(Context.MappingRegistry);
-//			Timeline.Initialize();
-//			
-//			TimelineView = new TimelineView(Timeline, Timeline.Mapper.Map<ICommandHistory>(), Timer);
+			TimelineModel.LoadFromXML(data, TimelineModel.GetSerializer());
+		}
+		
+		public void Save(string path)
+		{
+			TimelineModel.SaveTo(path);
 		}
 	}
 }
