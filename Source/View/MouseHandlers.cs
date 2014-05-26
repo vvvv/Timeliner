@@ -90,13 +90,11 @@ namespace Timeliner
 		{
 			if(delta.Y != 0)
 			{
-				var h = Instance.Model.Height.Value;
+				var h = Math.Max(Instance.Model.CollapsedHeight, Instance.Model.Height.Value + delta.Y);
 				if ((delta.Y < 0) || (arg.Y > Instance.Top + Instance.Height))
 				{
-					h += delta.Y;
-					
 					//scale this track
-					var cmd = Command.Set(Instance.Model.Height, Instance.Model.Height.Value + delta.Y);
+					var cmd = Command.Set(Instance.Model.Height, h);
 					
 					//execute changes immediately
 					cmd.Execute();
