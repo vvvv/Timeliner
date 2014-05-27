@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -107,9 +108,11 @@ namespace Timeliner
         }
         
         public override void Evaluate(float time)
-        {
-        	var kf = Keyframes.ToList().FindLast(k => k.Time.Value <= time);
-        	var kf1 = Keyframes.ToList().Find(k => k.Time.Value >= time);
+        {   
+        	var kfs = Keyframes.ToList(); 
+        	kfs.Sort(Comparer<TLKeyframe>.Create((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value)));
+        	var kf = kfs.FindLast(k => k.Time.Value <= time);
+        	var kf1 = kfs.Find(k => k.Time.Value >= time);
 			
 			if (kf == null && kf1 == null)
 				CurrentValue = 0;
