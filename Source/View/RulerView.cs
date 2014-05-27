@@ -137,7 +137,6 @@ namespace Timeliner
             }
 			
             LoopStart.ID = "LoopStart";
-            LoopStart.Visible = false;
             LoopStart.Width = 1/Timer.PPS * CHandlerWidth;
             LoopStart.Height = Background.Height;
             PanZoomGroup.Children.Add(LoopStart);
@@ -145,10 +144,9 @@ namespace Timeliner
             LoopStart.MouseUp += (s, e) => Parent.Default_MouseUp(LoopStart, e);
             LoopStart.MouseMove += (s, e) => Parent.Default_MouseMove(LoopStart, e);
             LoopStart.CustomAttributes["pointer-events"] = "fill";
+            LoopStart.CustomAttributes["class"] = "loopcap";
 			
             LoopEnd.ID = "LoopEnd";
-            LoopEnd.Visible = false;
-            LoopEnd.FillOpacity = 1f;
             LoopEnd.Width = 1/Timer.PPS * CHandlerWidth;
             LoopEnd.Height = Background.Height;
             PanZoomGroup.Children.Add(LoopEnd);
@@ -156,6 +154,7 @@ namespace Timeliner
             LoopEnd.MouseUp += (s, e) => Parent.Default_MouseUp(LoopEnd, e);
             LoopEnd.MouseMove += (s, e) => Parent.Default_MouseMove(LoopEnd, e);
             LoopEnd.CustomAttributes["pointer-events"] = "fill";
+            LoopEnd.CustomAttributes["class"] = "loopcap";
 			
             LoopRegion.ID = "LoopRegion";
             LoopRegion.Y = Background.Height / 4;

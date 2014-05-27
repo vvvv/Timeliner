@@ -10,7 +10,7 @@
 	stroke: #00000000;
 }
 
-.kf:hover 
+.kf:hover, .kf:active
 {
 	fill: #959595;
 	stroke-width: 7;
@@ -23,7 +23,7 @@
 	stroke: #ffffff;
 }
 
-.ckf :hover
+.ckf :hover, .ckf:active
 {
 	stroke-width: 7;
 	stroke: #959595;
@@ -53,6 +53,17 @@
 .ruler
 {
 	fill: #646464;
+}
+
+.loopcap
+{
+	fill: #ffffff;
+	fill-opacity: 0;
+}
+
+.loopcap:hover, .loopcap:active
+{
+	fill-opacity: 0.3;
 }
 
 .button
