@@ -82,7 +82,9 @@ namespace Timeliner
 			if (isSelected)
 			{
 				var m = new Matrix();
-				m.Translate(Background.X + 0.1f, Background.Y);
+				var h = Parent.KeyframeDefinition.Radius * 3 * Parent.KeyframeDefinition.Transforms[0].Matrix.Elements[3];
+				var y = Math.Max(Background.Y, -Parent.Model.Maximum.Value + h);
+				m.Translate(Background.X + 0.1f, y);
 				m.Multiply(Parent.KeyframeDefinition.Transforms[0].Matrix);
 
 				Label.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));

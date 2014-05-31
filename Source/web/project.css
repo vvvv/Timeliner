@@ -6,14 +6,14 @@
 .kf 
 {
 	fill: #ffffff;
-	stroke-width: 7;
+	stroke-width: 3;
 	stroke: #00000000;
 }
 
 .kf:hover, .kf:active
 {
 	fill: #959595;
-	stroke-width: 7;
+	stroke-width: 3;
 	stroke: #959595;
 }
 
