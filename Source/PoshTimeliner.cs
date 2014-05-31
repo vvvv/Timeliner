@@ -180,6 +180,7 @@ namespace Timeliner
             {
                 case (int) Keys.Space:
                     Timeliner.Timer.IsRunning = !Timeliner.Timer.IsRunning;
+                    Timeliner.TimelineView.UpdateScene();
                     break;
                 case (int) Keys.Z:
                     if (ctrl)

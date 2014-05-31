@@ -300,11 +300,13 @@ namespace Timeliner
 		void PlayButton_Click(object sender, MouseArg e)
 		{
             Timer.Play(!Timer.IsRunning);
+            UpdateScene();
 		}
 
 		void StopButton_Click(object sender, MouseArg e)
 		{
             Timer.Stop();
+            UpdateScene();
 		}
 		#endregion
 		
