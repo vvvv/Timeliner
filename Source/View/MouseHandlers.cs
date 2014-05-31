@@ -12,20 +12,6 @@ using VVVV.Core.Model;
 
 namespace Timeliner
 {
-	internal class MainMenuHandler : MouseHandlerBase<TimelineView>
-	{
-		public MainMenuHandler(TimelineView view, string sessionID)
-			: base(view, sessionID)
-		{
-		}
-		
-		public override void MouseClick(object sender, MouseArg arg)
-		{
-			if (arg.Button == 2)
-				Instance.MainMenu.Show(new PointF(arg.x, arg.y - Instance.FTrackGroup.Transforms[0].Matrix.Elements[5]));
-		}
-	}
-	
 	internal class TimeBarHandler : MouseHandlerBase<TimelineView>
 	{
 		public TimeBarHandler(TimelineView view, string sessionID)

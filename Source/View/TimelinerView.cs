@@ -88,6 +88,7 @@ namespace Timeliner
             Background.MouseDown += Default_MouseDown;
             Background.MouseMove += Default_MouseMove;
             Background.MouseUp += Default_MouseUp;
+            Background.Click += Background_Click;
             
             SizeBar.Width = Background.Width;
 			SizeBar.Height = 10;
@@ -166,7 +167,7 @@ namespace Timeliner
 	                                     			track.Model.Order.Value -= 1;
                                      	});
 		}
-		
+
 		public override void Dispose()
 		{
 			History.CommandInserted -= History_Changed;
@@ -177,9 +178,17 @@ namespace Timeliner
             SizeBar.MouseMove -= Default_MouseMove;
             SizeBar.MouseUp -= Default_MouseUp;
             
+            TimeBar.MouseDown -= Default_MouseDown;
+            TimeBar.MouseMove -= Default_MouseMove;
+            TimeBar.MouseUp -= Default_MouseUp;
+            
             Background.MouseDown -= Default_MouseDown;
             Background.MouseMove -= Default_MouseMove;
             Background.MouseUp -= Default_MouseUp;
+            Background.Click -= Background_Click;
+            
+            PlayButton.Click -= PlayButton_Click;
+            StopButton.Click -= StopButton_Click;
             
             UnbuildSVG();
 			
@@ -272,8 +281,15 @@ namespace Timeliner
 		}
 		#endregion
 		
-		int FTrackCount = 0;
+		
 		#region scenegraph eventhandler
+		void Background_Click(object sender, MouseArg e)
+		{
+			if (e.ClickCount == 2)
+				MainMenu.Show(new PointF(e.x, e.y - FTrackGroup.Transforms[0].Matrix.Elements[5]));
+		}
+		
+		int FTrackCount = 0;
 		void AddTrack()
 		{
 			var track = new TLValueTrack(FTrackCount++.ToString());
@@ -359,7 +375,7 @@ namespace Timeliner
 			else
 			{
 				HideMenus();
-				return new MainMenuHandler(this, e.SessionID);
+				return null;
 			}
 		}
         
