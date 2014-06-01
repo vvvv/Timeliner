@@ -238,7 +238,7 @@ namespace Timeliner
 				foreach (var kf in track.Keyframes)
 				{
 					var wasSelected = kf.Model.Selected.Value;
-                    var isSelected = kf.IsSelectedBy(trackRect);
+					var isSelected = kf.IsSelectedBy(trackRect);
 					if (isSelected != wasSelected)
 					{
 						cmd.Append(Command.Set(kf.Model.Selected, isSelected));
@@ -288,16 +288,9 @@ namespace Timeliner
 		//delete on right click
 		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
 		{
-			if (arg.Button == 3)
+			var ret = base.MouseDown(sender, arg);
+			if ((arg.Button == 1) || (arg.Button == 2))
 			{
-				var cmd = Command.Remove(Instance.Parent.Model.Keyframes, Instance.Model);
-				Instance.History.Insert(cmd);
-				return null;
-			}
-			else if(arg.Button == 1)
-			{
-				var ret = base.MouseDown(sender, arg);
-				
 				FWasSelected = Instance.Model.Selected.Value;
 				var cmd = new CompoundCommand();
 				if (!FWasSelected)
@@ -327,12 +320,27 @@ namespace Timeliner
 					FSelectedKeyframes.Add(kf);
 					FActualValues.Add(kf.Model.Value.Value);
 				}
-				return ret;
 			}
-			else
-				return null;
+			return ret;
 		}
 		
+		public override void MouseClick(object sender, MouseArg arg)
+		{
+			if (arg.Button == 3)
+			{
+//				causes total freeze in IE11
+//				so for now only delete via keyboard
+//				var cmd = Command.Remove(Instance.Parent.Model.Keyframes, Instance.Model);
+//				Instance.History.Insert(cmd);
+			}
+			else if (arg.Button == 2)
+			{
+				Instance.Parent.TimeEdit.Value = Instance.Model.Time.Value;
+				Instance.Parent.ValueEdit.Value = Instance.Model.Value.Value;
+				Instance.Parent.KeyframeMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
+			}
+		}
+
 		public override void MouseDrag(object sender, PointF arg, PointF delta, int callNr)
 		{
 			var cmd = new CompoundCommand();
@@ -361,27 +369,28 @@ namespace Timeliner
 			FMoveCommands.Append(cmd);
 			
 			Instance.Parent.Parent.UpdateScene();
-			
 		}
 
 		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)
 		{
-			//unselect?
-			if(FWasSelected && !FWasMoved)
+			if (arg.Button == 1)
 			{
-				Instance.History.Insert(Command.Set(Instance.Model.Selected, false));
-			}
-			else
-			{
-				foreach (var track in FAffectedTracks)
+				//unselect?
+				if(FWasSelected && !FWasMoved)
 				{
-					track.Model.BuildCurves();
+					Instance.History.Insert(Command.Set(Instance.Model.Selected, false));
 				}
-				
-				//add collected commands to history
-				if(FMoveCommands.CommandCount > 0)
-					Instance.History.InsertOnly(FMoveCommands);
-				
+				else
+				{
+					foreach (var track in FAffectedTracks)
+					{
+						track.Model.BuildCurves();
+					}
+					
+					//add collected commands to history
+					if(FMoveCommands.CommandCount > 0)
+						Instance.History.InsertOnly(FMoveCommands);
+				}
 			}
 			
 			return base.MouseUp(sender, arg);
