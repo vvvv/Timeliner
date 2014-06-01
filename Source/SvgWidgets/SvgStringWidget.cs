@@ -21,15 +21,13 @@ namespace Timeliner
 		public SvgStringWidget(string label): base()
 		{
             Label.Text = label;
-            Label.ID = "wer";
 			Label.FontSize = 20;
 			Label.X = 2;
 			Label.Y = Label.FontSize + 2;
-            Label.FontFamily = "Lucida Console";
             Label.CustomAttributes["class"] = "labelmenufont";
             Label.Change += Change;
             
-            this.Children.Add(Label);
+            Children.Add(Label);
 		}
 		
 		public SvgStringWidget(float width, float height, string label): this(label)
@@ -42,6 +40,11 @@ namespace Timeliner
 		{
 			Label.Text = e.s;
             OnValueChanged(e.s);
+		}
+		
+		public override void Dispose()
+		{
+			Label.Change -= Change;
 		}
 	}
 }

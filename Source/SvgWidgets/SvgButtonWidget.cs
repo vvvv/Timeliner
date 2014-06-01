@@ -29,7 +29,7 @@ namespace Timeliner
 			FLabel.Y = FLabel.FontSize + 2;
             FLabel.CustomAttributes["class"] = "menufont";
             
-            this.Children.Add(FLabel);
+            Children.Add(FLabel);
 		}
 		
 		public SvgButtonWidget(float width, float height, string label): this(label)
@@ -49,6 +49,13 @@ namespace Timeliner
 		void Background_MouseDown(object sender, EventArgs e)
 		{
 			OnButtonPressed.Invoke();
+		}
+		
+		public override void Dispose()
+		{
+			Background.MouseOver -= Background_MouseOver;
+			Background.MouseOut -= Background_MouseOut;
+			Background.MouseDown -= Background_MouseDown;
 		}
 	}
 }

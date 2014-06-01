@@ -111,5 +111,10 @@ namespace Timeliner
 			
 			//OnValueChanged();
 		}
+		
+		public override void Dispose()
+		{
+			Edit.Change -= Edit_Change;
+		}
 	}
 }

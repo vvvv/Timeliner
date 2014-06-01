@@ -54,5 +54,9 @@ namespace Timeliner
 		{
 			Visible = false;
 		}
+		
+		public override void Dispose()
+		{
+		}
 	}
 }

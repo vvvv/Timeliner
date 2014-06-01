@@ -4,7 +4,7 @@ using Svg;
 
 namespace Timeliner
 {
-	public class SvgWidget: SvgGroup
+	public abstract class SvgWidget: SvgGroup, IDisposable
 	{
 		protected SvgRectangle Background;
 		
@@ -34,5 +34,7 @@ namespace Timeliner
 			Background.Width = width;
 			Background.Height = height;
 		}
+		
+		public abstract void Dispose();
 	}
 }
