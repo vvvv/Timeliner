@@ -148,6 +148,20 @@ namespace Timeliner
 			ApplyInverseScaling();
 		}
 		#endregion
+		
+		protected override void ChangeKeyframeTime()
+		{
+//			History.Insert(Command.Set(Keyframes.First(x => x.Selected).Model.Value, TimeEdit.Value));
+		}
+		
+		protected override void FillTrackMenu()
+		{}
+		
+        protected override void FillKeyframeMenu()
+        {}
+        
+        public override void Evaluate()
+        {}
 	}
 	
 	public class SampleView : TLViewBaseTyped<TLSample, AudioTrackView>, IDisposable

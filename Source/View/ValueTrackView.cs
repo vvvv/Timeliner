@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.Linq;
 
+using Posh;
 using Svg;
 using Svg.Transforms;
 using VVVV.Core;
 using VVVV.Core.Collections;
 using VVVV.Core.Collections.Sync;
 using VVVV.Core.Commands;
-
-using Posh;
 
 namespace Timeliner
 {
@@ -26,7 +26,8 @@ namespace Timeliner
 		private Synchronizer<ValueKeyframeView, TLKeyframe> KFSyncer;
 		private Synchronizer<CurveView, TLCurve> CurveSyncer;
 		
-		private SvgValueWidget MinValue, MaxValue;
+		private SvgValueWidget MinValueEdit, MaxValueEdit;
+		public SvgValueWidget ValueEdit;
 		private SvgText CurrentValue = new SvgText();
 		
 		public new TLValueTrack Model
@@ -101,6 +102,10 @@ namespace Timeliner
 		public override void Dispose()
 		{
 			Background.Click -= Background_MouseClick;
+			
+			MaxValueEdit.OnValueChanged -= ChangeMaximum;
+			MinValueEdit.OnValueChanged -= ChangeMinimum;
+			ValueEdit.OnValueChanged -= ChangeKeyframeValue;
 			
 			base.Dispose();
 		}
@@ -194,12 +199,34 @@ namespace Timeliner
 		#region scenegraph eventhandler
 		void ChangeMinimum()
 		{
-			History.Insert(Command.Set(Model.Minimum, MinValue.Value));
+			History.Insert(Command.Set(Model.Minimum, MinValueEdit.Value));
 		}
 		
 		void ChangeMaximum()
 		{
-			History.Insert(Command.Set(Model.Maximum, MaxValue.Value));
+			History.Insert(Command.Set(Model.Maximum, MaxValueEdit.Value));
+		}
+		
+		protected override void ChangeKeyframeTime()
+		{
+			History.Insert(Command.Set(Keyframes.ToList().First(x => x.Model.Selected.Value).Model.Time, TimeEdit.Value));
+		}
+		
+		void ChangeKeyframeValue()
+		{
+			var cmd = new CompoundCommand();
+			
+			var min = Model.Maximum.Value;
+			var max = Model.Minimum.Value;
+			var value = Math.Min(min, Math.Max(max, ValueEdit.Value));
+			
+			foreach(var kf in Keyframes)
+			{
+				if (kf.Model.Selected.Value)
+					cmd.Append(Command.Set(kf.Model.Value, value));
+			}
+					
+			History.Insert(cmd);
 		}
 		
 		void Background_MouseClick(object sender, MouseArg e)
@@ -216,15 +243,22 @@ namespace Timeliner
 		}
 		#endregion
         
-        protected override void FillMenu()
+        protected override void FillTrackMenu()
         {
-            MaxValue = new SvgValueWidget(0, 20, "Maximum", 1);
-			MaxValue.OnValueChanged += ChangeMaximum;
-			TrackMenu.AddItem(MaxValue);
+            MaxValueEdit = new SvgValueWidget(0, 20, "Maximum", 1);
+			MaxValueEdit.OnValueChanged += ChangeMaximum;
+			TrackMenu.AddItem(MaxValueEdit);
 			
-			MinValue = new SvgValueWidget(0, 20, "Minimum", -1);
-			MinValue.OnValueChanged += ChangeMinimum;
-			TrackMenu.AddItem(MinValue);
+			MinValueEdit = new SvgValueWidget(0, 20, "Minimum", -1);
+			MinValueEdit.OnValueChanged += ChangeMinimum;
+			TrackMenu.AddItem(MinValueEdit);
+        }
+        
+        protected override void FillKeyframeMenu()
+        {
+            ValueEdit = new SvgValueWidget(0, 20, "Value", 0);
+			ValueEdit.OnValueChanged += ChangeKeyframeValue;
+			KeyframeMenu.AddItem(ValueEdit);
         }
         
 		public override void Evaluate()

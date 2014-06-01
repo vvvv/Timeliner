@@ -37,11 +37,15 @@ namespace Timeliner
 		//parent.OverlayGroup holds:				
 		public SvgRectangle SizeBarDragRect = new SvgRectangle();
 		public SvgMenuWidget TrackMenu;
+		public SvgMenuWidget KeyframeMenu;
         
         //trackmenu
         protected SvgStringWidget TrackLabelEdit;
         protected SvgButtonWidget CollapseButton;
         protected SvgButtonWidget RemoveButton;
+        
+        //keyframemenu
+        public SvgValueWidget TimeEdit;
 
 		public float Top
 		{
@@ -173,11 +177,20 @@ namespace Timeliner
 			CollapseButton.OnButtonPressed += CollapseTrack;
 			TrackMenu.AddItem(CollapseButton);
             
-            FillMenu();
+            FillTrackMenu();
 			
 			RemoveButton = new SvgButtonWidget(0, 20, "Remove");
 		    RemoveButton.OnButtonPressed += RemoveTrack;
 			TrackMenu.AddItem(RemoveButton);
+			
+			//keyframe menu
+			KeyframeMenu = new SvgMenuWidget(110);
+            
+            TimeEdit = new SvgValueWidget(0, 20, "Time", 0);
+            TimeEdit.OnValueChanged += ChangeKeyframeTime;
+            KeyframeMenu.AddItem(TimeEdit);
+            
+            FillKeyframeMenu();
 		}
 		
 		public override void Dispose()
@@ -195,6 +208,9 @@ namespace Timeliner
 			
 			CollapseButton.OnButtonPressed -= CollapseTrack;
 			TrackLabelEdit.OnValueChanged -= RenameTrack;
+			RemoveButton.OnButtonPressed -= RemoveTrack;
+			
+			TimeEdit.OnValueChanged -= ChangeKeyframeTime;
 			
 			base.Dispose();
 		}
@@ -218,6 +234,9 @@ namespace Timeliner
 			//needs to be removed extra!
 			TrackMenu.ID = "TrackMenu" + IDGenerator.NewID;
 			Parent.FOverlaysGroup.Children.Add(TrackMenu);
+			KeyframeMenu.ID = "KeyframeMenu" + IDGenerator.NewID;
+			Parent.FOverlaysGroup.Children.Add(KeyframeMenu);
+			
 			SizeBarDragRect.ID = "DragRect" + IDGenerator.NewID;
 			Parent.FOverlaysGroup.Children.Add(SizeBarDragRect);
 			
@@ -228,6 +247,7 @@ namespace Timeliner
 		{
 			Parent.FOverlaysGroup.Children.Remove(SizeBarDragRect);
 			Parent.FOverlaysGroup.Children.Remove(TrackMenu);
+			Parent.FOverlaysGroup.Children.Remove(KeyframeMenu);
 
 			Parent.SvgRoot.Children.Remove(TrackClipPath);
 			
@@ -302,6 +322,8 @@ namespace Timeliner
 		{
 			History.Insert(Command.Remove(Parent.Document.Tracks, Model));
 		}
+		
+		protected abstract void ChangeKeyframeTime();
 		
 		//dispatch events to parent
 		void Background_MouseDown(object sender, MouseArg e)
@@ -379,10 +401,8 @@ namespace Timeliner
 			return new RectangleF(x1, y1 - height, width, height);
 		}
 		
-        protected virtual void FillMenu()
-        {}
-        
-		public virtual void Evaluate()
-		{}
+        protected abstract void FillTrackMenu();
+        protected abstract void FillKeyframeMenu();
+		public abstract void Evaluate();
 	}
 }

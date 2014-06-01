@@ -395,7 +395,10 @@ namespace Timeliner
 		private void HideMenus()
 		{
 			foreach (var track in Tracks)
+			{
 				track.TrackMenu.Hide();
+				track.KeyframeMenu.Hide();
+			}
 			MainMenu.Hide();
 		}
 	}
