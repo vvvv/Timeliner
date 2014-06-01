@@ -30,3 +30,5 @@ For similar projects see:
 * [TimelinerSA] (http://vvvv.org/documentation/timelinersa)
 * [Duration] (http://www.duration.cc/)
 * [Vezér] (http://www.vezerapp.hu/)
+* [KluppeTimeLine] (http://core.servus.at/node/1424)
+* [IanniX] (http://www.iannix.org/)
