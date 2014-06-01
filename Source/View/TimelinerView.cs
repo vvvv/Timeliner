@@ -62,6 +62,8 @@ namespace Timeliner
         public SvgMenuWidget NodeBrowser;
         
         public Timer Timer;
+        
+        public TrackView ActiveTrack;
 		
 		public TimelineView(TLDocument tl, ICommandHistory history, Timer timer)
 		{
@@ -327,7 +329,7 @@ namespace Timeliner
 			}
 			else if(sender is TrackView)
 			{
-				(sender as TrackView).TrackMenu.Hide();
+				ActiveTrack = sender as TrackView;
 				HideMenus();
 				if ((e.Button == 1) && (sender is ValueTrackView))
 					return new SelectionMouseHandler(sender as ValueTrackView, e.SessionID);
