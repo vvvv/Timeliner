@@ -164,6 +164,18 @@ namespace Timeliner
             LoopRegion.CustomAttributes["class"] = "loop";
             PanZoomGroup.Children.Add(LoopRegion);
             
+//            RulerMenu = new SvgMenuWidget(115);
+//            RulerMenu.ID = "RulerMenu";
+//            var fps = new SvgValueWidget(0, 20, "FPS", 30);
+//            fps.OnValueChanged += FPSChanged;
+//            RulerMenu.AddItem(fps);
+//            var speed = new SvgValueWidget(0, 20, "Speed", 1);
+//            speed.OnValueChanged += SpeedChanged;
+//            RulerMenu.AddItem(speed);
+//            var loop = new SvgValueWidget(0, 20, "Loop", 1);
+//            fps.OnValueChanged += LoopChanged;
+//            RulerMenu.AddItem(loop);
+            
             //init scalings
             PanZoom(0, 0, 0);
             UpdateScene();
