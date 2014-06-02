@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\AudioTrack.cs" />
+    <Compile Include="Model\StringTrack.cs" />
     <Compile Include="Model\Ruler.cs" />
     <Compile Include="Model\TimelinerDocument.cs" />
     <Compile Include="Model\TimelinerDocumentSerializer.cs" />

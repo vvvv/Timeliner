@@ -12,7 +12,7 @@ namespace Timeliner
 {
     public class TLValueTrack : TLTrack
     {
-        public EditableIDList<TLKeyframe> Keyframes
+        public EditableIDList<TLValueKeyframe> Keyframes
         {
             get;
             private set;
@@ -46,7 +46,7 @@ namespace Timeliner
         public TLValueTrack(string name)
             : base(name)
         {
-        	Keyframes = new EditableIDList<TLKeyframe>("Keyframes");
+        	Keyframes = new EditableIDList<TLValueKeyframe>("Keyframes");
             Curves = new EditableIDList<TLCurve>("Curves");
             Minimum = new EditableProperty<float>("Minimum");
             Minimum.Value = -1f;
@@ -60,12 +60,12 @@ namespace Timeliner
             Label.Value = "Value " + name;
         }
 
-        void Keyframes_Removed(IViewableCollection<TLKeyframe> collection, TLKeyframe item)
+        void Keyframes_Removed(IViewableCollection<TLValueKeyframe> collection, TLValueKeyframe item)
         {
             BuildCurves();
         }
 
-        void Keyframes_Added(IViewableCollection<TLKeyframe> collection, TLKeyframe item)
+        void Keyframes_Added(IViewableCollection<TLValueKeyframe> collection, TLValueKeyframe item)
         {
         	if (!Loading)
             	BuildCurves();
@@ -110,7 +110,7 @@ namespace Timeliner
         public override void Evaluate(float time)
         {   
         	var kfs = Keyframes.ToList(); 
-        	kfs.Sort(Comparer<TLKeyframe>.Create((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value)));
+        	kfs.Sort(Comparer<TLValueKeyframe>.Create((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value)));
         	var kf = kfs.FindLast(k => k.Time.Value <= time);
         	var kf1 = kfs.Find(k => k.Time.Value >= time);
 			
@@ -130,15 +130,15 @@ namespace Timeliner
 
     public class TLCurve : TLModelBase
     {
-        public TLKeyframe Start;
-        public TLKeyframe End;
+        public TLValueKeyframe Start;
+        public TLValueKeyframe End;
 
-        public TLCurve(TLKeyframe start, TLKeyframe end)
+        public TLCurve(TLValueKeyframe start, TLValueKeyframe end)
             : this(IDGenerator.NewID, start, end)
         {
         }
 
-        public TLCurve(string name, TLKeyframe start, TLKeyframe end)
+        public TLCurve(string name, TLValueKeyframe start, TLValueKeyframe end)
             : base(name)
         {
             Start = start;
@@ -146,11 +146,9 @@ namespace Timeliner
         }
     }
 
-    public class TLKeyframe : TLModelBase
+    public class TLValueKeyframe : TLKeyframeBase
     {
-        public EditableProperty<float> Time { get; private set; }
         public EditableProperty<float> Value { get; private set; }
-        public EditableProperty<bool> Selected { get; private set; }
         
         public PointF Position
         {
@@ -160,30 +158,26 @@ namespace Timeliner
         	}
         }
         
-        public TLKeyframe()
+        public TLValueKeyframe()
             : this(IDGenerator.NewID)
         {
         }
         
-        public TLKeyframe(string name)
+        public TLValueKeyframe(string name)
             : this(name, 0, 0)
         {
         }
         
-        public TLKeyframe(float time, float value)
+        public TLValueKeyframe(float time, float value)
             : this(IDGenerator.NewID, time, value)
         {
         }
 
-        public TLKeyframe(string name, float time, float value)
-            : base(name)
+        public TLValueKeyframe(string name, float time, float value)
+            : base(name, time)
         {
-            Time = new EditableProperty<float>("Time", time);
             Value = new EditableProperty<float>("Value", value);
-            Selected = new EditableProperty<bool>("Selected", false);
-            Add(Time);
             Add(Value);
-            Add(Selected);
         }
     }
 }

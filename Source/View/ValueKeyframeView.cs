@@ -9,13 +9,13 @@ using VVVV.Core;
 
 namespace Timeliner
 {
-	public class ValueKeyframeView : TLViewBaseTyped<TLKeyframe, ValueTrackView>, IDisposable
+	public class ValueKeyframeView : TLViewBaseTyped<TLValueKeyframe, ValueTrackView>, IDisposable
 	{
 		public SvgUse Background = new SvgUse();
         public SvgUse CollapsedView = new SvgUse();
 		private SvgText Label = new SvgText();
 		
-		public ValueKeyframeView(TLKeyframe kf, ValueTrackView trackview)
+		public ValueKeyframeView(TLValueKeyframe kf, ValueTrackView trackview)
 			: base(kf, trackview)
 		{
 			//configure svg

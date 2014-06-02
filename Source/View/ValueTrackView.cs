@@ -23,7 +23,7 @@ namespace Timeliner
 		public SvgGroup CurveGroup = new SvgGroup();
 		public SvgGroup KeyframeGroup = new SvgGroup();
 		
-		private Synchronizer<ValueKeyframeView, TLKeyframe> KFSyncer;
+		private Synchronizer<ValueKeyframeView, TLValueKeyframe> KFSyncer;
 		private Synchronizer<CurveView, TLCurve> CurveSyncer;
 		
 		private SvgValueWidget MinValueEdit, MaxValueEdit;
@@ -236,7 +236,7 @@ namespace Timeliner
 				var x = FRuler.XPosToTime(e.x);
 				var y = YPosToValue(e.y);
 				
-				var kf = new TLKeyframe(x, y);
+				var kf = new TLValueKeyframe(x, y);
 				var cmd = Command.Add(this.Model.Keyframes, kf);
 				History.Insert(cmd);
 			}

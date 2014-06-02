@@ -14,9 +14,38 @@ namespace Timeliner
             Mapper = Shell.Instance.Root.Mapper.CreateChildMapper(this);
         }
     }
+    
+    /// <summary>
+    /// Base class for keyframes, has only time and selected as property
+    /// </summary>
+    public abstract class TLKeyframeBase : TLModelBase
+    {
+    	public EditableProperty<float> Time { get; private set; }
+    	public EditableProperty<bool> Selected { get; private set; }
+    	
+    	public TLKeyframeBase()
+    		: this(IDGenerator.NewID)
+    	{
+    	}
+    	
+    	public TLKeyframeBase(string name)
+    		: this(name, 0)
+    	{
+    	}
+    	
+    	public TLKeyframeBase(string name, float time)
+    		: base(name)
+    	{
+    		Time = new EditableProperty<float>("Time", time);
+    		Selected = new EditableProperty<bool>("Selected", false);
+    		Add(Time);
+    		Add(Selected);
+    	}
+    }
 
     public abstract class TLTrack : TLModelBase
     {
+    	
         public EditableProperty<int> Order
         {
             get;

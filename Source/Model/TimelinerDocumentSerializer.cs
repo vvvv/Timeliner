@@ -16,8 +16,8 @@ namespace Timeliner
             serializer.RegisterGeneric<TLDocument, TLDocumentSerializer>();
             serializer.RegisterGeneric<EditableIDList<TLTrack>, TLTrackListSerializer>();
             serializer.RegisterGeneric<TLValueTrack, TLValueTrackSerializer>();
-            serializer.RegisterGeneric<TLTrack, TLTrackSerializer>();
-            serializer.RegisterGeneric<TLKeyframe, TLKeyframeSerializer>();
+            serializer.RegisterGeneric<TLStringTrack, TLStringTrackSerializer>();
+            serializer.RegisterGeneric<TLValueKeyframe, TLValueKeyframeSerializer>();
         }
     }
 
@@ -62,69 +62,88 @@ namespace Timeliner
         }
     }
 
-    //track
-    public class TLTrackSerializer : ISerializer<TLTrack>
+    //track serializer base
+    public abstract class TLTrackSerializer<TTrack> : ISerializer<TTrack> where TTrack : TLTrack
     {
-        public XElement Serialize(TLTrack value, Serializer serializer)
+        public XElement Serialize(TTrack value, Serializer serializer)
         {
             var x = value.GetXML("Track");
             x.Add(new XAttribute("Order", value.Order.Value));
             x.Add(new XAttribute("Height", value.Height.Value));
-            x.SerializeAndAddList((value as TLValueTrack).Keyframes, serializer);
+            
+            SerializeKeyframes(x, value, serializer);
 
             return x;
         }
+        
+        protected abstract void SerializeKeyframes(XElement x, TTrack track, Serializer serializer);
 
-        public TLTrack Deserialize(XElement data, Type type, Serializer serializer)
+        public TTrack Deserialize(XElement data, Type type, Serializer serializer)
         {
             //create track
-            var track = new TLValueTrack(data.Attribute("Name").Value);
+            var track = CreateTrack(data.Attribute("Name").Value);
             track.Order.Value = int.Parse(data.Attribute("Order").Value);
             track.Height.Value = float.Parse(data.Attribute("Height").Value);
             
             track.Loading = true;
             
-            data.DeserializeAndAddToList<TLKeyframe>(track.Keyframes, serializer);
+            DeserializeKeyframes(data, track, serializer);
             
             track.Loading = false;
 
             return track;
         }
+        
+        protected abstract TTrack CreateTrack(string name);
+        
+        protected abstract void DeserializeKeyframes(XElement data, TTrack track, Serializer serializer);
     }
     
     //value track
-    public class TLValueTrackSerializer : ISerializer<TLValueTrack>
+    public class TLValueTrackSerializer : TLTrackSerializer<TLValueTrack>
     {
-        public XElement Serialize(TLValueTrack value, Serializer serializer)
-        {
-            var x = value.GetXML("Track");
-            x.Add(new XAttribute("Order", value.Order.Value));
-            x.Add(new XAttribute("Height", value.Height.Value));
-            x.SerializeAndAddList(value.Keyframes, serializer);
 
-            return x;
-        }
+    	protected override void SerializeKeyframes(XElement x, TLValueTrack track, Serializer serializer)
+		{
+    		x.SerializeAndAddList(track.Keyframes, serializer);
+		}
+    	
+		protected override void DeserializeKeyframes(XElement data, TLValueTrack track, Serializer serializer)
+		{
+			data.DeserializeAndAddToList<TLValueKeyframe>(track.Keyframes, serializer);
+		}
+    	
+		protected override TLValueTrack CreateTrack(string name)
+		{
+			return new TLValueTrack(name);
+		}
+    	
 
-        public TLValueTrack Deserialize(XElement data, Type type, Serializer serializer)
-        {
-            //create track
-            var track = new TLValueTrack(data.Attribute("Name").Value);
-            track.Order.Value = int.Parse(data.Attribute("Order").Value);
-            track.Height.Value = float.Parse(data.Attribute("Height").Value);
-            
-            track.Loading = true;
-            
-            data.DeserializeAndAddToList<TLKeyframe>(track.Keyframes, serializer);
-            
-            track.Loading = false;
-
-            return track;
-        }
+    }
+    
+    //value track
+    public class TLStringTrackSerializer : TLTrackSerializer<TLStringTrack>
+    {
+        
+		protected override void SerializeKeyframes(XElement x, TLStringTrack track, Serializer serializer)
+		{
+			x.SerializeAndAddList(track.Keyframes, serializer);
+		}
+    	
+		protected override void DeserializeKeyframes(XElement data, TLStringTrack track, Serializer serializer)
+		{
+			data.DeserializeAndAddToList<TLStringKeyframe>(track.Keyframes, serializer);
+		}
+    	
+		protected override TLStringTrack CreateTrack(string name)
+		{
+			return new TLStringTrack(name);
+		}
     }
 
-    public class TLKeyframeSerializer : ISerializer<TLKeyframe>
+    public class TLValueKeyframeSerializer : ISerializer<TLValueKeyframe>
     {
-        public XElement Serialize(TLKeyframe value, Serializer serializer)
+        public XElement Serialize(TLValueKeyframe value, Serializer serializer)
         {
             var x = value.GetXML("Keyframe");
             x.Add(new XAttribute("Time", value.Time.Value));
@@ -132,12 +151,32 @@ namespace Timeliner
             return x;
         }
 
-        public TLKeyframe Deserialize(XElement data, Type type, Serializer serializer)
+        public TLValueKeyframe Deserialize(XElement data, Type type, Serializer serializer)
         {
-            var kf = new TLKeyframe(data.Attribute("Name").Value);
+            var kf = new TLValueKeyframe(data.Attribute("Name").Value);
             kf.Time.Value = float.Parse(data.Attribute("Time").Value);
             kf.Value.Value = float.Parse(data.Attribute("Value").Value);
-            System.Diagnostics.Debug.WriteLine(kf.Name);
+            System.Diagnostics.Debug.WriteLine("deserialized value keyframe: " + kf.Name);
+            return kf;
+        }
+    }
+    
+    public class TLStringKeyframeSerializer : ISerializer<TLStringKeyframe>
+    {
+        public XElement Serialize(TLStringKeyframe value, Serializer serializer)
+        {
+            var x = value.GetXML("Keyframe");
+            x.Add(new XAttribute("Time", value.Time.Value));
+            x.Add(new XAttribute("Text", value.Text.Value));
+            return x;
+        }
+
+        public TLStringKeyframe Deserialize(XElement data, Type type, Serializer serializer)
+        {
+            var kf = new TLStringKeyframe(data.Attribute("Name").Value);
+            kf.Time.Value = float.Parse(data.Attribute("Time").Value);
+            kf.Text.Value = data.Attribute("Text").Value;
+            System.Diagnostics.Debug.WriteLine("deserialized string keyframe: " + kf.Name);
             return kf;
         }
     }

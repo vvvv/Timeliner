@@ -8,7 +8,7 @@ namespace Timeliner
 {
     public class TLRuler : TLModelBase
     {
-    	public EditableIDList<TLKeyframe> Marker
+    	public EditableIDList<TLValueKeyframe> Marker
         {
             get;
             private set;
@@ -41,7 +41,7 @@ namespace Timeliner
         public TLRuler()
         	: base(IDGenerator.NewID)
         {
-        	Marker = new EditableIDList<TLKeyframe>("Marker");
+        	Marker = new EditableIDList<TLValueKeyframe>("Marker");
         	LoopStart = new EditableProperty<float>("LoopStart");
         	LoopEnd = new EditableProperty<float>("LoopEnd");
         	LoopEnd.Value = 10;
