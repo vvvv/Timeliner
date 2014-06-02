@@ -4,6 +4,10 @@ A [Posh] (https://github.com/vvvv/Posh) based timeline that can be controlled an
 
 Brought to you by [vvvv] (http://vvvv.org).
 
+### Track Types
+* Value
+* String
+
 ### Mouse Interaction
 * create a track via doubleclick
 * create a keyframe in a track via doubleclick
@@ -15,9 +19,7 @@ Brought to you by [vvvv] (http://vvvv.org).
 * zoom via right drag up/down
 * rearrange tracks via left dragging their labels 
 
-### Track Types
-* Value
-
+### Keyboard Interaction
 Function| Shortcut
 ------------- | -------------
 Toggle Play | SPACE
@@ -33,9 +35,34 @@ Nudge selected keyframes a little | Arrow Keys
 Nudge keyframes a little more | Shift + Arrow Keys
 
 ### Receiving OSC
-...
+All of Timeliners current values are being sent via UDP using the OSC protocoll. Specify a target IP address (default: 127.0.0.1 ie. localhost) and a port (default: 4444) via Main Menu -> OSC.
+
+All values are sent in one OSC-Bundle. The individual messages addresses comprise of the specified "Prefix" + the pinname. e.g.:
+* /timeliner/Value 0
+* /timeliner/String 0
+
 ### Sending OSC
-...
+TimelinerSA can be remote controlled via OSC commands. It listenes to commands sent to the port set via the "Receive Port" numberbox in the interface (which defaults to 5555).
+
+Send the commands to the "Prefix" + the command you like to controll. e.g.:
+
+play: takes 0 (pause) or 1 (play) as argument
+
+/timeliner/play 1
+
+stop: no arguments
+
+/timeliner/stop
+
+seek: takes a single floating point value to specify the time to seek to
+
+/timeliner/seek 0.234
+
+loop: takes two floating point values to specify the loops in and out points
+
+/timeliner/loop 0.456 1.234
+
+---
 
 For similar projects see:
 * [TimelinerSA] (http://vvvv.org/documentation/timelinersa)
