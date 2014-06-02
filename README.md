@@ -5,14 +5,15 @@ A [Posh] (https://github.com/vvvv/Posh) based timeline that can be controlled an
 Brought to you by [vvvv] (http://vvvv.org).
 
 ### Mouse Interaction
-* doubleclick to create a track 
-* doubleclick to create a keyframe in a track 
-* middleclick a track to show its menu
-* middleclick a keyframe to show its menu
-* use the wheel to scroll numbers
-* rightclick a number or text to change it
-* right drag left/right to move time
-* right drag up/down to zoom 
+* create a track via doubleclick
+* create a keyframe in a track via doubleclick
+* show track menu via middleclick on a track
+* show keyframe menu via middleclick on a keyframe
+* change numbers using the mouse wheel
+* change numbers and text via rightclick
+* move time via right drag left/right
+* zoom via right drag up/down
+* rearrange tracks via left dragging their labels 
 
 ### Track Types
 * Value
