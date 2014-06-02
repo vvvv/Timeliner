@@ -123,7 +123,7 @@ namespace Timeliner
             
             PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller, 2);
             StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller, 1);
-            StopButton.CustomAttributes["x"] = "25"; //TODO: fix in svg lib
+            StopButton.X = 25;
             
             PlayButton.Click += PlayButton_Click;
             StopButton.Click += StopButton_Click;
