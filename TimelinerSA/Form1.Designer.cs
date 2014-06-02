@@ -210,8 +210,8 @@
         	        	        	this.oSCToolStripMenuItem,
         	        	        	this.exitToolStripMenuItem});
         	this.mainToolStripMenuItem.Name = "mainToolStripMenuItem";
-        	this.mainToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-        	this.mainToolStripMenuItem.Text = "File";
+        	this.mainToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
+        	this.mainToolStripMenuItem.Text = "Main Menu";
         	// 
         	// newToolStripMenuItem
         	// 
