@@ -101,7 +101,7 @@ namespace Timeliner
             LabelBackground.Width = CLeftOffset;
             LabelBackground.Height = Background.Height;
             LabelBackground.CustomAttributes["class"] = "ruler";
-//            LabelBackground.MouseDown += Label_MouseDown;
+            LabelBackground.MouseDown += Background_MouseDown;
 						
             Label.FontSize = 20;
             Label.X = 55;
@@ -316,7 +316,7 @@ namespace Timeliner
             Parent.Default_MouseDown(this, e);
             
             if (e.Button == 2)
-        		RulerMenu.Show(new PointF(e.x, e.y));
+        		RulerMenu.Show(new PointF(e.x, 0));
         }
 		
         void Background_MouseUp(object sender, MouseArg e)
