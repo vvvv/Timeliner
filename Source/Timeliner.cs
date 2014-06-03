@@ -68,6 +68,9 @@ namespace Timeliner
 			if (DoSeek)
 				Timer.Time = SeekTime;
 
+			Timer.Speed = TimelineModel.Ruler.Speed.Value;
+			Timer.FPS = TimelineModel.Ruler.FPS.Value;
+			Timer.Loop = TimelineModel.Ruler.Loop.Value;
 			Timer.LoopStart = TimelineModel.Ruler.LoopStart.Value;
 			Timer.LoopEnd = TimelineModel.Ruler.LoopEnd.Value;
 			

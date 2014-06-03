@@ -8,6 +8,7 @@ using Posh;
 using Svg;
 using Svg.Transforms;
 using VVVV.Core;
+using VVVV.Core.Commands;
 
 namespace Timeliner
 {
@@ -22,8 +23,8 @@ namespace Timeliner
 		
         //MainGroup holds
         protected SvgRectangle Background = new SvgRectangle();
-        private SvgText Label = new SvgText();
-        private SvgRectangle LabelBackground = new SvgRectangle();
+        SvgText Label = new SvgText();
+        SvgRectangle LabelBackground = new SvgRectangle();
 		
         public SvgGroup NumberGroup = new SvgGroup();
         public SvgGroup PanZoomGroup = new SvgGroup();
@@ -32,14 +33,18 @@ namespace Timeliner
         public SvgRectangle LoopEnd = new SvgRectangle();
         public SvgRectangle LoopRegion = new SvgRectangle();
 		
-        private const float CLeftOffset = 220;
-        private const float CHandlerWidth = 20;
+        const float CLeftOffset = 220;
+        const float CHandlerWidth = 20;
 		
-        private Matrix FView = new Matrix(Timer.PPS, 0, 0, 1, CLeftOffset, 0);
-        private bool FViewChanged = true;
-        private float FLastZoom;
+        Matrix FView = new Matrix(Timer.PPS, 0, 0, 1, CLeftOffset, 0);
+        bool FViewChanged = true;
+        float FLastZoom;
 		
         public SvgMatrix PanZoomMatrix;
+        
+        //rulermenu
+        public SvgMenuWidget RulerMenu;  
+		SvgValueWidget FPSEdit, SpeedEdit, LoopEdit;        
 		
         public new TLRuler Model
         {
@@ -96,6 +101,7 @@ namespace Timeliner
             LabelBackground.Width = CLeftOffset;
             LabelBackground.Height = Background.Height;
             LabelBackground.CustomAttributes["class"] = "ruler";
+//            LabelBackground.MouseDown += Label_MouseDown;
 						
             Label.FontSize = 20;
             Label.X = 55;
@@ -104,6 +110,7 @@ namespace Timeliner
             Label.ID = Model.GetID() + "_label";
             Label.Text = "00:00:00:000";
             Label.CustomAttributes["class"] = "time";
+            Label.MouseDown += Background_MouseDown;
 			
             ClipRect.Width = width;
             ClipRect.Height = Background.Height;
@@ -164,25 +171,27 @@ namespace Timeliner
             LoopRegion.CustomAttributes["class"] = "loop";
             PanZoomGroup.Children.Add(LoopRegion);
             
-//            RulerMenu = new SvgMenuWidget(115);
-//            RulerMenu.ID = "RulerMenu";
-//            var fps = new SvgValueWidget(0, 20, "FPS", 30);
-//            fps.OnValueChanged += FPSChanged;
-//            RulerMenu.AddItem(fps);
-//            var speed = new SvgValueWidget(0, 20, "Speed", 1);
-//            speed.OnValueChanged += SpeedChanged;
-//            RulerMenu.AddItem(speed);
-//            var loop = new SvgValueWidget(0, 20, "Loop", 1);
-//            fps.OnValueChanged += LoopChanged;
-//            RulerMenu.AddItem(loop);
+            RulerMenu = new SvgMenuWidget(115);
+            RulerMenu.ID = "RulerMenu";
+            FPSEdit = new SvgValueWidget(0, 20, "FPS", Model.FPS.Value);
+            FPSEdit.OnValueChanged += ChangeFPS;
+            RulerMenu.AddItem(FPSEdit);
+            SpeedEdit = new SvgValueWidget(0, 20, "Speed", Model.Speed.Value);
+            SpeedEdit.OnValueChanged += ChangeSpeed;
+            RulerMenu.AddItem(SpeedEdit);
+            LoopEdit = new SvgValueWidget(0, 20, "Loop", 1);
+            LoopEdit.OnValueChanged += ChangeLoop;
+            RulerMenu.AddItem(LoopEdit);
             
             //init scalings
             PanZoom(0, 0, 0);
             UpdateScene();
         }
-        
+
         public override void Dispose()
         {
+        	LabelBackground.MouseDown -= Background_MouseDown;
+        	
             Background.MouseDown -= Background_MouseDown;
             Background.MouseMove -= Background_MouseMove;
             Background.MouseUp -= Background_MouseUp;
@@ -220,6 +229,8 @@ namespace Timeliner
 		
         protected override void UnbuildSVG()
         {
+        	Parent.FOverlaysGroup.Children.Remove(RulerMenu);
+        	
             Parent.SvgRoot.Children.Remove(RulerClipPath);
             Parent.FTrackGroup.Children.Remove(MainGroup);
         }
@@ -303,6 +314,9 @@ namespace Timeliner
         void Background_MouseDown(object sender, MouseArg e)
         {
             Parent.Default_MouseDown(this, e);
+            
+            if (e.Button == 2)
+        		RulerMenu.Show(new PointF(e.x, e.y));
         }
 		
         void Background_MouseUp(object sender, MouseArg e)
@@ -314,6 +328,24 @@ namespace Timeliner
         {
             Parent.Default_MouseMove(this, e);
         }
+        
+        void ChangeFPS()
+		{
+        	Parent.Timer.FPS = (int) FPSEdit.Value;
+        	History.Insert(Command.Set(Model.FPS, (int) FPSEdit.Value));
+		}
+        
+        void ChangeSpeed()
+		{
+        	Parent.Timer.Speed = SpeedEdit.Value;
+			History.Insert(Command.Set(Model.Speed, SpeedEdit.Value));
+		}
+        
+        void ChangeLoop()
+		{
+        	Parent.Timer.Loop = LoopEdit.Value >= 0.5;
+			History.Insert(Command.Set(Model.Loop, LoopEdit.Value >= 0.5));
+		}
         #endregion
 		
         public float XPosToTime(float x)
