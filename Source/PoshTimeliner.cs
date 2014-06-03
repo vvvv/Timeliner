@@ -272,15 +272,6 @@ namespace Timeliner
 		void PoshServer_OnKeyPress(bool ctrl, bool shift, bool alt, char key)
 		{
 			Log("keypress: " + key);
-			
-			switch(key)
-			{
-					//save current document
-				case 's':
-					var path = Path.Combine(WebServer.TerminalPath, FUrl) + ".xml";
-					Save(path);
-					break;
-			}
 		}
 		
 		void PoshServer_SessionCreated(string sessionID)
