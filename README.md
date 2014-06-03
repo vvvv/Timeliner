@@ -4,6 +4,8 @@ A [Posh] (https://github.com/vvvv/Posh) based timeline that can be controlled an
 
 Brought to you by [vvvv] (http://vvvv.org).
 
+Requires Internet Explorer >= 10 to be installed on your system.
+
 ### Track Types
 * Value
 * String
