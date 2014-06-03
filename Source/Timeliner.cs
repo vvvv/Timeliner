@@ -76,20 +76,20 @@ namespace Timeliner
 			TimelineView.Evaluate();	
 		}
 
-		void Timeline_Tracks_OrderChanged(IViewableList<TLTrack> list)
+		void Timeline_Tracks_OrderChanged(IViewableList<TLTrackBase> list)
 		{
 			if (TrackOrderChanged != null)
 				TrackOrderChanged();
 		}
 
-		void Timeline_Tracks_Removed(IViewableCollection<TLTrack> collection, TLTrack item)
+		void Timeline_Tracks_Removed(IViewableCollection<TLTrackBase> collection, TLTrackBase item)
 		{
 			item.Label.ValueChanged -= item_Label_ValueChanged;
 			if (TrackRemoved != null)
 				TrackRemoved(item.Label.Value);
 		}
 
-		void Timeline_Tracks_Added(IViewableCollection<TLTrack> collection, TLTrack item)
+		void Timeline_Tracks_Added(IViewableCollection<TLTrackBase> collection, TLTrackBase item)
 		{
 			item.Label.ValueChanged += item_Label_ValueChanged;
 			if (TrackAdded != null)

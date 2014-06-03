@@ -263,7 +263,7 @@ namespace Timeliner
         
 		public override void Evaluate()
 		{
-			CurrentValue.Text = Model.CurrentValue.ToString("f4");
+			CurrentValue.Text = ((float)Model.CurrentValue).ToString("f4");
 		}
 	}
 }

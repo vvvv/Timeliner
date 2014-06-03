@@ -271,9 +271,9 @@ namespace Timeliner
 		}
 	}
 	
-	internal class KeyframeMouseHandler : MouseHandlerBase<ValueKeyframeView>
+	internal class ValueKeyframeMouseHandler : MouseHandlerBase<ValueKeyframeView>
 	{
-		public KeyframeMouseHandler(ValueKeyframeView view, string sessionID)
+		public ValueKeyframeMouseHandler(ValueKeyframeView view, string sessionID)
 			: base(view, sessionID)
 		{
 		}
@@ -337,6 +337,132 @@ namespace Timeliner
 			{
 				Instance.Parent.TimeEdit.Value = Instance.Model.Time.Value;
 				Instance.Parent.ValueEdit.Value = Instance.Model.Value.Value;
+				Instance.Parent.KeyframeMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
+			}
+		}
+
+		public override void MouseDrag(object sender, PointF arg, PointF delta, int callNr)
+		{
+			var cmd = new CompoundCommand();
+			FWasMoved = true;
+			
+			var dx = Instance.Parent.Parent.Ruler.XDeltaToTime(delta.X);
+			var i = 0;
+			foreach (var kf in FSelectedKeyframes)
+			{
+				var dy = kf.Parent.YDeltaToValue(delta.Y);
+				var min = kf.Parent.Model.Maximum.Value;
+				var max = kf.Parent.Model.Minimum.Value;
+				
+				FActualValues[i] += dy;
+
+				cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + dx));
+				if (!FAffectedTracks.Any(x => x.Collapsed))
+					cmd.Append(Command.Set(kf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
+				
+				i++;
+			}
+			
+			//execute changes immediately
+			cmd.Execute();
+			//collect changes for history
+			FMoveCommands.Append(cmd);
+			
+			Instance.Parent.Parent.UpdateScene();
+		}
+
+		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)
+		{
+			if (arg.Button == 1)
+			{
+				//unselect?
+				if(FWasSelected && !FWasMoved)
+				{
+					Instance.History.Insert(Command.Set(Instance.Model.Selected, false));
+				}
+				else
+				{
+					foreach (var track in FAffectedTracks)
+					{
+						track.Model.BuildCurves();
+					}
+					
+					//add collected commands to history
+					if(FMoveCommands.CommandCount > 0)
+						Instance.History.InsertOnly(FMoveCommands);
+				}
+			}
+			
+			return base.MouseUp(sender, arg);
+		}
+	}
+	
+	internal class StringKeyframeMouseHandler : MouseHandlerBase<StringKeyframeView>
+	{
+		public StringKeyframeMouseHandler(StringKeyframeView view, string sessionID)
+			: base(view, sessionID)
+		{
+		}
+		
+		private bool FWasSelected;
+		private bool FWasMoved;
+		private List<ValueTrackView> FAffectedTracks = new List<ValueTrackView>();
+		private List<ValueKeyframeView> FSelectedKeyframes = new List<ValueKeyframeView>();
+		private List<float> FActualValues = new List<float>();
+		private CompoundCommand FMoveCommands;
+		
+		//delete on right click
+		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
+		{
+			var ret = base.MouseDown(sender, arg);
+			if ((arg.Button == 1) || (arg.Button == 2))
+			{
+				FWasSelected = Instance.Model.Selected.Value;
+				var cmd = new CompoundCommand();
+				if (!FWasSelected)
+				{
+					//unselect all keyframes
+					foreach (var track in Instance.Parent.Parent.Tracks.OfType<ValueTrackView>())
+						foreach (var kf in track.Keyframes)
+							if (kf.Model.Selected.Value)
+								cmd.Append(Command.Set(kf.Model.Selected, false));
+				}
+				//set keyframe selected
+				cmd.Append(Command.Set(Instance.Model.Selected, true));
+				
+				Instance.History.Insert(cmd);
+				
+				//start collecting movecommands in drag
+				FMoveCommands = new CompoundCommand();
+				
+				//store initial values to operate on for being able to drag beyond min/max
+				foreach (var track in Instance.Parent.Parent.Tracks.OfType<ValueTrackView>())
+					foreach (var kf in track.Keyframes)
+						if (kf.Model.Selected.Value)
+				{
+					if (!FAffectedTracks.Contains(track))
+						FAffectedTracks.Add(track);
+					
+					FSelectedKeyframes.Add(kf);
+					FActualValues.Add(kf.Model.Value.Value);
+				}
+			}
+			return ret;
+		}
+		
+		public override void MouseClick(object sender, MouseArg arg)
+		{
+			if (arg.Button == 3)
+			{
+//				causes total freeze in IE11
+//				so for now only delete via keyboard
+//				var cmd = Command.Remove(Instance.Parent.Model.Keyframes, Instance.Model);
+//				Instance.History.Insert(cmd);
+			}
+			else if (arg.Button == 2)
+			{
+				Instance.Parent.TimeEdit.Value = Instance.Model.Time.Value;
+				Instance.Parent.StringEdit.Caption = Instance.Model.Text.Value;
 				Instance.Parent.KeyframeMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
 			}
 		}

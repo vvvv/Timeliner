@@ -74,8 +74,8 @@ namespace Timeliner
 			
 			Background.X = Model.Time.Value;
 			Background.Y = -Model.Value.Value;
-            CollapsedView.X = Background.X;
-            CollapsedView.X = Background.X;
+            
+			CollapsedView.X = Background.X;
             
 			var isSelected = Model.Selected.Value;
 			Label.Visible = isSelected;			

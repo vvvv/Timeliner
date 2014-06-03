@@ -14,7 +14,7 @@ namespace Timeliner
         {
             //register serializers
             serializer.RegisterGeneric<TLDocument, TLDocumentSerializer>();
-            serializer.RegisterGeneric<EditableIDList<TLTrack>, TLTrackListSerializer>();
+            serializer.RegisterGeneric<EditableIDList<TLTrackBase>, TLTrackListSerializer>();
             serializer.RegisterGeneric<TLValueTrack, TLValueTrackSerializer>();
             serializer.RegisterGeneric<TLStringTrack, TLStringTrackSerializer>();
             serializer.RegisterGeneric<TLValueKeyframe, TLValueKeyframeSerializer>();
@@ -41,9 +41,9 @@ namespace Timeliner
     }
 
     //document tracks
-    public class TLTrackListSerializer : ISerializer<EditableIDList<TLTrack>>
+    public class TLTrackListSerializer : ISerializer<EditableIDList<TLTrackBase>>
     {
-        public XElement Serialize(EditableIDList<TLTrack> value, Serializer serializer)
+        public XElement Serialize(EditableIDList<TLTrackBase> value, Serializer serializer)
         {
             var x = new XElement("Timeliner");
 
@@ -52,18 +52,18 @@ namespace Timeliner
             return x;
         }
 
-        public EditableIDList<TLTrack> Deserialize(XElement data, Type type, Serializer serializer)
+        public EditableIDList<TLTrackBase> Deserialize(XElement data, Type type, Serializer serializer)
         {
-            var list = new EditableIDList<TLTrack>("Tracks");
+            var list = new EditableIDList<TLTrackBase>("Tracks");
 
-            data.DeserializeAndAddToList<TLTrack>(list, serializer);
+            data.DeserializeAndAddToList<TLTrackBase>(list, serializer);
 
             return list;
         }
     }
 
     //track serializer base
-    public abstract class TLTrackSerializer<TTrack> : ISerializer<TTrack> where TTrack : TLTrack
+    public abstract class TLTrackSerializer<TTrack> : ISerializer<TTrack> where TTrack : TLTrackBase
     {
         public XElement Serialize(TTrack value, Serializer serializer)
         {
@@ -121,7 +121,7 @@ namespace Timeliner
 
     }
     
-    //value track
+    //string track
     public class TLStringTrackSerializer : TLTrackSerializer<TLStringTrack>
     {
         

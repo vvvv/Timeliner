@@ -63,11 +63,11 @@ namespace Timeliner
 			}
 		}
 		
-		public new TLTrack Model
+		public new TLTrackBase Model
         {
             get
             {
-                return (TLTrack)base.Model;
+                return (TLTrackBase)base.Model;
             }
             protected set
             {
@@ -103,7 +103,7 @@ namespace Timeliner
             get {return Model.Height.Value == Model.CollapsedHeight;}
         }
 		
-		public TrackView(TLTrack track, TimelineView tv, RulerView rv)
+		public TrackView(TLTrackBase track, TimelineView tv, RulerView rv)
 			: base(track, tv)
 		{
 			Model = track;

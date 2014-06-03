@@ -40,7 +40,7 @@ namespace Timeliner
         
 		public RulerView Ruler;
 		public EditableList<TrackView> Tracks = new EditableList<TrackView>();
-		private Synchronizer<TrackView, TLTrack> Syncer;
+		private Synchronizer<TrackView, TLTrackBase> Syncer;
 
 		public SvgDefinitionList Definitions = new SvgDefinitionList();
 		private SvgDocumentWidget PlayButton;
@@ -84,7 +84,7 @@ namespace Timeliner
             
             Background.Width = new SvgUnit(SvgUnitType.Percentage, 100);
             Background.Height = new SvgUnit(SvgUnitType.Percentage, 100);
-            Background.Opacity = 0.1f;
+            Background.Opacity = 0.5f;
             Background.ID = Document.GetID() + "_Background";
             
             Background.MouseDown += Default_MouseDown;
@@ -130,10 +130,15 @@ namespace Timeliner
             
             MainMenu = new SvgMenuWidget(115);
             MainMenu.ID = "MainMenu";
-            var addTrack = new SvgButtonWidget(0, 20, "Add Value Track");
-            addTrack.OnButtonPressed += AddTrack;
             
-            MainMenu.AddItem(addTrack);
+            var addValueTrack = new SvgButtonWidget(0, 20, "Add Value Track");
+            addValueTrack.OnButtonPressed += AddValueTrack;
+            
+            var addStringTrack = new SvgButtonWidget(0, 20, "Add String Track");
+            addStringTrack.OnButtonPressed += AddStringTrack;
+            
+            MainMenu.AddItem(addValueTrack);
+            MainMenu.AddItem(addStringTrack);
             
             FRulerGroup.ID = "Ruler";
             FRulerGroup.Transforms = new SvgTransformCollection();
@@ -152,6 +157,8 @@ namespace Timeliner
                                         	TrackView tv;
                                         	if (tm is TLValueTrack)
 	                                     		tv = new ValueTrackView(tm as TLValueTrack, this, Ruler);
+                                        	else if(tm is TLStringTrack)
+                                        		tv = new StringTrackView(tm as TLStringTrack, this, Ruler);
 											else 
 												tv = new AudioTrackView(tm as TLAudioTrack, this, Ruler);
 											
@@ -292,9 +299,16 @@ namespace Timeliner
 		}
 		
 		int FTrackCount = 0;
-		void AddTrack()
+		void AddValueTrack()
 		{
 			var track = new TLValueTrack(FTrackCount++.ToString());
+			track.Order.Value = Document.Tracks.Count;
+        	History.Insert(Command.Add(Document.Tracks, track));
+		}
+		
+		void AddStringTrack()
+		{
+			var track = new TLStringTrack(FTrackCount++.ToString());
 			track.Order.Value = Document.Tracks.Count;
         	History.Insert(Command.Add(Document.Tracks, track));
 		}
@@ -369,7 +383,12 @@ namespace Timeliner
 			else if(sender is ValueKeyframeView)
 			{
 				HideMenus();
-				return new KeyframeMouseHandler(sender as ValueKeyframeView, e.SessionID);
+				return new ValueKeyframeMouseHandler(sender as ValueKeyframeView, e.SessionID);
+			}
+			else if(sender is StringKeyframeView)
+			{
+				HideMenus();
+				return new StringKeyframeMouseHandler(sender as StringKeyframeView, e.SessionID);
 			}
 			else if(sender == TimeBar)
 			{

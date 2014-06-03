@@ -31,7 +31,7 @@ namespace Timeliner
     		private set;
     	}
     	
-        public IEditableIDList<TLTrack> Tracks
+        public IEditableIDList<TLTrackBase> Tracks
         {
             get;
             private set;
@@ -42,7 +42,7 @@ namespace Timeliner
             : base(name, location)
         {
             //create tracks list
-            Tracks = new EditableIDList<TLTrack>("Tracks");
+            Tracks = new EditableIDList<TLTrackBase>("Tracks");
 
             //add to self
             Add(Tracks);

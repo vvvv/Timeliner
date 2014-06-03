@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-# SharpDevelop 5.0
+# SharpDevelop 4.4
 VisualStudioVersion = 12.0.20827.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svg", "..\SVG\Source\Svg.csproj", "{886A98C5-37C0-4E8B-885E-30C1D2F98B47}"

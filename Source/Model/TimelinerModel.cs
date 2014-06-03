@@ -43,7 +43,7 @@ namespace Timeliner
     	}
     }
 
-    public abstract class TLTrack : TLModelBase
+    public abstract class TLTrackBase : TLModelBase
     {
     	
         public EditableProperty<int> Order
@@ -88,12 +88,12 @@ namespace Timeliner
             get {return 50;}
         }
         
-        public TLTrack()
+        public TLTrackBase()
         	: this(IDGenerator.NewID)
         {
         }
 
-        public TLTrack(string name)
+        public TLTrackBase(string name)
             : base(name)
         {
             Order = new EditableProperty<int>("Order");

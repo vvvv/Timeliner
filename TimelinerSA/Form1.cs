@@ -70,13 +70,15 @@ namespace TimeLinerSA
                 foreach (var timeliner in FPoshTimeliners)
                 {
                     timeliner.Evaluate(hosttime);
-                    foreach (var tl in timeliner.Timeliner.TimelineView.Tracks)
+                    foreach (var tl in timeliner.Timeliner.TimelineModel.Tracks)
                     {
-                        var label = (tl as ValueTrackView).Model.Label.Value;
-                        var val = (tl as ValueTrackView).Model.CurrentValue;
+                        var label = tl.Label.Value;
+                        
+                        //TODO: ask track to generate osc message
+                        //var val = tl.CurrentValue;
                         
                         var message = new OSCMessage(prefix + "/" + label);
-                        message.Append((float) val);
+                        //message.Append(val);
                         bundle.Append(message);                    
                     }
                 }

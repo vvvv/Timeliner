@@ -9,7 +9,7 @@ using NAudio.Wave;
 
 namespace Timeliner
 {
-    public class TLAudioTrack : TLTrack
+    public class TLAudioTrack : TLTrackBase
     {
     	public EditableIDList<TLSample> Samples
         {

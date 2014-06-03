@@ -15,7 +15,7 @@ namespace Timeliner
 	/// <summary>
 	/// Timeliner track so sequence strings
 	/// </summary>
-	public class TLStringTrack : TLTrack
+	public class TLStringTrack : TLTrackBase
 	{
 		//property which holds the keyframes
 		public EditableIDList<TLStringKeyframe> Keyframes
@@ -33,6 +33,18 @@ namespace Timeliner
             
             //set the name of this track
             Label.Value = "String " + name;
+		}
+		
+		public override void Evaluate(float time)
+		{
+			base.Evaluate(time);
+			CurrentText = "";
+		}
+		
+		public string CurrentText
+		{
+			get;
+			protected set;
 		}
 		
 	}
