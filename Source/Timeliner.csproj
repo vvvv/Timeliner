@@ -21,6 +21,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -49,9 +53,6 @@
   <ItemGroup>
     <Reference Include="CommandLine">
       <HintPath>..\Dependencies\CommandLine.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\Dependencies\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity">
       <HintPath>..\Dependencies\Microsoft.Practices.Unity.dll</HintPath>
@@ -103,6 +104,7 @@
     <Compile Include="View\AudioTrackView.cs" />
     <Compile Include="View\BaseClasses.cs" />
     <Compile Include="View\CurveView.cs" />
+    <Compile Include="View\KeyframeView.cs" />
     <Compile Include="View\StringKeyframeView.cs" />
     <Compile Include="View\StringTrackView.cs" />
     <Compile Include="View\ValueKeyframeView.cs" />

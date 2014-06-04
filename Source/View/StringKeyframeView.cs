@@ -9,8 +9,32 @@ using VVVV.Core;
 
 namespace Timeliner
 {
-	public class StringKeyframeView : TLViewBaseTyped<TLStringKeyframe, StringTrackView>, IDisposable
+	public class StringKeyframeView : KeyframeView, IDisposable
 	{
+		public new TLStringKeyframe Model
+        {
+            get
+            {
+                return (TLStringKeyframe)base.Model;
+            }
+            protected set
+            {
+                base.Model = value;
+            }
+        }
+        
+        public new StringTrackView Parent
+        {
+        	get
+            {
+                return (StringTrackView)base.Parent;
+            }
+            protected set
+            {
+                base.Parent = value;
+            }
+        }
+		
 		public SvgUse Background = new SvgUse();
         public SvgUse CollapsedView = new SvgUse();
 		private SvgText Label = new SvgText();
@@ -78,10 +102,15 @@ namespace Timeliner
 			var isSelected = Model.Selected.Value;
 			Label.Visible = true;			
 			
-			if (isSelected)
+			if (true)
 			{
-				Label.X = Background.X + 2;
-				Label.Y = Background.Y;
+				var m = new Matrix();
+				var y = Math.Max(Background.Y, -Parent.Model.Height.Value + 10);
+				m.Translate(Background.X + 0.1f, y);
+				
+				Label.Transforms[0] = (SvgMatrix)Parent.CollapsedKeyframeDefinition.Transforms[0].Clone();
+				Label.X = CollapsedView.X + 50;
+				Label.Y = 20;
 				Label.Text = Model.Text.Value;
 			}
             

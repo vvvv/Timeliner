@@ -104,7 +104,6 @@ namespace Timeliner
 			Path.PathData.Clear();
 	        var coords = new List<float>();
 	        var curveMove = 'M';
-	        var curveType = 'L';
 	
 	        foreach (var sample in Model.Samples)
 	        {
@@ -162,6 +161,14 @@ namespace Timeliner
         
         public override void Evaluate()
         {}
+		
+		public override IEnumerable<KeyframeView> KeyframeViews
+		{
+			get 
+			{
+				yield return null;
+			}
+		}
 	}
 	
 	public class SampleView : TLViewBaseTyped<TLSample, AudioTrackView>, IDisposable

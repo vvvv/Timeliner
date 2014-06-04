@@ -380,15 +380,10 @@ namespace Timeliner
 				else
 					return null;					
 			}
-			else if(sender is ValueKeyframeView)
+			else if(sender is KeyframeView)
 			{
 				HideMenus();
-				return new ValueKeyframeMouseHandler(sender as ValueKeyframeView, e.SessionID);
-			}
-			else if(sender is StringKeyframeView)
-			{
-				HideMenus();
-				return new StringKeyframeMouseHandler(sender as StringKeyframeView, e.SessionID);
+				return new KeyframeMouseHandler(sender as ValueKeyframeView, e.SessionID);
 			}
 			else if(sender == TimeBar)
 			{

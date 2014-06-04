@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -6,6 +7,7 @@ using Posh;
 using Svg;
 using Svg.Transforms;
 using VVVV.Core;
+using VVVV.Core.Collections;
 using VVVV.Core.Commands;
 
 namespace Timeliner
@@ -15,6 +17,11 @@ namespace Timeliner
 	/// </summary>
 	public abstract class TrackView: TLViewBase
 	{
+		public abstract IEnumerable<KeyframeView> KeyframeViews
+		{
+			get;
+		}
+		
 		protected SvgDefinitionList Definitions = new SvgDefinitionList();
 		
 		//time-range zooming (x) is done on the PanZoomGroup
@@ -404,5 +411,14 @@ namespace Timeliner
         protected abstract void FillTrackMenu();
         protected abstract void FillKeyframeMenu();
 		public abstract void Evaluate();
+		
+		/// <summary>
+		/// Update the keyframe menu to latest values
+		/// </summary>
+		/// <param name="kf">The clicked keyframe</param>
+		public virtual void UpdateKeyframeMenu(KeyframeView kf)
+		{
+			TimeEdit.Value = kf.Model.Time.Value;
+		}
 	}
 }

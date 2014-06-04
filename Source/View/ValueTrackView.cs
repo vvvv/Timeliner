@@ -15,7 +15,12 @@ namespace Timeliner
 {
 	public class ValueTrackView: TrackView
 	{
-		public EditableList<ValueKeyframeView> Keyframes = new EditableList<ValueKeyframeView>();
+		public EditableList<ValueKeyframeView> Keyframes 
+		{
+			get;
+			protected set;
+		}
+		
 		public EditableList<CurveView> Curves = new EditableList<CurveView>();
 		
 		public SvgCircle KeyframeDefinition = new SvgCircle();
@@ -45,6 +50,9 @@ namespace Timeliner
 		public ValueTrackView(TLValueTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv, rv)
 		{
+		
+			Keyframes = new EditableList<ValueKeyframeView>();			
+			
 			KFSyncer = Keyframes.SyncWith(Model.Keyframes,
 			                              kf =>
 			                              {
@@ -264,6 +272,22 @@ namespace Timeliner
 		public override void Evaluate()
 		{
 			CurrentValue.Text = ((float)Model.CurrentValue).ToString("f4");
+		}
+		
+		public override void UpdateKeyframeMenu(KeyframeView kf)
+		{
+			base.UpdateKeyframeMenu(kf);
+			
+			//also update the value of the keyframe menu
+			ValueEdit.Value = (kf as ValueKeyframeView).Model.Value.Value;
+		}
+		
+		public override IEnumerable<KeyframeView> KeyframeViews 
+		{
+			get 
+			{
+				return Keyframes;
+			}
 		}
 	}
 }

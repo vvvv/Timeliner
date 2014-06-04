@@ -9,11 +9,35 @@ using VVVV.Core;
 
 namespace Timeliner
 {
-	public class ValueKeyframeView : TLViewBaseTyped<TLValueKeyframe, ValueTrackView>, IDisposable
+	public class ValueKeyframeView : KeyframeView, IDisposable
 	{
 		public SvgUse Background = new SvgUse();
         public SvgUse CollapsedView = new SvgUse();
 		private SvgText Label = new SvgText();
+		
+		public new TLValueKeyframe Model
+        {
+            get
+            {
+                return (TLValueKeyframe)base.Model;
+            }
+            protected set
+            {
+                base.Model = value;
+            }
+        }
+        
+        public new ValueTrackView Parent
+        {
+        	get
+            {
+                return (ValueTrackView)base.Parent;
+            }
+            protected set
+            {
+                base.Parent = value;
+            }
+        }
 		
 		public ValueKeyframeView(TLValueKeyframe kf, ValueTrackView trackview)
 			: base(kf, trackview)

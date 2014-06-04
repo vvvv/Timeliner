@@ -15,7 +15,11 @@ namespace Timeliner
 {
 	public class StringTrackView: TrackView
 	{
-		public EditableList<StringKeyframeView> Keyframes = new EditableList<StringKeyframeView>();
+		public EditableList<StringKeyframeView> Keyframes 
+		{
+			get;
+			protected set;
+		}
 		
 		public SvgLine KeyframeDefinition = new SvgLine();
         public SvgLine CollapsedKeyframeDefinition = new SvgLine();
@@ -23,7 +27,7 @@ namespace Timeliner
 		
 		private Synchronizer<StringKeyframeView, TLStringKeyframe> KFSyncer;
 		
-		public SvgStringWidget StringEdit;
+		public SvgStringWidget TextEdit;
 		private SvgText CurrentValue = new SvgText();
 		
 		public new TLStringTrack Model
@@ -41,6 +45,9 @@ namespace Timeliner
 		public StringTrackView(TLStringTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv, rv)
 		{
+			
+			Keyframes = new EditableList<StringKeyframeView>();
+			
 			KFSyncer = Keyframes.SyncWith(Model.Keyframes,
 			                              kf =>
 			                              {
@@ -88,7 +95,7 @@ namespace Timeliner
 			Background.Click -= Background_MouseClick;
 			
 
-			StringEdit.OnValueChanged -= ChangeKeyframeText;
+			TextEdit.OnValueChanged -= ChangeKeyframeText;
 			
 			base.Dispose();
 		}
@@ -191,14 +198,30 @@ namespace Timeliner
         
         protected override void FillKeyframeMenu()
         {
-            StringEdit = new SvgStringWidget(0, 20, "Text");
-			StringEdit.OnValueChanged += ChangeKeyframeText;
-			KeyframeMenu.AddItem(StringEdit);
+            TextEdit = new SvgStringWidget(0, 20, "Text");
+			TextEdit.OnValueChanged += ChangeKeyframeText;
+			KeyframeMenu.AddItem(TextEdit);
         }
         
 		public override void Evaluate()
 		{
 			CurrentValue.Text = Model.CurrentText;
+		}
+		
+		public override void UpdateKeyframeMenu(KeyframeView kf)
+		{
+			base.UpdateKeyframeMenu(kf);
+			
+			//also update the value of the keyframe menu
+			TextEdit.Caption = (kf as StringKeyframeView).Model.Text.Value;
+		}
+		
+		public override IEnumerable<KeyframeView> KeyframeViews 
+		{
+			get 
+			{
+				return Keyframes;
+			}
 		}
 	}
 }
