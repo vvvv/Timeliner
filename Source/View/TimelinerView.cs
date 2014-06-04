@@ -80,8 +80,6 @@ namespace Timeliner
             var manager = new SvgIdManager(SvgRoot, caller, Document.Mapper.Map<RemoteContext>());
             SvgRoot.OverwriteIdManager(manager);
             
-            Ruler = new RulerView(Document.Ruler, this);
-            
             Background.Width = new SvgUnit(SvgUnitType.Percentage, 100);
             Background.Height = new SvgUnit(SvgUnitType.Percentage, 100);
             Background.Opacity = 0.5f;
@@ -91,14 +89,6 @@ namespace Timeliner
             Background.MouseMove += Default_MouseMove;
             Background.MouseUp += Default_MouseUp;
             Background.Click += Background_Click;
-            
-            SizeBar.Width = Background.Width;
-			SizeBar.Height = 10;
-			SizeBar.ID = "SizeBar";
-			SizeBar.Y = Ruler.Height;
-            SizeBar.MouseDown += Default_MouseDown;
-            SizeBar.MouseMove += Default_MouseMove;
-            SizeBar.MouseUp += Default_MouseUp;
             
             Selection.ID = "Selection";
             Selection.CustomAttributes["pointer-events"] = "none";
@@ -120,6 +110,16 @@ namespace Timeliner
             
             MouseTimeLabel.ID = "MouseTimeLabel";
             MouseTimeLabel.FontSize = 14;
+            
+            Ruler = new RulerView(Document.Ruler, this);
+            
+            SizeBar.Width = Background.Width;
+			SizeBar.Height = 10;
+			SizeBar.ID = "SizeBar";
+			SizeBar.Y = Ruler.Height;
+            SizeBar.MouseDown += Default_MouseDown;
+            SizeBar.MouseMove += Default_MouseMove;
+            SizeBar.MouseUp += Default_MouseUp;
             
             PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller, 2);
             StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller, 1);
@@ -242,6 +242,7 @@ namespace Timeliner
             FOverlaysGroup.Children.Add(MouseTimeLine);
             FOverlaysGroup.Children.Add(MouseTimeLabel);
 			FOverlaysGroup.Children.Add(MainMenu);
+			FOverlaysGroup.Children.Add(Ruler.RulerMenu);
 			SvgRoot.Children.Add(FOverlaysGroup);			
 			
 			return SvgRoot;
@@ -289,7 +290,6 @@ namespace Timeliner
 			Selection.SetRectangle(rect);
 		}
 		#endregion
-		
 		
 		#region scenegraph eventhandler
 		void Background_Click(object sender, MouseArg e)
@@ -420,6 +420,7 @@ namespace Timeliner
 				track.TrackMenu.Hide();
 				track.KeyframeMenu.Hide();
 			}
+			Ruler.RulerMenu.Hide();
 			MainMenu.Hide();
 		}
 	}

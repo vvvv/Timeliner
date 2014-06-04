@@ -4,16 +4,16 @@ namespace Timeliner
 {
 	public sealed class Timer
 	{
-		public const float MinTimeStep = 0.0001f;
 		public const float PPS = 50f; //pixels per second
-		private float FCurrentTime;
-		private float FHostTime;
-		private float FSpeed = 1;
-		private float FLastHostTime = -1;
+		float FCurrentTime;
+		float FHostTime;
+		float FSpeed = 1;
+		float FLastHostTime = -1;
 		
-		private bool FIsRunning;
-		private bool FForceUpdate;
+		bool FIsRunning;
+		bool FForceUpdate;
 		
+		public bool Loop;
 		public float LoopStart;
 		public float LoopEnd;
 
@@ -31,6 +31,8 @@ namespace Timeliner
 				}
 			}
 		}
+		
+		public int FPS;
 		
 		private float FTimeDelta;
 		public float TimeDelta
@@ -71,11 +73,8 @@ namespace Timeliner
         
         public string TimeToString(float time)
         {
-            var showMinus = false;
+            var showMinus = time < 0;
 			time = Math.Abs(time);
-			
-			if (FCurrentTime < 0)
-				showMinus = true;
 			
 			var ms = (int) ((time - Math.Floor(time)) * 1000);
 			var s = (int) (time % 60);
@@ -96,7 +95,7 @@ namespace Timeliner
 			{
 				FTimeDelta = (FHostTime - FLastHostTime) * FSpeed;
 				FCurrentTime += FTimeDelta;
-				if (FCurrentTime > LoopEnd)
+				if ((Loop) && (FCurrentTime > LoopEnd))
 					FCurrentTime = LoopStart;
 			}
 			else if (FForceUpdate)

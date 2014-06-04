@@ -227,35 +227,39 @@ namespace Timeliner
 		
 		void Nudge(NudgeDirection direction, bool shift)
 		{
-			var nudgeTime = 0.1f; //should related rulers resolution
+			var nudgeTime = 1f/Timeliner.Timer.FPS;
 			var nudgeValue = 0.1f;
 			
 			if (shift)
 			{
-				nudgeTime *= 10;
+				nudgeTime *= Timeliner.Timer.FPS; //to nudge a whole second
 				nudgeValue *= 10;
 			}
 			
 			var cmd = new CompoundCommand();
 			foreach(var track in Timeliner.TimelineView.Tracks)
-				foreach(var kf in (track as ValueTrackView).Keyframes)
 			{
-				if (kf.Model.Selected.Value)
-					switch (direction)
+				foreach(var kf in (track as ValueTrackView).Keyframes)
 				{
-					case NudgeDirection.Back:
-						cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value - nudgeTime));
-						break;
-					case NudgeDirection.Forward:
-						cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + nudgeTime));
-						break;
-					case NudgeDirection.Up:
-						cmd.Append(Command.Set(kf.Model.Value, kf.Model.Value.Value + nudgeValue));
-						break;
-					case NudgeDirection.Down:
-						cmd.Append(Command.Set(kf.Model.Value, kf.Model.Value.Value - nudgeValue));
-						break;
+					if (kf.Model.Selected.Value)
+						switch (direction)
+					{
+						case NudgeDirection.Back:
+							cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value - nudgeTime));
+							break;
+						case NudgeDirection.Forward:
+							cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + nudgeTime));
+							break;
+						case NudgeDirection.Up:
+							cmd.Append(Command.Set(kf.Model.Value, kf.Model.Value.Value + nudgeValue));
+							break;
+						case NudgeDirection.Down:
+							cmd.Append(Command.Set(kf.Model.Value, kf.Model.Value.Value - nudgeValue));
+							break;
+					}
 				}
+				if (track is ValueTrackView)
+					(track as ValueTrackView).Model.BuildCurves();
 			}
 			Context.History.Insert(cmd);
 		}
