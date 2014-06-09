@@ -6,27 +6,33 @@
 .kf 
 {
 	fill: #ffffff;
-	stroke-width: 3;
 	stroke: #00000000;
+	stroke-width: 3;
 }
 
 .kf:hover, .kf:active
 {
-	fill: #959595;
-	stroke-width: 3;
-	stroke: #959595;
+	fill: #252525;
+	stroke: #252525;
 }
 
 .ckf 
 {
-	stroke-width: 5;
 	stroke: #ffffff;
+	stroke-width: 4;
 }
 
-.ckf :hover, .ckf:active
-{
-	stroke-width: 7;
+.ckf.selected 
+{	
+	fill: #959595;
 	stroke: #959595;
+	stroke-width: 6;
+}
+
+.ckf:hover, .ckf:active
+{
+	stroke-width: 6;
+	stroke: #252525;
 }
 
 .selected 
@@ -41,13 +47,6 @@
 	fill: #959595;
 	stroke: #959595;
 	stroke-width: 3;
-}
-
-.ckf.selected 
-{	
-	fill: #959595;
-	stroke: #959595;
-	stroke-width: 10;
 }
 
 .ruler
