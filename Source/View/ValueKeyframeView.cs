@@ -121,7 +121,7 @@ namespace Timeliner
         {
             if (Parent.Collapsed)
             {
-                return rect.IntersectsWith(new RectangleF(Model.Time.Value, 0, 0.1f, float.MaxValue));
+                return rect.IntersectsWith(new RectangleF(Model.Time.Value, Parent.Model.Minimum.Value, 0.1f, Parent.Model.Maximum.Value - Parent.Model.Minimum.Value));
             }
             else
             {
