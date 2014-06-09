@@ -304,7 +304,7 @@ namespace Timeliner
 			History.Insert(Command.Set(Model.Label, label));
 		}
 		
-		void CollapseTrack()
+		public void CollapseTrack()
 		{
 			var newHeight = 0f;
 			if (Model.Height.Value > 50)
