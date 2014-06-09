@@ -149,11 +149,6 @@ namespace Timeliner
 		}
 		#endregion
 		
-		protected override void ChangeKeyframeTime()
-		{
-//			History.Insert(Command.Set(Keyframes.First(x => x.Selected).Model.Value, TimeEdit.Value));
-		}
-		
 		protected override void FillTrackMenu()
 		{}
 		

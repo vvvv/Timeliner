@@ -197,22 +197,17 @@ namespace Timeliner
 		#endregion
 		
 		#region scenegraph eventhandler
-		void ChangeMinimum()
+		void ChangeMinimum(float delta)
 		{
 			History.Insert(Command.Set(Model.Minimum, MinValueEdit.Value));
 		}
 		
-		void ChangeMaximum()
+		void ChangeMaximum(float delta)
 		{
 			History.Insert(Command.Set(Model.Maximum, MaxValueEdit.Value));
 		}
 		
-		protected override void ChangeKeyframeTime()
-		{
-			History.Insert(Command.Set(Keyframes.ToList().First(x => x.Model.Selected.Value).Model.Time, TimeEdit.Value));
-		}
-		
-		void ChangeKeyframeValue()
+		void ChangeKeyframeValue(float delta)
 		{
 			var cmd = new CompoundCommand();
 			
