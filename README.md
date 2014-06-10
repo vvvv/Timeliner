@@ -33,8 +33,9 @@ Set out point | O
 Select all keyframes in active track | Ctrl + A
 Select all keyframes | Ctrl + Shift + A
 Delete selected keyframes | Del
-Nudge selected keyframes a little | Arrow Keys
-Nudge keyframes a little more | Shift + Arrow Keys
+Toggle Collapse active track | Ctrl+<
+Nudge selected keyframes by one frame | Left/Right Arrow Keys
+Nudge selected keyframes values | Up/Down Arrow Keys (also use Shift/Ctrl/Alt vvvv-style to change stepsize)
 
 ### Receiving OSC
 All of Timeliners current values are being sent via UDP using the OSC protocoll. Specify a target IP address (default: 127.0.0.1 ie. localhost) and a port (default: 4444) via Main Menu -> OSC.
@@ -63,6 +64,10 @@ seek: takes a single floating point value to specify the time to seek to
 loop: takes two floating point values to specify the loops in and out points
 
 /timeliner/loop 0.456 1.234
+
+### Web Access
+
+Use http://127.0.0.1:4444/callmenames to access a timeline via the browser. Change "callmenames" to the name of your timeline. If you want to access a timeline other than via localhost make sure to start TimelinerSA.exe as admin.
 
 ---
 
