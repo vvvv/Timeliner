@@ -11,6 +11,8 @@ namespace Timeliner
 {
 	public class ValueKeyframeView : KeyframeView, IDisposable
 	{
+		bool FHovered;
+		
 		public SvgUse Background = new SvgUse();
         public SvgUse CollapsedView = new SvgUse();
 		private SvgText Label = new SvgText();
@@ -48,6 +50,8 @@ namespace Timeliner
 			Background.CustomAttributes["class"] = "kf";
 			Background.MouseDown += Background_MouseDown;
 			Background.MouseUp += Background_MouseUp;
+			Background.MouseOver += Background_MouseOver;
+			Background.MouseOut += Background_MouseOut;
 			Background.MouseMove += Background_MouseMove;
 			
 			Label.FontSize = 12;
@@ -62,6 +66,8 @@ namespace Timeliner
             CollapsedView.CustomAttributes["class"] = "ckf";
             CollapsedView.MouseDown += Background_MouseDown;
 			CollapsedView.MouseUp += Background_MouseUp;
+			CollapsedView.MouseOver += Background_MouseOver;
+			CollapsedView.MouseOut += Background_MouseOut;
 			CollapsedView.MouseMove += Background_MouseMove;
 		}
         
@@ -69,9 +75,13 @@ namespace Timeliner
         {
             Background.MouseDown -= Background_MouseDown;
 			Background.MouseUp -= Background_MouseUp;
+			Background.MouseOver -= Background_MouseOver;
+			Background.MouseOut -= Background_MouseOut;
 			Background.MouseMove -= Background_MouseMove;
             CollapsedView.MouseDown -= Background_MouseDown;
 			CollapsedView.MouseUp -= Background_MouseUp;
+			CollapsedView.MouseOver -= Background_MouseOver;
+			CollapsedView.MouseOut -= Background_MouseOut;
 			CollapsedView.MouseMove -= Background_MouseMove;
             
             base.Dispose();
@@ -102,17 +112,17 @@ namespace Timeliner
 			CollapsedView.X = Background.X;
             
 			var isSelected = Model.Selected.Value;
-			Label.Visible = isSelected;			
-			if (isSelected)
+			Label.Visible = isSelected || FHovered;			
+			if (Label.Visible)
 			{
 				var m = new Matrix();
 				var h = Parent.KeyframeDefinition.Radius * 3 * Parent.KeyframeDefinition.Transforms[0].Matrix.Elements[3];
 				var y = Math.Max(Background.Y, -Parent.Model.Maximum.Value + h);
-				m.Translate(Background.X + 0.1f, y);
+				m.Translate(Background.X + 0.15f, y);
 				m.Multiply(Parent.KeyframeDefinition.Transforms[0].Matrix);
 
 				Label.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
-				Label.Text = string.Format("{0:0.0000}", Model.Value.Value);
+				Label.Text = string.Format("{0:0.0000}", Model.Value.Value) + " " + string.Format("{0:0.00}", Model.Time.Value);
 			}
             
 			Background.CustomAttributes["class"] = isSelected ? "kf selected" : "kf";
@@ -130,6 +140,18 @@ namespace Timeliner
 			Parent.MouseMove(this, e);
 		}
 		
+		void Background_MouseOver(object sender, MouseArg e)
+		{
+			FHovered = true;
+			UpdateScene();
+		}
+		
+		void Background_MouseOut(object sender, MouseArg e)
+		{
+			FHovered = false;
+			UpdateScene();
+		}
+		
 		void Background_MouseUp(object sender, MouseArg e)
 		{
 			Parent.MouseUp(this, e);
@@ -145,7 +167,7 @@ namespace Timeliner
         {
             if (Parent.Collapsed)
             {
-                return rect.IntersectsWith(new RectangleF(Model.Time.Value, 0, 0.1f, float.MaxValue));
+                return rect.IntersectsWith(new RectangleF(Model.Time.Value, Parent.Model.Minimum.Value, 0.1f, Parent.Model.Maximum.Value - Parent.Model.Minimum.Value));
             }
             else
             {

@@ -116,7 +116,6 @@ namespace Timeliner
             IsRunning = false;
             Time = 0;
         }
-        
 	}
 }
 

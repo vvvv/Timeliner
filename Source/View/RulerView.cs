@@ -101,7 +101,7 @@ namespace Timeliner
             LabelBackground.Width = CLeftOffset;
             LabelBackground.Height = Background.Height;
             LabelBackground.CustomAttributes["class"] = "ruler";
-//            LabelBackground.MouseDown += Label_MouseDown;
+            LabelBackground.MouseDown += Background_MouseDown;
 						
             Label.FontSize = 20;
             Label.X = 55;
@@ -316,7 +316,7 @@ namespace Timeliner
             Parent.Default_MouseDown(this, e);
             
             if (e.Button == 2)
-        		RulerMenu.Show(new PointF(e.x, e.y));
+        		RulerMenu.Show(new PointF(e.x, 0));
         }
 		
         void Background_MouseUp(object sender, MouseArg e)
@@ -329,19 +329,19 @@ namespace Timeliner
             Parent.Default_MouseMove(this, e);
         }
         
-        void ChangeFPS()
+        void ChangeFPS(float delta)
 		{
         	Parent.Timer.FPS = (int) FPSEdit.Value;
         	History.Insert(Command.Set(Model.FPS, (int) FPSEdit.Value));
 		}
         
-        void ChangeSpeed()
+        void ChangeSpeed(float delta)
 		{
         	Parent.Timer.Speed = SpeedEdit.Value;
 			History.Insert(Command.Set(Model.Speed, SpeedEdit.Value));
 		}
         
-        void ChangeLoop()
+        void ChangeLoop(float delta)
 		{
         	Parent.Timer.Loop = LoopEdit.Value >= 0.5;
 			History.Insert(Command.Set(Model.Loop, LoopEdit.Value >= 0.5));

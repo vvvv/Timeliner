@@ -4,11 +4,11 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
+using Posh;
 using Svg;
 using VVVV.Core;
 using VVVV.Core.Commands;
 using VVVV.Utils;
-using Posh;
 
 #endregion usings
 namespace Timeliner
@@ -180,16 +180,19 @@ namespace Timeliner
 					}
 					break;
 				case (int) Keys.Left:
-					Nudge(NudgeDirection.Back, shift);
+					Nudge(NudgeDirection.Back, shift, ctrl, alt);
 					break;
 				case (int) Keys.Right:
-					Nudge(NudgeDirection.Forward, shift);
+					Nudge(NudgeDirection.Forward, shift, ctrl, alt);
 					break;
 				case (int) Keys.Up:
-					Nudge(NudgeDirection.Up, shift);
+					Nudge(NudgeDirection.Up, shift, ctrl, alt);
 					break;
 				case (int) Keys.Down:
-					Nudge(NudgeDirection.Down, shift);
+					Nudge(NudgeDirection.Down, shift, ctrl, alt);
+					break;
+				case (int) Keys.OemBackslash:
+					Timeliner.TimelineView.ActiveTrack.CollapseTrack();
 					break;
 				case (int) Keys.I:
 					cmd.Append(Command.Set(Timeliner.TimelineView.Ruler.Model.LoopStart, Timeliner.Timer.Time));
@@ -225,19 +228,24 @@ namespace Timeliner
 			Context.History.Insert(cmd);
 		}
 		
-		void Nudge(NudgeDirection direction, bool shift)
+		void Nudge(NudgeDirection direction, bool shift, bool ctrl, bool alt)
 		{
 			var nudgeTime = 1f/Timeliner.Timer.FPS;
-			var nudgeValue = 0.1f;
+			var nudgeValue = 0.01f;
 			
 			if (shift)
-			{
 				nudgeTime *= Timeliner.Timer.FPS; //to nudge a whole second
-				nudgeValue *= 10;
-			}
+			
+			var step = alt ? 10f : 0.1f;
+			if (shift) 
+				nudgeValue *= step;
+			if (ctrl) 
+				nudgeValue *= step;
 			
 			var cmd = new CompoundCommand();
+			//nudge should go to trackview where it can do min/max clamping
 			foreach(var track in Timeliner.TimelineView.Tracks)
+//				track.Nudge(direction, nudgeTime, nudgeValue);
 			{
 				foreach(var kf in (track as ValueTrackView).Keyframes)
 				{
@@ -272,15 +280,6 @@ namespace Timeliner
 		void PoshServer_OnKeyPress(bool ctrl, bool shift, bool alt, char key)
 		{
 			Log("keypress: " + key);
-			
-			switch(key)
-			{
-					//save current document
-				case 's':
-					var path = Path.Combine(WebServer.TerminalPath, FUrl) + ".xml";
-					Save(path);
-					break;
-			}
 		}
 		
 		void PoshServer_SessionCreated(string sessionID)

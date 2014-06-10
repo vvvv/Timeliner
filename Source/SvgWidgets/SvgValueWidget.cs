@@ -12,7 +12,7 @@ namespace Timeliner
 	{
 		private SvgText Label = new SvgText();
 		private SvgText ValueLabel = new SvgText();
-		public Action OnValueChanged;	
+		public Action<float> OnValueChanged;	
 		private bool FMouseDown = false;
 		private PointF FMouseDownPos;
 		private PointF FLastMousePos;
@@ -72,10 +72,12 @@ namespace Timeliner
 
 		void ValueLabel_Change(object sender, StringArg e)
 		{
-			Value = float.Parse(e.s);
+			var newValue = float.Parse(e.s);
+			var delta = newValue - Value;			
+			Value = newValue;
 				
 			UpdateScene();
-			OnValueChanged();
+			OnValueChanged(delta);
 		}
 		
 		public SvgValueWidget(float width, float height, string label, float value): this(label, value)
@@ -92,10 +94,11 @@ namespace Timeliner
 		
 		void Background_MouseScroll(object sender, MouseScrollArg e)
 		{
-			Value += (e.Scroll) / (120*10f);
+			var delta = (e.Scroll) / (120*10f);			
+			Value += delta;
 				
 			UpdateScene();
-			OnValueChanged();
+			OnValueChanged(delta);
 		}
 		
 		void Background_MouseOver(object sender, EventArgs e)

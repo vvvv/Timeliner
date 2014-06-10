@@ -311,7 +311,7 @@ namespace Timeliner
 			History.Insert(Command.Set(Model.Label, label));
 		}
 		
-		void CollapseTrack()
+		public void CollapseTrack()
 		{
 			var newHeight = 0f;
 			if (Model.Height.Value > 50)
@@ -330,7 +330,18 @@ namespace Timeliner
 			History.Insert(Command.Remove(Parent.Document.Tracks, Model));
 		}
 		
-		protected abstract void ChangeKeyframeTime();
+		protected void ChangeKeyframeTime(float delta)
+		{
+			var cmd = new CompoundCommand();
+			foreach (var track in Parent.Document.Tracks)
+			{
+				foreach (var kf in (track as TLValueTrack).Keyframes)
+					if (kf.Selected.Value)
+						cmd.Append(Command.Set(kf.Time, kf.Time.Value + delta));
+			}
+					
+			History.Insert(cmd);
+		}
 		
 		//dispatch events to parent
 		void Background_MouseDown(object sender, MouseArg e)

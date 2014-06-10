@@ -96,13 +96,13 @@ namespace Timeliner
         public TLTrackBase(string name)
             : base(name)
         {
+        	UncollapsedHeight = new EditableProperty<float>("Uncollapsed Height");
+            UncollapsedHeight.Value = 75;
+            
             Order = new EditableProperty<int>("Order");
             Height = new EditableProperty<float>("Height");
-            Height.Value = CollapsedHeight;
+            Height.Value = UncollapsedHeight.Value;
             Height.AllowChange = (p, v) => v >= CollapsedHeight;
-            
-            UncollapsedHeight = new EditableProperty<float>("Uncollapsed Height");
-            UncollapsedHeight.Value = 150;
             
             Label = new EditableProperty<string>("Label");
             Label.Value = this.GetID();
