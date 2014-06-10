@@ -49,11 +49,13 @@ namespace Timeliner
 			                              kf =>
 			                              {
 			                              	var kv = new ValueKeyframeView(kf, this);
+			                              	kf.NeighbourChanged += NeedsRebuild;
 			                              	kv.AddToSceneGraphAt(KeyframeGroup);
 			                              	return kv;
 			                              },
 			                              kv =>
 			                              {
+			                              	kv.Model.NeighbourChanged -= NeedsRebuild;
 			                              	kv.Dispose();
 			                              });
 			
@@ -136,8 +138,21 @@ namespace Timeliner
 		#endregion
 		
 		#region update scenegraph
+		
+		bool FNeedsRebuild;
+		protected void NeedsRebuild()
+		{
+			FNeedsRebuild = true;
+		}
+		
 		public override void UpdateScene()
 		{
+			if(FNeedsRebuild)
+			{
+				//Model.BuildCurves();
+				FNeedsRebuild = false;
+			}
+			
 			base.UpdateScene();
 			
 			UpdateMinMaxView();

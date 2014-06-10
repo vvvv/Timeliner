@@ -100,6 +100,7 @@ namespace Timeliner
         {
             if (FIsDirty)
             {
+            	
                 Path.PathData.Clear();
 	
                 if (Model.Name.StartsWith("Start"))

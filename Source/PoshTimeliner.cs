@@ -206,21 +206,21 @@ namespace Timeliner
 					{
 						Context.History.Redo();
 						//HACK to build curves
-						foreach (var track in Timeliner.TimelineModel.Tracks)
-						{
-							if (track is TLValueTrack)
-								(track as TLValueTrack).BuildCurves();
-						}
+//						foreach (var track in Timeliner.TimelineModel.Tracks)
+//						{
+//							if (track is TLValueTrack)
+//								(track as TLValueTrack).BuildCurves();
+//						}
 					}
 					else
 					{
 						Context.History.Undo();
 						//HACK to build curves
-						foreach (var track in Timeliner.TimelineModel.Tracks)
-						{
-							if (track is TLValueTrack)
-								(track as TLValueTrack).BuildCurves();
-						}
+//						foreach (var track in Timeliner.TimelineModel.Tracks)
+//						{
+//							if (track is TLValueTrack)
+//								(track as TLValueTrack).BuildCurves();
+//						}
 					}
 					break;
 			}
