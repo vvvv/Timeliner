@@ -7,6 +7,9 @@
  * 
  */
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using VVVV.Core.Collections;
 using VVVV.Core.Model;
 
@@ -37,8 +40,16 @@ namespace Timeliner
 		
 		public override void Evaluate(float time)
 		{
-			base.Evaluate(time);
-			CurrentText = "";
+			var kfs = Keyframes.ToList(); 
+        	kfs.Sort((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value));
+        	var kf = kfs.FindLast(k => k.Time.Value <= time);
+			
+			if (kf == null)
+				CurrentText = "";
+			else
+			{
+				CurrentText = kf.Text.Value; 
+			}
 		}
 		
 		public string CurrentText
@@ -47,6 +58,15 @@ namespace Timeliner
 			protected set;
 		}
 		
+		public override string GetCurrentValueAsString()
+		{
+			return CurrentText;
+		}
+		
+		public override object GetCurrentValueAsObject()
+		{
+			return CurrentText;
+		}
 	}
 	
 	/// <summary>
@@ -58,7 +78,7 @@ namespace Timeliner
         public EditableProperty<string> Text 
         { 
         	get; 
-        	private set; 
+        	private set;
         }
         
         public TLStringKeyframe()
@@ -67,7 +87,7 @@ namespace Timeliner
         }
         
         public TLStringKeyframe(string name)
-            : this(name, 0, "text")
+            : this(name, 0, "text " + name)
         {
         }
         

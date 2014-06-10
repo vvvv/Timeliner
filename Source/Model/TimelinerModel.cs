@@ -119,5 +119,17 @@ namespace Timeliner
         {
 
         }
+        
+        /// <summary>
+        /// For display purposes
+        /// </summary>
+        public abstract string GetCurrentValueAsString();
+    	
+        /// <summary>
+        /// The current value as object
+        /// </summary>
+        /// <returns></returns>
+		public abstract object GetCurrentValueAsObject();
+		
     }
 }

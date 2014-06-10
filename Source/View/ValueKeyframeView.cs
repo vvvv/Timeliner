@@ -163,7 +163,7 @@ namespace Timeliner
 		}
 		#endregion
         
-        public Boolean IsSelectedBy(RectangleF rect)
+        public override Boolean IsSelectedBy(RectangleF rect)
         {
             if (Parent.Collapsed)
             {

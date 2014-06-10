@@ -55,6 +55,16 @@ namespace Timeliner
         		Samples.Add(new TLSample(i += 2, max));
         	}
         }
+    	
+		public override string GetCurrentValueAsString()
+		{
+			return "";
+		}
+    	
+		public override object GetCurrentValueAsObject()
+		{
+			return null;
+		}
     }
 
     public class TLSample : TLModelBase

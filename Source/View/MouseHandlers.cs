@@ -201,11 +201,11 @@ namespace Timeliner
 		}
 	}
 	
-	internal class SelectionMouseHandler : MouseHandlerBase<ValueTrackView>
+	internal class SelectionMouseHandler : MouseHandlerBase<TrackView>
 	{
 		private CompoundCommand FSelectionCommands;
 		
-		public SelectionMouseHandler(ValueTrackView view, string sessionID)
+		public SelectionMouseHandler(TrackView view, string sessionID)
 			
 			: base(view, sessionID)
 		{
@@ -214,8 +214,8 @@ namespace Timeliner
 		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
 		{
 			//deselect keyframes
-			foreach (var track in Instance.Parent.Tracks.OfType<ValueTrackView>())
-				foreach (var kf in track.Keyframes)
+			foreach (var track in Instance.Parent.Tracks)
+				foreach (var kf in track.KeyframeViews)
 			{
 				if (kf.Model.Selected.Value)
 				{
@@ -232,10 +232,10 @@ namespace Timeliner
 		public override void MouseSelection(object sender, RectangleF rect)
 		{
 			var cmd = new CompoundCommand();
-			foreach (var track in Instance.Parent.Tracks.OfType<ValueTrackView>())
+			foreach (var track in Instance.Parent.Tracks)
 			{
 				var trackRect = track.ToTrackRect(rect);
-				foreach (var kf in track.Keyframes)
+				foreach (var kf in track.KeyframeViews)
 				{
 					var wasSelected = kf.Model.Selected.Value;
 					var isSelected = kf.IsSelectedBy(trackRect);
@@ -346,33 +346,44 @@ namespace Timeliner
 
 		public override void MouseDrag(object sender, PointF arg, PointF delta, int callNr)
 		{
-			var cmd = new CompoundCommand();
-			FWasMoved = true;
-			
-			var dx = Instance.Parent.Parent.Ruler.XDeltaToTime(delta.X);
-			var i = 0;
-			foreach (var kf in FSelectedKeyframes.OfType<ValueKeyframeView>())
+			if(FMoveCommands != null)
 			{
-				var dy = kf.Parent.YDeltaToValue(delta.Y);
-				var min = kf.Parent.Model.Maximum.Value;
-				var max = kf.Parent.Model.Minimum.Value;
+				var cmd = new CompoundCommand();
+				FWasMoved = true;
 				
-				FActualValues[i] += dy;
+				var dx = Instance.Parent.Parent.Ruler.XDeltaToTime(delta.X);
+				var i = 0;
+				
+				foreach (var kf in FSelectedKeyframes)
+				{
+					//set time
+					cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + dx));
+					
+					//set value if value keyframe
+					if(kf is ValueKeyframeView)
+					{
+						var vkf = kf as ValueKeyframeView;
+						
+						var dy = vkf.Parent.YDeltaToValue(delta.Y);
+						var min = vkf.Parent.Model.Maximum.Value;
+						var max = vkf.Parent.Model.Minimum.Value;
+						
+						FActualValues[i] += dy;
 
-				cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + dx));
+						if (!FAffectedTracks.Any(x => x.Collapsed))
+							cmd.Append(Command.Set(vkf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
+						
+						i++;
+					}
+				}
 				
-				if (!FAffectedTracks.Any(x => x.Collapsed))
-					cmd.Append(Command.Set(kf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
+				//execute changes immediately
+				cmd.Execute();
+				//collect changes for history
+				FMoveCommands.Append(cmd);
 				
-				i++;
+				Instance.Parent.Parent.UpdateScene();
 			}
-			
-			//execute changes immediately
-			cmd.Execute();
-			//collect changes for history
-			FMoveCommands.Append(cmd);
-			
-			Instance.Parent.Parent.UpdateScene();
 		}
 
 		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)

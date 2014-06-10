@@ -114,7 +114,7 @@ namespace Timeliner
         public override void Evaluate(float time)
         {   
         	var kfs = Keyframes.ToList(); 
-        	//kfs.Sort(Comparer<TLValueKeyframe>.Create((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value)));
+        	kfs.Sort((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value));
         	var kf = kfs.FindLast(k => k.Time.Value <= time);
         	var kf1 = kfs.Find(k => k.Time.Value >= time);
 			
@@ -130,6 +130,16 @@ namespace Timeliner
 				CurrentValue = (float) VMath.Lerp(kf.Value.Value, kf1.Value.Value, t); 
 			}
         }
+    	
+		public override string GetCurrentValueAsString()
+		{
+			return CurrentValue.ToString("f4");
+		}
+    	
+		public override object GetCurrentValueAsObject()
+		{
+			return CurrentValue;
+		}
     }
 
     public class TLCurve : TLModelBase

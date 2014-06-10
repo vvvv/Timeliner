@@ -75,10 +75,10 @@ namespace TimeLinerSA
                         var label = tl.Label.Value;
                         
                         //TODO: ask track to generate osc message
-                        //var val = tl.CurrentValue;
+                        var val = tl.GetCurrentValueAsObject();
                         
                         var message = new OSCMessage(prefix + "/" + label);
-                        //message.Append(val);
+                        message.Append(val);
                         bundle.Append(message);                    
                     }
                 }

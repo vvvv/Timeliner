@@ -421,9 +421,10 @@ namespace Timeliner
 		
         protected abstract void FillTrackMenu();
         protected abstract void FillKeyframeMenu();
-		public abstract void Evaluate();
-		
-		/// <summary>
+
+        public abstract void Evaluate();
+        
+        /// <summary>
 		/// Update the keyframe menu to latest values
 		/// </summary>
 		/// <param name="kf">The clicked keyframe</param>

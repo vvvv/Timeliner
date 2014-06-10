@@ -160,11 +160,6 @@ namespace Timeliner
 		
 		#region scenegraph eventhandler
 		
-		protected override void ChangeKeyframeTime()
-		{
-			History.Insert(Command.Set(Keyframes.ToList().First(x => x.Model.Selected.Value).Model.Time, TimeEdit.Value));
-		}
-		
 		void ChangeKeyframeText(string newText)
 		{
 			var cmd = new CompoundCommand();
@@ -185,7 +180,7 @@ namespace Timeliner
 				var x = FRuler.XPosToTime(e.x);
 				var y = YPosToValue(e.y);
 				
-				var kf = new TLStringKeyframe(x, "text");
+				var kf = new TLStringKeyframe(x, "text " + Keyframes.Count);
 				var cmd = Command.Add(this.Model.Keyframes, kf);
 				History.Insert(cmd);
 			}
@@ -205,7 +200,7 @@ namespace Timeliner
         
 		public override void Evaluate()
 		{
-			CurrentValue.Text = Model.CurrentText;
+			CurrentValue.Text = Model.GetCurrentValueAsString();
 		}
 		
 		public override void UpdateKeyframeMenu(KeyframeView kf)

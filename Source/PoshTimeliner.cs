@@ -169,12 +169,12 @@ namespace Timeliner
 						if (shift)
 						{
 							foreach(var track in Timeliner.TimelineView.Tracks)
-								foreach(var kf in (track as ValueTrackView).Keyframes)
+								foreach(var kf in track.KeyframeViews)
 									cmd.Append(Command.Set(kf.Model.Selected, true));
 						}
 						else
 						{
-							foreach(var kf in (Timeliner.TimelineView.ActiveTrack as ValueTrackView).Keyframes)
+							foreach(var kf in Timeliner.TimelineView.ActiveTrack.KeyframeViews)
 								cmd.Append(Command.Set(kf.Model.Selected, true));
 						}
 					}

@@ -345,8 +345,8 @@ namespace Timeliner
 			{
 				ActiveTrack = sender as TrackView;
 				HideMenus();
-				if ((e.Button == 1) && (sender is ValueTrackView))
-					return new SelectionMouseHandler(sender as ValueTrackView, e.SessionID);
+				if ((e.Button == 1) && (sender is TrackView))
+					return new SelectionMouseHandler(sender as TrackView, e.SessionID);
 				else if (e.Button == 2)
 					return new TrackMenuHandler(sender as TrackView, e.SessionID);
 				else if (e.Button == 3)
@@ -383,7 +383,7 @@ namespace Timeliner
 			else if(sender is KeyframeView)
 			{
 				HideMenus();
-				return new KeyframeMouseHandler(sender as ValueKeyframeView, e.SessionID);
+				return new KeyframeMouseHandler(sender as KeyframeView, e.SessionID);
 			}
 			else if(sender == TimeBar)
 			{

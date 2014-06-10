@@ -51,7 +51,7 @@ namespace Timeliner
 			: base(track, tv, rv)
 		{
 		
-			Keyframes = new EditableList<ValueKeyframeView>();			
+			Keyframes = new EditableList<ValueKeyframeView>();
 			
 			KFSyncer = Keyframes.SyncWith(Model.Keyframes,
 			                              kf =>
@@ -263,11 +263,6 @@ namespace Timeliner
 			ValueEdit.OnValueChanged += ChangeKeyframeValue;
 			KeyframeMenu.AddItem(ValueEdit);
         }
-        
-		public override void Evaluate()
-		{
-			CurrentValue.Text = ((float)Model.CurrentValue).ToString("f4");
-		}
 		
 		public override void UpdateKeyframeMenu(KeyframeView kf)
 		{
@@ -283,6 +278,11 @@ namespace Timeliner
 			{
 				return Keyframes;
 			}
+		}
+		
+		public override void Evaluate()
+		{
+			CurrentValue.Text = Model.GetCurrentValueAsString();
 		}
 	}
 }

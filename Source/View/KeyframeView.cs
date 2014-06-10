@@ -7,6 +7,7 @@
  * 
  */
 using System;
+using System.Drawing;
 
 namespace Timeliner
 {
@@ -18,7 +19,7 @@ namespace Timeliner
 	/// <summary>
 	/// Description of KeyframeView.
 	/// </summary>
-	public class KeyframeView : TLViewBaseTyped<TLKeyframeBase, TrackView> 
+	public abstract class KeyframeView : TLViewBaseTyped<TLKeyframeBase, TrackView> 
 	{
 		public KeyframeView(TLKeyframeBase kf, TrackView trackView)
 			: base(kf, trackView)
@@ -34,5 +35,7 @@ namespace Timeliner
 		{
 			
 		}
+		
+		public abstract Boolean IsSelectedBy(RectangleF rect);
 	}
 }

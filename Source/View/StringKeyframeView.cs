@@ -140,7 +140,7 @@ namespace Timeliner
 		}
 		#endregion
         
-		public Boolean IsSelectedBy(RectangleF rect)
+		public override Boolean IsSelectedBy(RectangleF rect)
 		{
 			return rect.IntersectsWith(new RectangleF(Model.Time.Value, 0, 0.1f, Parent.Height));
 		}
