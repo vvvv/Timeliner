@@ -215,6 +215,10 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
+		public virtual void RebuildAfterUpdate()
+		{
+		}
+		
 		#region build scenegraph
 		protected override void BuildSVG()
 		{

@@ -202,6 +202,14 @@ namespace Timeliner
 			UpdateScene();
 		}
 		
+		public void RebuildAfterUpdate()
+		{
+			foreach(var track in Tracks)
+			{
+				track.RebuildAfterUpdate();
+			}
+		}
+		
 		#region build scenegraph
 		public SvgDocument BuildSVGRoot()
 		{
