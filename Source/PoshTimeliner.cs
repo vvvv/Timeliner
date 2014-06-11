@@ -257,8 +257,6 @@ namespace Timeliner
 							break;
 					}
 				}
-				if (track is ValueTrackView)
-					(track as ValueTrackView).Model.BuildCurves();
 			}
 			Context.History.Insert(cmd);
 		}
