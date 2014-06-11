@@ -397,11 +397,6 @@ namespace Timeliner
 				}
 				else
 				{
-					foreach (var track in FAffectedTracks.OfType<ValueTrackView>())
-					{
-						track.Model.BuildCurves();
-					}
-					
 					//add collected commands to history
 					if(FMoveCommands.CommandCount > 0)
 						Instance.History.InsertOnly(FMoveCommands);

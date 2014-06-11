@@ -57,11 +57,13 @@ namespace Timeliner
 			                              kf =>
 			                              {
 			                              	var kv = new ValueKeyframeView(kf, this);
+			                              	kf.NeighbourChanged += NeedsRebuild;
 			                              	kv.AddToSceneGraphAt(KeyframeGroup);
 			                              	return kv;
 			                              },
 			                              kv =>
 			                              {
+			                              	kv.Model.NeighbourChanged -= NeedsRebuild;
 			                              	kv.Dispose();
 			                              });
 			
@@ -118,6 +120,25 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
+		//curves need to be rebuild after the model updates,
+		//in case keyframes have moved beyond their neighbours.
+		//this can only be done from outside, in this case before 
+		//the posh publish.
+		bool FNeedsRebuild;
+		protected void NeedsRebuild()
+		{
+			FNeedsRebuild = true;
+		}
+		
+		public override void RebuildAfterUpdate()
+		{
+			if(FNeedsRebuild)
+			{
+				Model.BuildCurves();
+				FNeedsRebuild = false;
+			}
+		}
+		
 		#region build scenegraph		
 		protected override void BuildSVG()
 		{
@@ -144,8 +165,10 @@ namespace Timeliner
 		#endregion
 		
 		#region update scenegraph
+		
 		public override void UpdateScene()
 		{
+			
 			base.UpdateScene();
 			
 			UpdateMinMaxView();

@@ -99,7 +99,7 @@ namespace TimeLinerSA
             }
 			
             timeliner.Log = x => Console.WriteLine(x);
-            timeliner.Changed = () => UpdateCaption(true);
+            timeliner.AfterHistoryPublish = () => UpdateCaption(true);
             return timeliner;
         }
         

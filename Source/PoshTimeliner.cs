@@ -26,7 +26,7 @@ namespace Timeliner
 		private bool FDisposed = false;
 		
 		public Action<string> Log;
-		public Action Changed;
+		public Action AfterHistoryPublish = () => {};
 		public Action<XElement> SaveData;
 		public Timeliner Timeliner;
 		public TLContext Context = new TLContext();
@@ -63,11 +63,12 @@ namespace Timeliner
 		
 		void HistoryChanged(object sender, EventArgs<Command> e)
 		{
+			Timeliner.TimelineView.RebuildAfterUpdate();
+			
 			//publish changes
 			FPoshServer.PublishAll(this, new CallInvokedArgs(""));
-			
-			if (Changed != null)
-				Changed();
+		
+			AfterHistoryPublish();
 		}
 		
 		string PoshServer_OnDump()
@@ -202,24 +203,14 @@ namespace Timeliner
 					break;
 				case (int) Keys.Z:
 					if (ctrl)
+					{
 						if (shift)
-					{
-						Context.History.Redo();
-						//HACK to build curves
-						foreach (var track in Timeliner.TimelineModel.Tracks)
 						{
-							if (track is TLValueTrack)
-								(track as TLValueTrack).BuildCurves();
+							Context.History.Redo();
 						}
-					}
-					else
-					{
-						Context.History.Undo();
-						//HACK to build curves
-						foreach (var track in Timeliner.TimelineModel.Tracks)
+						else
 						{
-							if (track is TLValueTrack)
-								(track as TLValueTrack).BuildCurves();
+							Context.History.Undo();
 						}
 					}
 					break;
@@ -266,8 +257,6 @@ namespace Timeliner
 							break;
 					}
 				}
-				if (track is ValueTrackView)
-					(track as ValueTrackView).Model.BuildCurves();
 			}
 			Context.History.Insert(cmd);
 		}

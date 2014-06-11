@@ -61,6 +61,7 @@ namespace Timeliner
             Keyframes.Added += Keyframes_Added;
             Keyframes.Removed += Keyframes_Removed;
             
+            
             Label.Value = "Value " + name;
         }
 
@@ -94,8 +95,28 @@ namespace Timeliner
             {
             	var ordered = Keyframes.OrderBy(kf => kf.Time.Value).ToArray();
             	
+            	if(ordered.Length > 1)
+            	{
+            		//arrange neighbours
+            		ordered[0].NeighbourLeft = null;
+            		ordered[0].NeighbourRight = ordered[1];
+            		for (int i = 1; i < Keyframes.Count-1; i++)
+            		{
+            			ordered[i].NeighbourLeft = ordered[i-1];
+            			ordered[i].NeighbourRight = ordered[i+1];
+            		}
+            		ordered[ordered.Length - 1].NeighbourLeft = ordered[ordered.Length - 2];
+            		ordered[ordered.Length - 1].NeighbourRight = null;
+            	}
+            	else
+            	{
+            		ordered[0].NeighbourLeft = null;
+            		ordered[0].NeighbourRight = null;
+            	}
+            	
                 //first curve
                 Curves.Add(new TLCurve("Start" + IDGenerator.NewID, null, ordered[0]));
+                
 
                 //between
                 for (int i = 1; i < Keyframes.Count; i++)
@@ -164,6 +185,18 @@ namespace Timeliner
     {
         public EditableProperty<float> Value { get; private set; }
         
+        public TLValueKeyframe NeighbourLeft
+        {
+        	get;
+        	set;
+        }
+        
+        public TLValueKeyframe NeighbourRight
+        {
+        	get;
+        	set;
+        }
+
         public PointF Position
         {
         	get
@@ -192,6 +225,31 @@ namespace Timeliner
         {
             Value = new EditableProperty<float>("Value", value);
             Add(Value);
+            Time.ValueChanged += Time_ValueChanged;
         }
+
+        void Time_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
+        {
+        	if(NeighbourLeft != null)
+        	{
+        		if(NeighbourLeft.Time.Value > this.Time.Value)
+        		{
+        			NeighbourChanged();
+        			return;
+        		}
+        	}
+        	
+        	if(NeighbourRight != null)
+        	{
+        		if(NeighbourRight.Time.Value < this.Time.Value)
+        		{
+        			NeighbourChanged();
+        			return;
+        		}
+        	}
+        }
+                
+        public Action NeighbourChanged = () => {};
+        
     }
 }
