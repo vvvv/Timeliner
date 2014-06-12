@@ -15,9 +15,14 @@ namespace Timeliner
             //register serializers
             serializer.RegisterGeneric<TLDocument, TLDocumentSerializer>();
             serializer.RegisterGeneric<EditableIDList<TLTrackBase>, TLTrackListSerializer>();
+            
+            //tracks
             serializer.RegisterGeneric<TLValueTrack, TLValueTrackSerializer>();
             serializer.RegisterGeneric<TLStringTrack, TLStringTrackSerializer>();
+            
+            //keyframes
             serializer.RegisterGeneric<TLValueKeyframe, TLValueKeyframeSerializer>();
+            serializer.RegisterGeneric<TLStringKeyframe, TLStringKeyframeSerializer>();
         }
     }
 
