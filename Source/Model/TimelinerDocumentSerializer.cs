@@ -56,12 +56,26 @@ namespace Timeliner
 
             return x;
         }
+        
+        private void DeserializeAndAddToTrackList<T>(XElement x, IEditableCollection<T> list, Serializer serializer)
+        {
+        	if (x != null)
+        	{
+        		foreach (XElement current in x.Elements())
+        		{
+        			if (current.Name == "ValueTrack")
+        				list.Add(serializer.Deserialize<TLValueTrack>(current));
+        			else if (current.Name == "StringTrack")
+        				list.Add(serializer.Deserialize<TLStringTrack>(current));
+        		}
+        	}
+        }
 
         public EditableIDList<TLTrackBase> Deserialize(XElement data, Type type, Serializer serializer)
         {
             var list = new EditableIDList<TLTrackBase>("Tracks");
 
-            data.DeserializeAndAddToList<TLTrackBase>(list, serializer);
+            DeserializeAndAddToTrackList(data, list, serializer);
 
             return list;
         }
@@ -72,7 +86,7 @@ namespace Timeliner
     {
         public XElement Serialize(TTrack value, Serializer serializer)
         {
-            var x = value.GetXML("Track");
+            var x = value.GetXML(GetTagName());
             x.Add(new XAttribute("Order", value.Order.Value));
             x.Add(new XAttribute("Height", value.Height.Value));
             
@@ -81,6 +95,7 @@ namespace Timeliner
             return x;
         }
         
+        protected abstract string GetTagName();
         protected abstract void SerializeKeyframes(XElement x, TTrack track, Serializer serializer);
 
         public TTrack Deserialize(XElement data, Type type, Serializer serializer)
@@ -107,23 +122,26 @@ namespace Timeliner
     //value track
     public class TLValueTrackSerializer : TLTrackSerializer<TLValueTrack>
     {
-
+    	
     	protected override void SerializeKeyframes(XElement x, TLValueTrack track, Serializer serializer)
-		{
+    	{
     		x.SerializeAndAddList(track.Keyframes, serializer);
-		}
+    	}
     	
-		protected override void DeserializeKeyframes(XElement data, TLValueTrack track, Serializer serializer)
+    	protected override void DeserializeKeyframes(XElement data, TLValueTrack track, Serializer serializer)
+    	{
+    		data.DeserializeAndAddToList<TLValueKeyframe>(track.Keyframes, serializer);
+    	}
+    	
+    	protected override TLValueTrack CreateTrack(string name)
+    	{
+    		return new TLValueTrack(name);
+    	}
+    	
+		protected override string GetTagName()
 		{
-			data.DeserializeAndAddToList<TLValueKeyframe>(track.Keyframes, serializer);
+			return "ValueTrack";
 		}
-    	
-		protected override TLValueTrack CreateTrack(string name)
-		{
-			return new TLValueTrack(name);
-		}
-    	
-
     }
     
     //string track
@@ -143,6 +161,11 @@ namespace Timeliner
 		protected override TLStringTrack CreateTrack(string name)
 		{
 			return new TLStringTrack(name);
+		}
+    	
+		protected override string GetTagName()
+		{
+			return "StringTrack";
 		}
     }
 
