@@ -163,6 +163,12 @@ path
 	pointer-events: none;
 }
 
+.skffont
+{
+	font-family: "Lucida Console";
+	fill: #000000;	
+}
+
 .time
 {
 	font-family: "Lucida Console";

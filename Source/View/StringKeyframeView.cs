@@ -52,10 +52,11 @@ namespace Timeliner
 			
 			Label.FontSize = 12;
 			Label.ID = "label";
-			Label.CustomAttributes["class"] = "kffont";
+			Label.CustomAttributes["class"] = "skffont";
 			Label.Text = "text";
 			Label.Transforms = new SvgTransformCollection();
 			Label.Transforms.Add(new SvgScale(1, 1));
+			Label.Change += Label_Change;
             
             CollapsedView.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_CKF", UriKind.Relative);
             CollapsedView.ID = "fg";
@@ -64,7 +65,7 @@ namespace Timeliner
 			CollapsedView.MouseUp += Background_MouseUp;
 			CollapsedView.MouseMove += Background_MouseMove;
 		}
-        
+
         public override void Dispose()
         {
             Background.MouseDown -= Background_MouseDown;
@@ -73,6 +74,7 @@ namespace Timeliner
             CollapsedView.MouseDown -= Background_MouseDown;
 			CollapsedView.MouseUp -= Background_MouseUp;
 			CollapsedView.MouseMove -= Background_MouseMove;
+			Label.Change -= Label_Change;
             
             base.Dispose();
         }
@@ -108,8 +110,9 @@ namespace Timeliner
 				var y = Math.Max(Background.Y, -Parent.Model.Height.Value + 10);
 				m.Translate(Background.X + 0.1f, y);
 				
-				Label.Transforms[0] = (SvgMatrix)Parent.CollapsedKeyframeDefinition.Transforms[0].Clone();
-				Label.X = CollapsedView.X + 50;
+				m.Multiply(Parent.KeyframeDefinition.Transforms[0].Matrix);
+				
+				Label.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
 				Label.Y = 20;
 				Label.Text = Model.Text.Value;
 			}
@@ -123,6 +126,12 @@ namespace Timeliner
 		#endregion
 
 		#region scenegraph eventhandler
+		void Label_Change(object sender, StringArg e)
+		{
+			Model.Text.Value = e.s;
+			UpdateScene();
+		}
+		
 		//dipatch events to parent
 		void Background_MouseMove(object sender, MouseArg e)
 		{
@@ -142,7 +151,7 @@ namespace Timeliner
         
 		public override Boolean IsSelectedBy(RectangleF rect)
 		{
-			return rect.IntersectsWith(new RectangleF(Model.Time.Value, 0, 0.1f, Parent.Height));
+			return rect.IntersectsWith(new RectangleF(Model.Time.Value, -1, 0.1f, 1));
 		}
 	}
 }

@@ -128,7 +128,7 @@ namespace Timeliner
             PlayButton.Click += PlayButton_Click;
             StopButton.Click += StopButton_Click;
             
-            MainMenu = new SvgMenuWidget(115);
+            MainMenu = new SvgMenuWidget(120);
             MainMenu.ID = "MainMenu";
             
             var addValueTrack = new SvgButtonWidget(0, 20, "Add Value Track");
