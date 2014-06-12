@@ -10,6 +10,7 @@ using VVVV.Core;
 using VVVV.Core.Collections;
 using VVVV.Core.Collections.Sync;
 using VVVV.Core.Commands;
+using VVVV.Utils.VMath;
 
 namespace Timeliner
 {
@@ -269,6 +270,27 @@ namespace Timeliner
 		}
 		#endregion
         
+		public override void Nudge(ref CompoundCommand cmds, NudgeDirection direction, float timeDelta, float valueDelta)
+		{
+			base.Nudge(ref cmds, direction, timeDelta, valueDelta);
+			
+			foreach(var kf in Keyframes)
+			{
+				if (kf.Model.Selected.Value)
+					switch (direction)
+				{
+					case NudgeDirection.Up:
+						var newValue = (float) VMath.Clamp(kf.Model.Value.Value + valueDelta, Model.Minimum.Value, Model.Maximum.Value);
+						cmds.Append(Command.Set(kf.Model.Value, newValue));
+						break;
+					case NudgeDirection.Down:
+						newValue = (float) VMath.Clamp(kf.Model.Value.Value - valueDelta, Model.Minimum.Value, Model.Maximum.Value);
+						cmds.Append(Command.Set(kf.Model.Value, newValue));
+						break;
+				}
+			}
+		}
+		
         protected override void FillTrackMenu()
         {
             MaxValueEdit = new SvgValueWidget(0, 20, "Maximum", 1);

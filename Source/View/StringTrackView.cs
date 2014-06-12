@@ -130,7 +130,6 @@ namespace Timeliner
 			
 			foreach (var kf in Keyframes)
 				kf.UpdateScene();
-			
 		}
 
 		

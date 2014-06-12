@@ -26,33 +26,33 @@ namespace Timeliner
 		
 		//time-range zooming (x) is done on the PanZoomGroup
 		//value-range zooming (y) is done on the TrackGroup
-				
-		//the TrackGroup has a clippath set 
+		
+		//the TrackGroup has a clippath set
 		protected SvgGroup TrackGroup = new SvgGroup();
 		public SvgClipPath TrackClipPath = new SvgClipPath();
 		protected SvgRectangle ClipRect = new SvgRectangle();
 
-		//MainGroup holds: 
+		//MainGroup holds:
 		//TrackGroup
 		public SvgText Label = new SvgText();
 		public SvgRectangle SizeBar = new SvgRectangle();
 
-		//TrackGroup holds:  
+		//TrackGroup holds:
 		protected SvgRectangle Background = new SvgRectangle();
 		protected SvgGroup PanZoomGroup = new SvgGroup();
 		
-		//parent.OverlayGroup holds:				
+		//parent.OverlayGroup holds:
 		public SvgRectangle SizeBarDragRect = new SvgRectangle();
 		public SvgMenuWidget TrackMenu;
 		public SvgMenuWidget KeyframeMenu;
-        
-        //trackmenu
-        protected SvgStringWidget TrackLabelEdit;
-        protected SvgButtonWidget CollapseButton;
-        protected SvgButtonWidget RemoveButton;
-        
-        //keyframemenu
-        public SvgValueWidget TimeEdit;
+		
+		//trackmenu
+		protected SvgStringWidget TrackLabelEdit;
+		protected SvgButtonWidget CollapseButton;
+		protected SvgButtonWidget RemoveButton;
+		
+		//keyframemenu
+		public SvgValueWidget TimeEdit;
 
 		public float Top
 		{
@@ -71,44 +71,44 @@ namespace Timeliner
 		}
 		
 		public new TLTrackBase Model
-        {
-            get
-            {
-                return (TLTrackBase)base.Model;
-            }
-            protected set
-            {
-                base.Model = value;
-            }
-        }
-        
-        public new TimelineView Parent
-        {
-        	get
-            {
-                return (TimelineView)base.Parent;
-            }
-            protected set
-            {
-                base.Parent = value;
-            }
-        }
-        
-        protected bool FScalingChanged;
-        protected RulerView FRuler;
-        public SvgMatrix View
-        {
-        	set
-        	{
-        		FScalingChanged |= PanZoomGroup.Transforms[0].Matrix.Elements[0] != value.Matrix.Elements[0];
-        		PanZoomGroup.Transforms[0] = value;
-        	}
-        }
-        
-        public bool Collapsed
-        {
-            get {return Model.Height.Value == Model.CollapsedHeight;}
-        }
+		{
+			get
+			{
+				return (TLTrackBase)base.Model;
+			}
+			protected set
+			{
+				base.Model = value;
+			}
+		}
+		
+		public new TimelineView Parent
+		{
+			get
+			{
+				return (TimelineView)base.Parent;
+			}
+			protected set
+			{
+				base.Parent = value;
+			}
+		}
+		
+		protected bool FScalingChanged;
+		protected RulerView FRuler;
+		public SvgMatrix View
+		{
+			set
+			{
+				FScalingChanged |= PanZoomGroup.Transforms[0].Matrix.Elements[0] != value.Matrix.Elements[0];
+				PanZoomGroup.Transforms[0] = value;
+			}
+		}
+		
+		public bool Collapsed
+		{
+			get {return Model.Height.Value == Model.CollapsedHeight;}
+		}
 		
 		public TrackView(TLTrackBase track, TimelineView tv, RulerView rv)
 			: base(track, tv)
@@ -129,7 +129,7 @@ namespace Timeliner
 			Label.ID = "label";
 			Label.MouseDown += Background_MouseDown;
 			Label.MouseUp += Background_MouseUp;
-            Label.CustomAttributes["class"] = "trackfont";
+			Label.CustomAttributes["class"] = "trackfont";
 			
 			SizeBarDragRect.FillOpacity = 0.3f;
 			SizeBarDragRect.Visible = false;
@@ -161,7 +161,7 @@ namespace Timeliner
 			SizeBar.Width = width;
 			SizeBar.Height = 5;
 			SizeBar.ID = "SizeBar";
-            SizeBar.CustomAttributes["class"] = "sizebar";
+			SizeBar.CustomAttributes["class"] = "sizebar";
 			SizeBar.Y = Background.Height.Value;
 			
 			//register event handlers
@@ -175,29 +175,29 @@ namespace Timeliner
 			
 			//track menu
 			TrackMenu = new SvgMenuWidget(110);
-            
-            TrackLabelEdit = new SvgStringWidget(0, 30, Model.Label.Value);
-            TrackLabelEdit.OnValueChanged += RenameTrack;
-            TrackMenu.AddItem(TrackLabelEdit);
+			
+			TrackLabelEdit = new SvgStringWidget(0, 30, Model.Label.Value);
+			TrackLabelEdit.OnValueChanged += RenameTrack;
+			TrackMenu.AddItem(TrackLabelEdit);
 			
 			CollapseButton = new SvgButtonWidget(0, 20, "Collapse");
 			CollapseButton.OnButtonPressed += CollapseTrack;
 			TrackMenu.AddItem(CollapseButton);
-            
-            FillTrackMenu();
+			
+			FillTrackMenu();
 			
 			RemoveButton = new SvgButtonWidget(0, 20, "Remove");
-		    RemoveButton.OnButtonPressed += RemoveTrack;
+			RemoveButton.OnButtonPressed += RemoveTrack;
 			TrackMenu.AddItem(RemoveButton);
 			
 			//keyframe menu
 			KeyframeMenu = new SvgMenuWidget(110);
-            
-            TimeEdit = new SvgValueWidget(0, 20, "Time", 0);
-            TimeEdit.OnValueChanged += ChangeKeyframeTime;
-            KeyframeMenu.AddItem(TimeEdit);
-            
-            FillKeyframeMenu();
+			
+			TimeEdit = new SvgValueWidget(0, 20, "Time", 0);
+			TimeEdit.OnValueChanged += ChangeKeyframeTime;
+			KeyframeMenu.AddItem(TimeEdit);
+			
+			FillKeyframeMenu();
 		}
 		
 		public override void Dispose()
@@ -280,7 +280,7 @@ namespace Timeliner
 			}
 			
 			Label.Text = Model.Label.Value;
-            CollapseButton.Label = Collapsed ? "Uncollapse" : "Collapse";
+			CollapseButton.Label = Collapsed ? "Uncollapse" : "Collapse";
 		}
 		
 		private void UpdateTrackHeightAndPos()
@@ -304,13 +304,13 @@ namespace Timeliner
 			
 			Background.CustomAttributes["class"] = Model.Order.Value % 2 == 0 ? "even": "odd";
 		}
-	
+		
 		protected virtual void ApplyInverseScaling()
 		{}
 		#endregion
 		
 		#region scenegraph eventhandler
-        void RenameTrack(string label)
+		void RenameTrack(string label)
 		{
 			History.Insert(Command.Set(Model.Label, label));
 		}
@@ -320,7 +320,7 @@ namespace Timeliner
 			var newHeight = 0f;
 			if (Model.Height.Value > 50)
 			{
-				Model.UncollapsedHeight.Value = Model.Height.Value; 
+				Model.UncollapsedHeight.Value = Model.Height.Value;
 				newHeight = 50;
 			}
 			else
@@ -343,7 +343,7 @@ namespace Timeliner
 					if (kf.Selected.Value)
 						cmd.Append(Command.Set(kf.Time, kf.Time.Value + delta));
 			}
-					
+			
 			History.Insert(cmd);
 		}
 		
@@ -385,6 +385,23 @@ namespace Timeliner
 		}
 		#endregion
 		
+		public virtual void Nudge(ref CompoundCommand cmds, NudgeDirection direction, float timeDelta, float valueDelta)
+		{
+			foreach(var kf in KeyframeViews)
+			{
+				if (kf.Model.Selected.Value)
+					switch (direction)
+				{
+					case NudgeDirection.Back:
+						cmds.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value - timeDelta));
+						break;
+					case NudgeDirection.Forward:
+						cmds.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + timeDelta));
+						break;
+				}
+			}
+		}
+		
 		public float YPosToValue(float y)
 		{
 			//min/max
@@ -423,12 +440,12 @@ namespace Timeliner
 			return new RectangleF(x1, y1 - height, width, height);
 		}
 		
-        protected abstract void FillTrackMenu();
-        protected abstract void FillKeyframeMenu();
+		protected abstract void FillTrackMenu();
+		protected abstract void FillKeyframeMenu();
 
-        public abstract void Evaluate();
-        
-        /// <summary>
+		public abstract void Evaluate();
+		
+		/// <summary>
 		/// Update the keyframe menu to latest values
 		/// </summary>
 		/// <param name="kf">The clicked keyframe</param>

@@ -221,44 +221,22 @@ namespace Timeliner
 		
 		void Nudge(NudgeDirection direction, bool shift, bool ctrl, bool alt)
 		{
-			var nudgeTime = 1f/Timeliner.Timer.FPS;
-			var nudgeValue = 0.01f;
+			var timeDelta = 1f/Timeliner.Timer.FPS;
+			var valueDelta = 0.01f;
 			
 			if (shift)
-				nudgeTime *= Timeliner.Timer.FPS; //to nudge a whole second
+				timeDelta *= Timeliner.Timer.FPS; //to nudge a whole second
 			
 			var step = alt ? 10f : 0.1f;
 			if (shift) 
-				nudgeValue *= step;
+				valueDelta *= step;
 			if (ctrl) 
-				nudgeValue *= step;
+				valueDelta *= step;
 			
-			var cmd = new CompoundCommand();
-			//nudge should go to trackview where it can do min/max clamping
+			var cmds = new CompoundCommand();
 			foreach(var track in Timeliner.TimelineView.Tracks)
-//				track.Nudge(direction, nudgeTime, nudgeValue);
-			{
-				foreach(var kf in (track as ValueTrackView).Keyframes)
-				{
-					if (kf.Model.Selected.Value)
-						switch (direction)
-					{
-						case NudgeDirection.Back:
-							cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value - nudgeTime));
-							break;
-						case NudgeDirection.Forward:
-							cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + nudgeTime));
-							break;
-						case NudgeDirection.Up:
-							cmd.Append(Command.Set(kf.Model.Value, kf.Model.Value.Value + nudgeValue));
-							break;
-						case NudgeDirection.Down:
-							cmd.Append(Command.Set(kf.Model.Value, kf.Model.Value.Value - nudgeValue));
-							break;
-					}
-				}
-			}
-			Context.History.Insert(cmd);
+				track.Nudge(ref cmds, direction, timeDelta, valueDelta);
+			Context.History.Insert(cmds);
 		}
 		
 		void PoshServer_OnKeyUp(bool ctrl, bool shift, bool alt, int keyCode)
