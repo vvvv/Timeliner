@@ -269,6 +269,7 @@ namespace Timeliner
 		{
 			var xml = XElement.Load(path);
 			Timeliner.Load(xml);
+			Timeliner.TimelineView.UpdateScene();
 		}
 		
 		public void Evaluate(float hosttime)

@@ -71,8 +71,6 @@ namespace Timeliner
         public void LoadFromXML(XElement data, Serializer serializer)
         {
         	data.DeserializeAndAddToList(Tracks, serializer);
-//        	var tls = new TLTrackListSerializer();
-//        	Tracks = tls.Deserialize(data, typeof(EditableIDList<TLTrackBase>), serializer);
         }
         
         public void Evaluate(float time)
