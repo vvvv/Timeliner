@@ -1,4 +1,4 @@
-.posh
+body
 {
 	background: #646464;
 }
@@ -94,13 +94,13 @@ path
 	stroke-opacity: 0.2;
 }
 
-#_Overlays_Selection
+#svg_Overlays_Selection
 {
 	fill: #ffffff;
 	fill-opacity: 0.1;
 }
 
-#_Overlays_Timebar
+#svg_Overlays_Timebar
 {
 	fill: #000000;
 	stroke-opacity: 0;
@@ -108,7 +108,7 @@ path
 	cursor: col-resize;
 }
 
-#_Overlays_Timebar:hover
+#svg_Overlays_Timebar:hover
 {
 	fill: #000000;
 	stroke: #000000;
@@ -117,7 +117,7 @@ path
 	cursor: col-resize;
 }
 
-#_Overlays_MouseTime
+#svg_Overlays_MouseTime
 {
 	stroke: #ffffff;
 	stroke-opacity: 0.3;
@@ -126,7 +126,7 @@ path
 	shape-rendering : crispEdges;
 }
 
-#_Overlays_MouseTimeLabel
+#svg_Overlays_MouseTimeLabel
 {
 	fill: #ffffff;
 	font-family: "Lucida Console";
@@ -138,7 +138,7 @@ path
 	fill: #959595;
 }
 
-#_SizeBar
+#svg_SizeBar
 {
 	fill: #404040;
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
+using Posh;
 using Svg;
 using Svg.Transforms;
 using VVVV.Core;
@@ -10,8 +12,6 @@ using VVVV.Core.Collections;
 using VVVV.Core.Collections.Sync;
 using VVVV.Core.Commands;
 using VVVV.Utils;
-
-using Posh;
 
 namespace Timeliner
 {
@@ -78,12 +78,13 @@ namespace Timeliner
             //replace id manager before any svg element was added
             var caller = Document.Mapper.Map<ISvgEventCaller>();
             var manager = new SvgIdManager(SvgRoot, caller, Document.Mapper.Map<RemoteContext>());
+            SvgRoot.ID = "svg";
             SvgRoot.OverwriteIdManager(manager);
             
             Background.Width = new SvgUnit(SvgUnitType.Percentage, 100);
-            Background.Height = new SvgUnit(SvgUnitType.Percentage, 100);
-            Background.Opacity = 0.5f;
+            Background.Height = 500;
             Background.ID = Document.GetID() + "_Background";
+            Background.Opacity = 0;
             
             Background.MouseDown += Default_MouseDown;
             Background.MouseMove += Default_MouseMove;
@@ -97,7 +98,6 @@ namespace Timeliner
             TimeBar.ID = "Timebar";
             TimeBar.X = -1;
             TimeBar.Width = 2;
-            TimeBar.Height = Background.Height;
             TimeBar.MouseDown += Default_MouseDown;
             TimeBar.MouseMove += Default_MouseMove;
             TimeBar.MouseUp += Default_MouseUp;
@@ -106,7 +106,6 @@ namespace Timeliner
             MouseTimeLine.StartX = 0;
             MouseTimeLine.StartY = 0;
             MouseTimeLine.EndX = 0;
-            MouseTimeLine.EndY = Background.Height;
             
             MouseTimeLabel.ID = "MouseTimeLabel";
             MouseTimeLabel.FontSize = 14;
@@ -291,6 +290,12 @@ namespace Timeliner
             			
 			foreach (var track in Tracks)
 				track.UpdateScene();
+			
+			var totalHeight = Tracks.Sum(x => x.Height);
+			TimeBar.Height = totalHeight;
+			MouseTimeLine.EndY = totalHeight;
+			Background.Height = Math.Max(500, totalHeight + 250);
+			SvgRoot.CustomAttributes["style"] = "height: "+ Background.Height + "px";
 		}
 		
 		public void SetSelectionRect(RectangleF rect)
