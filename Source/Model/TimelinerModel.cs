@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using VVVV.Core;
@@ -45,6 +46,10 @@ namespace Timeliner
 
     public abstract class TLTrackBase : TLModelBase
     {
+    	public abstract IEnumerable<TLKeyframeBase> KeyframeModels
+    	{
+    		get;
+    	}
     	
         public EditableProperty<int> Order
         {

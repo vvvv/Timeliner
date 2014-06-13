@@ -1,9 +1,9 @@
 #region usings
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
 using Posh;
 using Svg;
 using VVVV.Core;
@@ -156,11 +156,18 @@ namespace Timeliner
 					break;
 				case (int) Keys.Delete:
 					
-					foreach(var track in Timeliner.TimelineView.Tracks)
-						foreach(var kf in (track as ValueTrackView).Keyframes)
+					foreach(var track in Timeliner.TimelineView.Tracks.OfType<ValueTrackView>())
+						foreach(var kf in track.Keyframes)
 					{
 						if (kf.Model.Selected.Value)
-							cmd.Append(Command.Remove((track as ValueTrackView).Model.Keyframes, kf.Model));
+							cmd.Append(Command.Remove(track.Model.Keyframes, kf.Model));
+					}
+					
+					foreach(var track in Timeliner.TimelineView.Tracks.OfType<StringTrackView>())
+						foreach(var kf in track.Keyframes)
+					{
+						if (kf.Model.Selected.Value)
+							cmd.Append(Command.Remove(track.Model.Keyframes, kf.Model));
 					}
 					
 					break;

@@ -20,6 +20,14 @@ namespace Timeliner
 	/// </summary>
 	public class TLStringTrack : TLTrackBase
 	{
+		public override IEnumerable<TLKeyframeBase> KeyframeModels
+    	{
+    		get
+    		{
+    			return Keyframes;
+    		}
+    	}
+		
 		//property which holds the keyframes
 		public EditableIDList<TLStringKeyframe> Keyframes
 		{

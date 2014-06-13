@@ -11,6 +11,14 @@ namespace Timeliner
 {
     public class TLAudioTrack : TLTrackBase
     {
+    	public override IEnumerable<TLKeyframeBase> KeyframeModels
+    	{
+    		get
+    		{
+    			return Samples;
+    		}
+    	}
+    	
     	public EditableIDList<TLSample> Samples
         {
             get;
@@ -65,11 +73,11 @@ namespace Timeliner
 		{
 			return null;
 		}
+    	
     }
 
-    public class TLSample : TLModelBase
+    public class TLSample : TLKeyframeBase
     {
-        public EditableProperty<float> Time { get; private set; }
         public EditableProperty<float> Value { get; private set; }
         
         public PointF Position
@@ -96,9 +104,8 @@ namespace Timeliner
         }
 
         public TLSample(string name, float time, float value)
-            : base(name)
+            : base(name, time)
         {
-            Time = new EditableProperty<float>("Time", time);
             Value = new EditableProperty<float>("Value", value);
             Add(Time);
             Add(Value);
