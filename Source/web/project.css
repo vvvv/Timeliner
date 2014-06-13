@@ -1,87 +1,82 @@
-body
-{
+body{
 	background: #646464;
 }
 
-.kf 
-{
+/* tracks */
+.even{
+	fill: #646464;
+}
+
+.odd{
+	fill: #646464;
+}
+
+.selected {	
+	fill: #959595;
+	stroke: #959595;
+	stroke-width: 3;
+}
+
+#svg_SizeBar{
+	fill: #404040;
+}
+
+.sizebar{
+	cursor:row-resize;
+	fill: #404040;
+}
+
+.trackfont{
+	font-family: "Lucida Console";
+	fill: #959595;	
+	cursor:pointer;
+}
+
+.collapsed{
+	stroke-opacity: 0.2;
+}
+
+/* valuetrack */
+.kf {
 	fill: #ffffff;
 	stroke: #00000000;
 	stroke-width: 3;
 }
 
-.kf:hover, .kf:active
-{
+.kf:hover, .kf:active{
 	fill: #252525;
 	stroke: #252525;
 }
 
-.ckf 
-{
+.kffont{
+	font-family: "Lucida Console";
+	fill: #000000;	
+	pointer-events: none;
+}
+
+.ckf {
 	stroke: #ffffff;
 	stroke-width: 4;
 }
 
-.ckf.selected 
-{	
+.ckf.selected {	
 	fill: #959595;
 	stroke: #959595;
 	stroke-width: 6;
 }
 
-.ckf:hover, .ckf:active
-{
+.ckf:hover, .ckf:active{
 	stroke-width: 6;
 	stroke: #252525;
 }
 
-.selected 
-{	
+.pathsel{	
 	fill: #959595;
 	stroke: #959595;
 	stroke-width: 3;
 }
 
-.pathsel
-{	
-	fill: #959595;
-	stroke: #959595;
-	stroke-width: 3;
-}
-
-.ruler
-{
-	fill: #646464;
-}
-
-.loopcap
-{
-	fill: #ffffff;
-	fill-opacity: 0;
-}
-
-.loopcap:hover, .loopcap:active
-{
-	fill-opacity: 0.3;
-}
-
-.button
-{
-	fill: #ffffff;
-}
-
-.even
-{
-	fill: #646464;
-}
-
-.odd
-{
-	fill: #646464;
-}
-
-path
-{
+path{
 	stroke: #ffffff;
 	stroke-width: 2;
 	stroke-opacity: 1;
@@ -89,27 +84,74 @@ path
 	pointer-events: none;
 }
 
-.collapsed
-{
-	stroke-opacity: 0.2;
+/* stringtrack */
+.skffont{
+	font-family: "Lucida Console";
+	fill: #000000;	
 }
 
-#svg_Overlays_Selection
-{
+/* ruler */
+.ruler{
+	fill: #646464;
+}
+
+.loopcap{
+	fill: #ffffff;
+	fill-opacity: 0;
+}
+
+.loopcap:hover, .loopcap:active{
+	fill-opacity: 0.3;
+}
+
+.loop{
+	fill: #959595;
+}
+
+.time{
+	font-family: "Lucida Console";
+	fill: #000000;	
+	pointer-events: none;
+}
+
+.button{
+	fill: #ffffff;
+}
+
+/* menues */
+.menu{
+	fill: #646464; 
+}
+
+.menu:hover{
+	fill: #959595;
+}
+
+.menufont{
+	font-family: "Lucida Console";
+	fill: #ffffff;
+	pointer-events: none;
+}
+
+.labelmenufont{
+	font-family: "Lucida Console";
+	fill: #ffffff;
+}
+
+/* GUI */
+#svg_Overlays_Selection{
 	fill: #ffffff;
 	fill-opacity: 0.1;
 }
 
-#svg_Overlays_Timebar
-{
+#svg_Overlays_Timebar{
 	fill: #000000;
 	stroke-opacity: 0;
 	stroke-width: 4;
 	cursor: col-resize;
 }
 
-#svg_Overlays_Timebar:hover
-{
+#svg_Overlays_Timebar:hover{
 	fill: #000000;
 	stroke: #000000;
 	stroke-opacity: 0.5;
@@ -117,8 +159,7 @@ path
 	cursor: col-resize;
 }
 
-#svg_Overlays_MouseTime
-{
+#svg_Overlays_MouseTime{
 	stroke: #ffffff;
 	stroke-opacity: 0.3;
 	stroke-width: 1;
@@ -126,75 +167,8 @@ path
 	shape-rendering : crispEdges;
 }
 
-#svg_Overlays_MouseTimeLabel
-{
+#svg_Overlays_MouseTimeLabel{
 	fill: #ffffff;
 	font-family: "Lucida Console";
 	pointer-events: none;
-}
-
-.loop
-{
-	fill: #959595;
-}
-
-#svg_SizeBar
-{
-	fill: #404040;
-}
-
-.sizebar
-{
-	cursor:row-resize;
-	fill: #404040;
-}
-
-.trackfont
-{
-	font-family: "Lucida Console";
-	fill: #959595;	
-	cursor:pointer;
-}
-
-.kffont
-{
-	font-family: "Lucida Console";
-	fill: #000000;	
-	pointer-events: none;
-}
-
-.skffont
-{
-	font-family: "Lucida Console";
-	fill: #000000;	
-}
-
-.time
-{
-	font-family: "Lucida Console";
-	fill: #000000;	
-	pointer-events: none;
-}
-
-.menu
-{
-	fill: #646464; 
-}
-
-.menu:hover 
-{
-	fill: #959595;
-}
-
-.menufont
-{
-	font-family: "Lucida Console";
-	fill: #ffffff;
-	pointer-events: none;
-}
-
-.labelmenufont
-{
-	font-family: "Lucida Console";
-	fill: #ffffff;
 }
