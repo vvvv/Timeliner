@@ -132,7 +132,6 @@ namespace Timeliner
 				kf.UpdateScene();
 		}
 
-		
 		protected override void ApplyInverseScaling()
 		{
 			//apply inverse scaling to keyframes

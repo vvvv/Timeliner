@@ -15,7 +15,8 @@ namespace Timeliner
 		
 		public string Caption
 		{
-			get; set;
+			get {return Label.Text;}
+			set {Label.Text = value;}
 		}
 		
 		public SvgStringWidget(string label): base()

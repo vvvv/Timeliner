@@ -339,7 +339,7 @@ namespace Timeliner
 			var cmd = new CompoundCommand();
 			foreach (var track in Parent.Document.Tracks)
 			{
-				foreach (var kf in (track as TLValueTrack).Keyframes)
+				foreach (var kf in track.KeyframeModels)
 					if (kf.Selected.Value)
 						cmd.Append(Command.Set(kf.Time, kf.Time.Value + delta));
 			}
