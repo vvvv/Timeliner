@@ -17,10 +17,11 @@ Requires Internet Explorer >= 10 to be installed on your system.
 * show keyframe menu via middleclick on a keyframe
 * add keyframes to selection by pressing Ctrl while selecting
 * remove keyframes from selection by pressing Alt while selecting
-* change numbers using the mouse wheel
-* change numbers and text via rightclick
-* move time via right drag left/right
-* zoom via right drag up/down
+* in menues:
+ * change numbers using the mouse wheel (also use Shift/Ctrl/Alt vvvv-style to change stepsize)
+ * change numbers and text via rightclick
+* pan (scroll in time) via right-drag left/right
+* zoom via right-drag up/down
 * rearrange tracks via left dragging their labels 
 
 ### Keyboard Interaction
@@ -71,7 +72,7 @@ loop: takes two floating point values to specify the loops in and out points
 
 Navigate to http://127.0.0.1:4444 with your browser to see a list of available timelines.
 
-If you want to access a timeline other than via localhost make sure to start TimelinerSA.exe as admin.
+If you want to access a timeline other than via localhost make sure to run TimelinerSA.exe as admin.
 
 ---
 
