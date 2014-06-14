@@ -203,7 +203,8 @@ namespace Timeliner
 	
 	internal class SelectionMouseHandler : MouseHandlerBase<TrackView>
 	{
-		private CompoundCommand FSelectionCommands;
+		CompoundCommand FSelectionCommands;
+		List<KeyframeView> FPreviouslySelected = new List<KeyframeView>();
 		
 		public SelectionMouseHandler(TrackView view, string sessionID)
 			
@@ -213,14 +214,24 @@ namespace Timeliner
 		
 		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
 		{
-			//deselect keyframes
-			foreach (var track in Instance.Parent.Tracks)
-				foreach (var kf in track.KeyframeViews)
+			if (arg.CtrlKey || arg.AltKey)
 			{
-				if (kf.Model.Selected.Value)
+				foreach (var track in Instance.Parent.Tracks)
+					foreach (var kf in track.KeyframeViews)
+						if (kf.Model.Selected.Value)
+							FPreviouslySelected.Add(kf);
+			}
+			else //deselect keyframes
+			{
+				var cmds = new CompoundCommand();
+				foreach (var track in Instance.Parent.Tracks)
+					foreach (var kf in track.KeyframeViews)
 				{
-					Instance.History.Insert(Command.Set(kf.Model.Selected, false));
+					if (kf.Model.Selected.Value)
+						cmds.Append(Command.Set(kf.Model.Selected, false));
 				}
+				if (cmds.CommandCount > 0)
+					Instance.History.Insert(cmds);
 			}
 			
 			//start collecting movecommands in drag
@@ -229,9 +240,10 @@ namespace Timeliner
 			return base.MouseDown(sender, arg);
 		}
 		
-		public override void MouseSelection(object sender, RectangleF rect)
+		public override void MouseSelection(object sender, MouseArg arg, RectangleF rect)
 		{
-			var cmd = new CompoundCommand();
+			var cmds = new CompoundCommand();
+			
 			foreach (var track in Instance.Parent.Tracks)
 			{
 				var trackRect = track.ToTrackRect(rect);
@@ -239,20 +251,29 @@ namespace Timeliner
 				{
 					var wasSelected = kf.Model.Selected.Value;
 					var isSelected = kf.IsSelectedBy(trackRect);
-					if (isSelected != wasSelected)
+					
+					if (arg.AltKey)
 					{
-						cmd.Append(Command.Set(kf.Model.Selected, isSelected));
+						if (FPreviouslySelected.Contains(kf)) //only remove from previously selected
+							cmds.Append(Command.Set(kf.Model.Selected, !isSelected));
 					}
+					else if (arg.CtrlKey)
+					{
+						if (!FPreviouslySelected.Contains(kf)) //only add to previously selected
+							cmds.Append(Command.Set(kf.Model.Selected, isSelected));
+					}
+					else if (isSelected != wasSelected) //only send selection change
+						cmds.Append(Command.Set(kf.Model.Selected, isSelected));
 				}
 			}
 			
-			if(cmd.CommandCount > 0)
+			if(cmds.CommandCount > 0)
 			{
 				//execute changes immediately
-				cmd.Execute();
+				cmds.Execute();
 				
 				//collect changes for history
-				FSelectionCommands.Append(cmd);
+				FSelectionCommands.Append(cmds);
 			}
 			
 			rect = new RectangleF(rect.X, rect.Y - Instance.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5], rect.Width, rect.Height);
@@ -262,6 +283,8 @@ namespace Timeliner
 		
 		public override IMouseEventHandler MouseUp(object sender, MouseArg arg)
 		{
+			FPreviouslySelected.Clear();
+			
 			Instance.Parent.SetSelectionRect(new RectangleF(0, 0, 0, 0));
 			
 			//add collected commands to history
@@ -293,7 +316,7 @@ namespace Timeliner
 			{
 				FWasSelected = Instance.Model.Selected.Value;
 				var cmd = new CompoundCommand();
-				if (!FWasSelected)
+				if ((!FWasSelected) && (!arg.CtrlKey))
 				{
 					//unselect all keyframes
 					foreach (var track in Instance.Parent.Parent.Tracks)
@@ -303,7 +326,6 @@ namespace Timeliner
 				}
 				//set keyframe selected
 				cmd.Append(Command.Set(Instance.Model.Selected, true));
-				
 				Instance.History.Insert(cmd);
 				
 				//start collecting movecommands in drag

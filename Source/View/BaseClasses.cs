@@ -220,7 +220,7 @@ namespace Timeliner
 				if (rect.Height < 0)
 					y = y + rect.Height;
 				
-				MouseSelection(sender, new RectangleF(x, y, w, h));
+				MouseSelection(sender, arg, new RectangleF(x, y, w, h));
 				LastPoint = point;
 				DragCallCounter++;
 			}
@@ -233,7 +233,7 @@ namespace Timeliner
 			
 		}
 		
-		public virtual void MouseSelection(object sender, RectangleF selection)
+		public virtual void MouseSelection(object sender, MouseArg arg, RectangleF selection)
 		{
 			
 		}
