@@ -15,6 +15,8 @@ Requires Internet Explorer >= 10 to be installed on your system.
 * create a keyframe in a track via doubleclick
 * show track menu via middleclick on a track
 * show keyframe menu via middleclick on a keyframe
+* add keyframes to selection by pressing Ctrl while selecting
+* remove keyframes from selection by pressing Alt while selecting
 * change numbers using the mouse wheel
 * change numbers and text via rightclick
 * move time via right drag left/right
@@ -67,7 +69,9 @@ loop: takes two floating point values to specify the loops in and out points
 
 ### Web Access
 
-Use http://127.0.0.1:4444/callmenames to access a timeline via the browser. Change "callmenames" to the name of your timeline. If you want to access a timeline other than via localhost make sure to start TimelinerSA.exe as admin.
+Navigate to http://127.0.0.1:4444 with your browser to see a list of available timelines.
+
+If you want to access a timeline other than via localhost make sure to start TimelinerSA.exe as admin.
 
 ---
 
