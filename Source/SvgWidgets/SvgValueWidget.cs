@@ -94,7 +94,14 @@ namespace Timeliner
 		
 		void Background_MouseScroll(object sender, MouseScrollArg e)
 		{
-			var delta = (e.Scroll) / (120*10f);			
+			var delta = (e.Scroll) / (120*10f);
+			
+			var step = e.AltKey ? 10f : 0.1f;
+			if (e.ShiftKey) 
+				delta *= step;
+			if (e.CtrlKey) 
+				delta *= step;
+			
 			Value += delta;
 				
 			UpdateScene();
