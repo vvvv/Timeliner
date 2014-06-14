@@ -161,6 +161,8 @@ namespace Timeliner
 											else 
 												tv = new AudioTrackView(tm as TLAudioTrack, this, Ruler);
 											
+											if (ActiveTrack == null)
+        										ActiveTrack = tv;
 	                                     	tv.AddToSceneGraphAt(FTrackGroup);
 	                                     	return tv;
                                         },
@@ -206,6 +208,12 @@ namespace Timeliner
 		void History_Changed(object sender, EventArgs<Command> e)
 		{
 			UpdateScene();
+			
+			if (!Tracks.Contains(ActiveTrack))
+				if (Tracks.Count > 0)
+					ActiveTrack = Tracks[0];
+				else 
+					ActiveTrack = null;
 		}
 		
 		public void RebuildAfterUpdate()
@@ -402,6 +410,16 @@ namespace Timeliner
 			{
 				HideMenus();
 				return new TimeBarHandler(this, e.SessionID);
+			}
+			else if (sender == Background) 
+			{
+				HideMenus();
+				if ((e.Button == 1) && (ActiveTrack != null))
+					return new SelectionMouseHandler(ActiveTrack, e.SessionID);					
+				else if (e.Button == 3)
+					return new TrackPanZoomHandler(this, e.SessionID);
+				else 
+					return null;
 			}
 			else
 			{
