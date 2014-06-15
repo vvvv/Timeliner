@@ -298,12 +298,11 @@ namespace Timeliner
 			
 			var min = Model.Maximum.Value;
 			var max = Model.Minimum.Value;
-			var value = Math.Min(min, Math.Max(max, ValueEdit.Value));
 			
-			foreach(var kf in Keyframes)
+			foreach(var kf in Keyframes.Where(x => x.Model.Selected.Value))
 			{
-				if (kf.Model.Selected.Value)
-					cmd.Append(Command.Set(kf.Model.Value, value));
+				var newValue = Math.Min(min, Math.Max(max, kf.Model.Value.Value + delta));
+				cmd.Append(Command.Set(kf.Model.Value, newValue));
 			}
 					
 			History.Insert(cmd);
