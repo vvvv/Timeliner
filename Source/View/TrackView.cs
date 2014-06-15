@@ -128,7 +128,7 @@ namespace Timeliner
 			Label.Text = Model.Label.Value;
 			Label.ID = "label";
 			Label.MouseDown += Background_MouseDown;
-			Label.MouseUp += Background_MouseUp;
+			Label.MouseUp += MouseUp;
 			Label.CustomAttributes["class"] = "trackfont";
 			
 			SizeBarDragRect.FillOpacity = 0.3f;
@@ -166,12 +166,12 @@ namespace Timeliner
 			
 			//register event handlers
 			Background.MouseDown += Background_MouseDown;
-			Background.MouseUp += Background_MouseUp;
-			Background.MouseMove += Background_MouseMove;
+			Background.MouseUp += MouseUp;
+			Background.MouseMove += MouseMove;
 			
 			SizeBar.MouseDown += Background_MouseDown;
-			SizeBar.MouseMove += Background_MouseMove;
-			SizeBar.MouseUp += Background_MouseUp;
+			SizeBar.MouseMove += MouseMove;
+			SizeBar.MouseUp += MouseUp;
 			
 			//track menu
 			TrackMenu = new SvgMenuWidget(110);
@@ -203,15 +203,15 @@ namespace Timeliner
 		public override void Dispose()
 		{
 			Background.MouseDown -= Background_MouseDown;
-			Background.MouseMove -= Background_MouseMove;
-			Background.MouseUp -= Background_MouseUp;
+			Background.MouseMove -= MouseMove;
+			Background.MouseUp -= MouseUp;
 			
 			SizeBar.MouseDown -= Background_MouseDown;
-			SizeBar.MouseMove -= Background_MouseMove;
-			SizeBar.MouseUp -= Background_MouseUp;
+			SizeBar.MouseMove -= MouseMove;
+			SizeBar.MouseUp -= MouseUp;
 			
 			Label.MouseDown -= Background_MouseDown;
-			Label.MouseUp -= Background_MouseUp;
+			Label.MouseUp -= MouseUp;
 			
 			CollapseButton.OnButtonPressed -= CollapseTrack;
 			TrackLabelEdit.OnValueChanged -= RenameTrack;
@@ -365,17 +365,11 @@ namespace Timeliner
 				Parent.Default_MouseDown(this, e);
 		}
 		
-		void Background_MouseUp(object sender, MouseArg e)
+		public void MouseDown(object sender, MouseArg e)
 		{
-			Parent.Default_MouseUp(this, e);
-		}
-
-		void Background_MouseMove(object sender, MouseArg e)
-		{
-			Parent.Default_MouseMove(this, e);
+			Parent.Default_MouseDown(sender, e);
 		}
 		
-		//called from child
 		public void MouseMove(object sender, MouseArg e)
 		{
 			Parent.Default_MouseMove(sender, e);
@@ -384,11 +378,6 @@ namespace Timeliner
 		public void MouseUp(object sender, MouseArg e)
 		{
 			Parent.Default_MouseUp(sender, e);
-		}
-		
-		public void MouseDown(object sender, MouseArg e)
-		{
-			Parent.Default_MouseDown(sender, e);
 		}
 		#endregion
 		
