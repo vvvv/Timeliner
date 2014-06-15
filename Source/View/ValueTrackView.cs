@@ -16,26 +16,6 @@ namespace Timeliner
 {
 	public class ValueTrackView: TrackView
 	{
-		public EditableList<ValueKeyframeView> Keyframes 
-		{
-			get;
-			protected set;
-		}
-		
-		public EditableList<CurveView> Curves = new EditableList<CurveView>();
-		
-		public SvgCircle KeyframeDefinition = new SvgCircle();
-        public SvgLine CollapsedKeyframeDefinition = new SvgLine();
-		public SvgGroup CurveGroup = new SvgGroup();
-		public SvgGroup KeyframeGroup = new SvgGroup();
-		
-		private Synchronizer<ValueKeyframeView, TLValueKeyframe> KFSyncer;
-		private Synchronizer<CurveView, TLCurve> CurveSyncer;
-		
-		private SvgValueWidget MinValueEdit, MaxValueEdit;
-		public SvgValueWidget ValueEdit;
-		private SvgText CurrentValue = new SvgText();
-		
 		public new TLValueTrack Model
         {
             get
@@ -47,6 +27,33 @@ namespace Timeliner
                 base.Model = value;
             }
         }
+		
+		public EditableList<ValueKeyframeView> Keyframes 
+		{
+			get;
+			protected set;
+		}
+		
+		public override IEnumerable<KeyframeView> KeyframeViews 
+		{
+			get 
+			{
+				return Keyframes;
+			}
+		}
+		
+		public EditableList<CurveView> Curves = new EditableList<CurveView>();
+		
+		Synchronizer<ValueKeyframeView, TLValueKeyframe> KFSyncer;
+		Synchronizer<CurveView, TLCurve> CurveSyncer;
+		
+		public SvgCircle KeyframeDefinition = new SvgCircle();
+        public SvgLine CollapsedKeyframeDefinition = new SvgLine();
+		public SvgGroup CurveGroup = new SvgGroup();
+		public SvgGroup KeyframeGroup = new SvgGroup();
+		SvgValueWidget MinValueEdit, MaxValueEdit;
+		public SvgValueWidget ValueEdit;
+		SvgText CurrentValue = new SvgText();
 		
 		public ValueTrackView(TLValueTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv, rv)
@@ -121,25 +128,6 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
-		//curves need to be rebuild after the model updates,
-		//in case keyframes have moved beyond their neighbours.
-		//this can only be done from outside, in this case before 
-		//the posh publish.
-		bool FNeedsRebuild;
-		protected void NeedsRebuild()
-		{
-			FNeedsRebuild = true;
-		}
-		
-		public override void RebuildAfterUpdate()
-		{
-			if(FNeedsRebuild)
-			{
-				Model.BuildCurves();
-				FNeedsRebuild = false;
-			}
-		}
-		
 		#region build scenegraph		
 		protected override void BuildSVG()
 		{
@@ -166,7 +154,6 @@ namespace Timeliner
 		#endregion
 		
 		#region update scenegraph
-		
 		public override void UpdateScene()
 		{
 			
@@ -184,7 +171,7 @@ namespace Timeliner
 				curve.UpdateScene();
 		}
 		
-		private void UpdateMinMaxView()
+		void UpdateMinMaxView()
 		{
 			//zoom to min/max
 			var oldScale = PanZoomGroup.Transforms[1].Matrix.Elements[3];
@@ -226,50 +213,26 @@ namespace Timeliner
 			KeyframeDefinition.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
             CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
-		#endregion
 		
-		#region scenegraph eventhandler
-		void ChangeMinimum(float delta)
+		//curves need to be rebuild after the model updates,
+		//in case keyframes have moved beyond their neighbours.
+		//this can only be done from outside, in this case before 
+		//the posh publish.
+		bool FNeedsRebuild;
+		protected void NeedsRebuild()
 		{
-			History.Insert(Command.Set(Model.Minimum, MinValueEdit.Value));
+			FNeedsRebuild = true;
 		}
 		
-		void ChangeMaximum(float delta)
+		public override void RebuildAfterUpdate()
 		{
-			History.Insert(Command.Set(Model.Maximum, MaxValueEdit.Value));
-		}
-		
-		void ChangeKeyframeValue(float delta)
-		{
-			var cmd = new CompoundCommand();
-			
-			var min = Model.Maximum.Value;
-			var max = Model.Minimum.Value;
-			var value = Math.Min(min, Math.Max(max, ValueEdit.Value));
-			
-			foreach(var kf in Keyframes)
+			if(FNeedsRebuild)
 			{
-				if (kf.Model.Selected.Value)
-					cmd.Append(Command.Set(kf.Model.Value, value));
-			}
-					
-			History.Insert(cmd);
-		}
-		
-		void Background_MouseClick(object sender, MouseArg e)
-		{
-			if(e.ClickCount >= 2)
-			{
-				var x = FRuler.XPosToTime(e.x);
-				var y = YPosToValue(e.y);
-				
-				var kf = new TLValueKeyframe(x, y);
-				var cmd = Command.Add(this.Model.Keyframes, kf);
-				History.Insert(cmd);
+				Model.BuildCurves();
+				FNeedsRebuild = false;
 			}
 		}
-		#endregion
-        
+		
 		public override void Nudge(ref CompoundCommand cmds, NudgeDirection direction, float timeDelta, float valueDelta)
 		{
 			base.Nudge(ref cmds, direction, timeDelta, valueDelta);
@@ -316,14 +279,49 @@ namespace Timeliner
 			//also update the value of the keyframe menu
 			ValueEdit.Value = (kf as ValueKeyframeView).Model.Value.Value;
 		}
+		#endregion
 		
-		public override IEnumerable<KeyframeView> KeyframeViews 
+		#region scenegraph eventhandler
+		void ChangeMinimum(float delta)
 		{
-			get 
+			History.Insert(Command.Set(Model.Minimum, MinValueEdit.Value));
+		}
+		
+		void ChangeMaximum(float delta)
+		{
+			History.Insert(Command.Set(Model.Maximum, MaxValueEdit.Value));
+		}
+		
+		void ChangeKeyframeValue(float delta)
+		{
+			var cmd = new CompoundCommand();
+			
+			var min = Model.Maximum.Value;
+			var max = Model.Minimum.Value;
+			var value = Math.Min(min, Math.Max(max, ValueEdit.Value));
+			
+			foreach(var kf in Keyframes)
 			{
-				return Keyframes;
+				if (kf.Model.Selected.Value)
+					cmd.Append(Command.Set(kf.Model.Value, value));
+			}
+					
+			History.Insert(cmd);
+		}
+		
+		void Background_MouseClick(object sender, MouseArg e)
+		{
+			if(e.ClickCount >= 2)
+			{
+				var x = FRuler.XPosToTime(e.x);
+				var y = YPosToValue(e.y);
+				
+				var kf = new TLValueKeyframe(x, y);
+				var cmd = Command.Add(this.Model.Keyframes, kf);
+				History.Insert(cmd);
 			}
 		}
+		#endregion
 		
 		public override void Evaluate()
 		{

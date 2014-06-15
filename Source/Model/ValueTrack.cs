@@ -258,6 +258,5 @@ namespace Timeliner
         }
                 
         public Action NeighbourChanged = () => {};
-        
     }
 }

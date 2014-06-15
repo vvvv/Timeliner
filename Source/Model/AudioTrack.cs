@@ -38,7 +38,7 @@ namespace Timeliner
         
         public void LoadFile()
         {
-        	var wave = new WaveChannel32(new Mp3FileReader(@"C:\Users\joreg\Documents\My Dropbox\Public\twenty steps.mp3"));
+        	var wave = new WaveChannel32(new Mp3FileReader(@"file.mp3"));
 
         	var buffer = new byte[16384*2];
         	var read = 0;
@@ -73,7 +73,6 @@ namespace Timeliner
 		{
 			return null;
 		}
-    	
     }
 
     public class TLSample : TLKeyframeBase

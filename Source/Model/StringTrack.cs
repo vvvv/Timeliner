@@ -1,12 +1,4 @@
-﻿/*
- * Created by SharpDevelop.
- * User: Tebjan Halm
- * Date: 02.06.2014
- * Time: 20:41
- * 
- * 
- */
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 

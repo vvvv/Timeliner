@@ -222,10 +222,6 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
-		public virtual void RebuildAfterUpdate()
-		{
-		}
-		
 		#region build scenegraph
 		protected override void BuildSVG()
 		{
@@ -264,6 +260,9 @@ namespace Timeliner
 			
 			Parent.FTrackGroup.Children.Remove(MainGroup);
 		}
+		
+		protected abstract void FillTrackMenu();
+		protected abstract void FillKeyframeMenu();
 		#endregion
 		
 		#region update scenegraph
@@ -283,7 +282,7 @@ namespace Timeliner
 			CollapseButton.Label = Collapsed ? "Uncollapse" : "Collapse";
 		}
 		
-		private void UpdateTrackHeightAndPos()
+		void UpdateTrackHeightAndPos()
 		{
 			//calc y position
 			var y = 0.0f;
@@ -307,12 +306,25 @@ namespace Timeliner
 		
 		protected virtual void ApplyInverseScaling()
 		{}
+		
+		public virtual void RebuildAfterUpdate()
+		{}
+		
+		public virtual void UpdateKeyframeMenu(KeyframeView kf)
+		{
+			TimeEdit.Value = kf.Model.Time.Value;
+		}
 		#endregion
 		
 		#region scenegraph eventhandler
 		void RenameTrack(string label)
 		{
 			History.Insert(Command.Set(Model.Label, label));
+		}
+		
+		void RemoveTrack()
+		{
+			History.Insert(Command.Remove(Parent.Document.Tracks, Model));
 		}
 		
 		public void CollapseTrack()
@@ -327,11 +339,6 @@ namespace Timeliner
 				newHeight = Model.UncollapsedHeight.Value;
 			
 			History.Insert(Command.Set(Model.Height, newHeight));
-		}
-		
-		void RemoveTrack()
-		{
-			History.Insert(Command.Remove(Parent.Document.Tracks, Model));
 		}
 		
 		protected void ChangeKeyframeTime(float delta)
@@ -385,6 +392,7 @@ namespace Timeliner
 		}
 		#endregion
 		
+		#region helper
 		public virtual void Nudge(ref CompoundCommand cmds, NudgeDirection direction, float timeDelta, float valueDelta)
 		{
 			foreach(var kf in KeyframeViews)
@@ -439,19 +447,8 @@ namespace Timeliner
 			
 			return new RectangleF(x1, y1 - height, width, height);
 		}
+		#endregion
 		
-		protected abstract void FillTrackMenu();
-		protected abstract void FillKeyframeMenu();
-
 		public abstract void Evaluate();
-		
-		/// <summary>
-		/// Update the keyframe menu to latest values
-		/// </summary>
-		/// <param name="kf">The clicked keyframe</param>
-		public virtual void UpdateKeyframeMenu(KeyframeView kf)
-		{
-			TimeEdit.Value = kf.Model.Time.Value;
-		}
 	}
 }

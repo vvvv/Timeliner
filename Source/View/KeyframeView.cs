@@ -1,13 +1,6 @@
-﻿/*
- * Created by SharpDevelop.
- * User: Tebjan Halm
- * Date: 04.06.2014
- * Time: 19:28
- * 
- * 
- */
-using System;
+﻿using System;
 using System.Drawing;
+using Svg;
 
 namespace Timeliner
 {
@@ -26,6 +19,7 @@ namespace Timeliner
 		{
 		}
 		
+		#region build scenegraph
 		protected override void UnbuildSVG()
 		{
 			
@@ -35,6 +29,25 @@ namespace Timeliner
 		{
 			
 		}
+		#endregion
+		
+		#region scenegraph eventhandler
+		//dipatch events to parent
+		protected void Background_MouseMove(object sender, MouseArg e)
+		{
+			Parent.MouseMove(this, e);
+		}
+		
+		protected void Background_MouseUp(object sender, MouseArg e)
+		{
+			Parent.MouseUp(this, e);
+		}
+		
+		protected void Background_MouseDown(object sender, MouseArg e)
+		{
+			Parent.MouseDown(this, e);
+		}
+		#endregion
 		
 		public abstract Boolean IsSelectedBy(RectangleF rect);
 	}

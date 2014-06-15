@@ -89,7 +89,7 @@
     <Compile Include="Model\Ruler.cs" />
     <Compile Include="Model\TimelinerDocument.cs" />
     <Compile Include="Model\TimelinerDocumentSerializer.cs" />
-    <Compile Include="Model\TimelinerModel.cs" />
+    <Compile Include="Model\BaseClasses.cs" />
     <Compile Include="Model\Timer.cs" />
     <Compile Include="Model\ValueTrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

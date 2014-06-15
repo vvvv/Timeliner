@@ -37,7 +37,7 @@ namespace Timeliner
 		
 		public SvgUse Background = new SvgUse();
         public SvgUse CollapsedView = new SvgUse();
-		private SvgText Label = new SvgText();
+		SvgText Label = new SvgText();
 		
 		public StringKeyframeView(TLStringKeyframe kf, StringTrackView trackview)
 			: base(kf, trackview)
@@ -130,22 +130,6 @@ namespace Timeliner
 		{
 			Model.Text.Value = e.s;
 			UpdateScene();
-		}
-		
-		//dipatch events to parent
-		void Background_MouseMove(object sender, MouseArg e)
-		{
-			Parent.MouseMove(this, e);
-		}
-		
-		void Background_MouseUp(object sender, MouseArg e)
-		{
-			Parent.MouseUp(this, e);
-		}
-		
-		void Background_MouseDown(object sender, MouseArg e)
-		{
-			Parent.MouseDown(this, e);
 		}
 		#endregion
         

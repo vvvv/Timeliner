@@ -11,12 +11,6 @@ namespace Timeliner
 {
 	public class ValueKeyframeView : KeyframeView, IDisposable
 	{
-		bool FHovered;
-		
-		public SvgUse Background = new SvgUse();
-        public SvgUse CollapsedView = new SvgUse();
-		private SvgText Label = new SvgText();
-		
 		public new TLValueKeyframe Model
         {
             get
@@ -40,6 +34,12 @@ namespace Timeliner
                 base.Parent = value;
             }
         }
+        
+        bool FHovered;
+		
+		public SvgUse Background = new SvgUse();
+        public SvgUse CollapsedView = new SvgUse();
+		SvgText Label = new SvgText();
 		
 		public ValueKeyframeView(TLValueKeyframe kf, ValueTrackView trackview)
 			: base(kf, trackview)
@@ -134,12 +134,6 @@ namespace Timeliner
 		#endregion
 
 		#region scenegraph eventhandler
-		//dipatch events to parent
-		void Background_MouseMove(object sender, MouseArg e)
-		{
-			Parent.MouseMove(this, e);
-		}
-		
 		void Background_MouseOver(object sender, MouseArg e)
 		{
 			FHovered = true;
@@ -150,16 +144,6 @@ namespace Timeliner
 		{
 			FHovered = false;
 			UpdateScene();
-		}
-		
-		void Background_MouseUp(object sender, MouseArg e)
-		{
-			Parent.MouseUp(this, e);
-		}
-		
-		void Background_MouseDown(object sender, MouseArg e)
-		{
-			Parent.MouseDown(this, e);
 		}
 		#endregion
         

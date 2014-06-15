@@ -15,21 +15,6 @@ namespace Timeliner
 {
 	public class StringTrackView: TrackView
 	{
-		public EditableList<StringKeyframeView> Keyframes 
-		{
-			get;
-			protected set;
-		}
-		
-		public SvgLine KeyframeDefinition = new SvgLine();
-        public SvgLine CollapsedKeyframeDefinition = new SvgLine();
-		public SvgGroup KeyframeGroup = new SvgGroup();
-		
-		private Synchronizer<StringKeyframeView, TLStringKeyframe> KFSyncer;
-		
-		public SvgStringWidget TextEdit;
-		private SvgText CurrentValue = new SvgText();
-		
 		public new TLStringTrack Model
         {
             get
@@ -41,6 +26,28 @@ namespace Timeliner
                 base.Model = value;
             }
         }
+		
+		public EditableList<StringKeyframeView> Keyframes 
+		{
+			get;
+			protected set;
+		}
+		
+		public override IEnumerable<KeyframeView> KeyframeViews 
+		{
+			get 
+			{
+				return Keyframes;
+			}
+		}
+		
+		Synchronizer<StringKeyframeView, TLStringKeyframe> KFSyncer;
+		
+		public SvgLine KeyframeDefinition = new SvgLine();
+		public SvgLine CollapsedKeyframeDefinition = new SvgLine();
+		public SvgGroup KeyframeGroup = new SvgGroup();
+		public SvgStringWidget TextEdit;
+		private SvgText CurrentValue = new SvgText();
 		
 		public StringTrackView(TLStringTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv, rv)
@@ -154,6 +161,25 @@ namespace Timeliner
 			KeyframeDefinition.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
             CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
+		
+		protected override void FillTrackMenu()
+        {
+        }
+        
+        protected override void FillKeyframeMenu()
+        {
+            TextEdit = new SvgStringWidget(0, 20, "Text");
+			TextEdit.OnValueChanged += ChangeKeyframeText;
+			KeyframeMenu.AddItem(TextEdit);
+        }
+        
+        public override void UpdateKeyframeMenu(KeyframeView kf)
+		{
+			base.UpdateKeyframeMenu(kf);
+			
+			//also update the value of the keyframe menu
+			TextEdit.Caption = (kf as StringKeyframeView).Model.Text.Value;
+		}
 		#endregion
 		
 		#region scenegraph eventhandler
@@ -185,36 +211,9 @@ namespace Timeliner
 		}
 		#endregion
         
-        protected override void FillTrackMenu()
-        {
-        }
-        
-        protected override void FillKeyframeMenu()
-        {
-            TextEdit = new SvgStringWidget(0, 20, "Text");
-			TextEdit.OnValueChanged += ChangeKeyframeText;
-			KeyframeMenu.AddItem(TextEdit);
-        }
-        
 		public override void Evaluate()
 		{
 			CurrentValue.Text = Model.GetCurrentValueAsString();
-		}
-		
-		public override void UpdateKeyframeMenu(KeyframeView kf)
-		{
-			base.UpdateKeyframeMenu(kf);
-			
-			//also update the value of the keyframe menu
-			TextEdit.Caption = (kf as StringKeyframeView).Model.Text.Value;
-		}
-		
-		public override IEnumerable<KeyframeView> KeyframeViews 
-		{
-			get 
-			{
-				return Keyframes;
-			}
 		}
 	}
 }

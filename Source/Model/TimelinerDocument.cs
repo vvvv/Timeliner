@@ -177,6 +177,4 @@ namespace Timeliner
             
         }
     }
-
-
 }

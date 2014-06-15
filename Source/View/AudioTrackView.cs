@@ -13,16 +13,6 @@ namespace Timeliner
 {
 	public class AudioTrackView: TrackView
 	{
-		public EditableList<SampleView> Samples = new EditableList<SampleView>();
-		
-		public SvgRectangle SampleDefinition = new SvgRectangle();
-		public SvgGroup SampleGroup = new SvgGroup();
-		public SvgPath Path = new SvgPath();
-		
-		private Synchronizer<SampleView, TLSample> SampleSyncer;
-		
-//		private SvgValueWidget MinValue, MaxValue;
-		
 		public new TLAudioTrack Model
         {
             get
@@ -34,6 +24,22 @@ namespace Timeliner
                 base.Model = value;
             }
         }
+		
+		public EditableList<SampleView> Samples = new EditableList<SampleView>();
+		
+		public override IEnumerable<KeyframeView> KeyframeViews
+		{
+			get 
+			{
+				yield return null;
+			}
+		}
+		
+		Synchronizer<SampleView, TLSample> SampleSyncer;
+		
+		public SvgRectangle SampleDefinition = new SvgRectangle();
+		public SvgGroup SampleGroup = new SvgGroup();
+		public SvgPath Path = new SvgPath();
 		
 		public AudioTrackView(TLAudioTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv, rv)
@@ -146,24 +152,16 @@ namespace Timeliner
 			
 			ApplyInverseScaling();
 		}
-		#endregion
 		
 		protected override void FillTrackMenu()
 		{}
 		
         protected override void FillKeyframeMenu()
         {}
-        
+		#endregion
+		
         public override void Evaluate()
         {}
-		
-		public override IEnumerable<KeyframeView> KeyframeViews
-		{
-			get 
-			{
-				yield return null;
-			}
-		}
 	}
 	
 	public class SampleView : TLViewBaseTyped<TLSample, AudioTrackView>, IDisposable
