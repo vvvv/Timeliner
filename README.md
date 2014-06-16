@@ -1,6 +1,6 @@
 Timeliner
 =========
-A [Posh] (https://github.com/vvvv/Posh) based timeline that can be controlled and sends out its values via [OSC] (http://opensoundcontrol.org). 
+A [Posh] (https://github.com/vvvv/Posh) based timeline that can be controlled by and sends out its values via [OSC] (http://opensoundcontrol.org). 
 
 Brought to you by [vvvv] (http://vvvv.org).
 
