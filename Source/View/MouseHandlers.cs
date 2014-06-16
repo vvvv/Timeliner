@@ -451,10 +451,22 @@ namespace Timeliner
 			{
 				var cmds = new CompoundCommand();
 				var x = Instance.XDeltaToTime(delta.X);
-				if (FStart != null)
+				var mouseX = Instance.XPosToTime(arg.X);
+				
+				//move start/end
+				if ((FStart == null) || (FEnd == null))
+				{
+					if ((FStart != null) && (mouseX < Instance.Model.LoopEnd.Value))
+						cmds.Append(Command.Set(FStart, mouseX));
+					if ((FEnd != null) && (mouseX > Instance.Model.LoopStart.Value))
+						cmds.Append(Command.Set(FEnd, mouseX));
+				}
+				else //move region
+				{
 					cmds.Append(Command.Set(FStart, FStart.Value + x));
-				if (FEnd != null)
 					cmds.Append(Command.Set(FEnd, FEnd.Value + x));
+				}
+				
 				//execute changes immediately
 				cmds.Execute();
 				//collect changes for history
