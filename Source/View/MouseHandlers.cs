@@ -104,6 +104,7 @@ namespace Timeliner
 	
 	internal class LabelDragMouseHandler : MouseHandlerBase<TrackView>
 	{
+		int FNewOrder;
 		public LabelDragMouseHandler(TrackView tv, string sessionID)
 			: base(tv, sessionID)
 		{
@@ -136,10 +137,16 @@ namespace Timeliner
 				{
 					var target = sender as TrackView;
 					Instance.SizeBarDragRect.Y = target.Top - Instance.SizeBarDragRect.Height / 2 - (Instance.MainGroup.Parent.Transforms[0] as SvgTranslate).Y - Instance.SizeBar.Height / 2;
+					FNewOrder = target.Model.Order.Value;
+					
+					var oldOrder = Instance.Model.Order.Value;
+					if (FNewOrder > oldOrder)
+						FNewOrder -= 1;
 				}
 				else
 				{
-					Instance.SizeBarDragRect.Y = Instance.Parent.Tracks.Last().Top + Instance.Parent.Tracks.Last().Height - Instance.SizeBarDragRect.Height / 2 - (Instance.MainGroup.Parent.Transforms[0] as SvgTranslate).Y  - Instance.SizeBar.Height / 2;
+					Instance.SizeBarDragRect.Y = Instance.Parent.Tracks.Max(x => x.Top + x.Height) - Instance.SizeBarDragRect.Height / 2 - (Instance.MainGroup.Parent.Transforms[0] as SvgTranslate).Y  - Instance.SizeBar.Height / 2;
+					FNewOrder = Instance.Parent.Tracks.Count-1;
 				}
 			}
 		}
@@ -152,31 +159,25 @@ namespace Timeliner
 			if (arg.Button == 1)
 			{
 				var oldOrder = Instance.Model.Order.Value;
-				var newOrder = -1;
-				if (sender is TrackView)
-					newOrder = (sender as TrackView).Model.Order.Value;
-				else
-					newOrder = Instance.Parent.Tracks.Count-1;
 				
 				//send a commmand to set the order of each trackview
 				var cmds = new CompoundCommand();
-				
-				if (newOrder > oldOrder)
+				if (FNewOrder > oldOrder)
 				{
 					foreach (var track in Instance.Parent.Tracks)
 						if (track != Instance)
-							if ((track.Model.Order.Value > oldOrder) && (track.Model.Order.Value <= newOrder))
+							if ((track.Model.Order.Value > oldOrder) && (track.Model.Order.Value <= FNewOrder))
 								cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value - 1));
 				}
 				else
 				{
 					foreach (var track in Instance.Parent.Tracks)
 						if (track != Instance)
-							if ((track.Model.Order.Value >= newOrder) && (track.Model.Order.Value < oldOrder))
+							if ((track.Model.Order.Value >= FNewOrder) && (track.Model.Order.Value < oldOrder))
 								cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value + 1));
 				}
 				
-				cmds.Append(Command.Set(Instance.Model.Order, newOrder));
+				cmds.Append(Command.Set(Instance.Model.Order, FNewOrder));
 				
 				Instance.History.Insert(cmds);
 				//resort tracks after order
