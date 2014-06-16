@@ -95,12 +95,7 @@ namespace Timeliner
             Selection.CustomAttributes["pointer-events"] = "none";
             Selection.CustomAttributes["class"] = "selection";
             
-            TimeBar.ID = "Timebar";
-            TimeBar.X = -1;
-            TimeBar.Width = 2;
-            TimeBar.MouseDown += Default_MouseDown;
-            TimeBar.MouseMove += Default_MouseMove;
-            TimeBar.MouseUp += Default_MouseUp;
+            Ruler = new RulerView(Document.Ruler, this);
             
             MouseTimeLine.ID = "MouseTime";
             MouseTimeLine.StartX = 0;
@@ -110,8 +105,6 @@ namespace Timeliner
             MouseTimeLabel.ID = "MouseTimeLabel";
             MouseTimeLabel.FontSize = 14;
             
-            Ruler = new RulerView(Document.Ruler, this);
-            
             SizeBar.Width = Background.Width;
 			SizeBar.Height = 10;
 			SizeBar.ID = "SizeBar";
@@ -119,6 +112,14 @@ namespace Timeliner
             SizeBar.MouseDown += Default_MouseDown;
             SizeBar.MouseMove += Default_MouseMove;
             SizeBar.MouseUp += Default_MouseUp;
+            
+            TimeBar.ID = "Timebar";
+            TimeBar.Y = -Ruler.Height - SizeBar.Height;
+            TimeBar.X = -1;
+            TimeBar.Width = 2;
+            TimeBar.MouseDown += Default_MouseDown;
+            TimeBar.MouseMove += Default_MouseMove;
+            TimeBar.MouseUp += Default_MouseUp;
             
             PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller, 2);
             StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller, 1);
@@ -300,7 +301,7 @@ namespace Timeliner
 				track.UpdateScene();
 			
 			var totalHeight = Tracks.Sum(x => x.Height);
-			TimeBar.Height = totalHeight;
+			TimeBar.Height = totalHeight + Math.Abs(TimeBar.Y);
 			MouseTimeLine.EndY = totalHeight;
 			Background.Height = Math.Max(500, totalHeight + 250);
 			SvgRoot.CustomAttributes["style"] = "height: "+ Background.Height + "px";
@@ -406,6 +407,8 @@ namespace Timeliner
 				HideMenus();
 				if (e.Button == 1)
 					return new LoopRegionMouseHandler(Ruler, Ruler.Model.LoopStart, Ruler.Model.LoopEnd, e.SessionID);
+				else if (e.Button == 3)
+					return new TrackPanZoomHandler(this, e.SessionID);
 				else
 					return null;					
 			}

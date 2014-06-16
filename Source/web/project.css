@@ -96,16 +96,21 @@ path{
 }
 
 .loopcap{
-	fill: #ffffff;
+	fill: #959595;
 	fill-opacity: 0;
 }
 
 .loopcap:hover, .loopcap:active{
-	fill-opacity: 0.3;
+	fill: #b5b5b5;
+	fill-opacity: 1;
 }
 
 .loop{
 	fill: #959595;
+}
+
+.loop:hover, .loop:active{
+	fill: #b5b5b5;
 }
 
 .time{

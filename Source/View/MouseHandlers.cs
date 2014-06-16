@@ -483,6 +483,13 @@ namespace Timeliner
 			
 			return base.MouseUp(sender, arg);
 		}
+		
+		public override void MouseClick(object sender, MouseArg arg)
+		{
+			//set timebar if loopregion was not moved
+			if (FMoveCommands.CommandCount == 0)
+				Instance.Parent.Timer.Time = Instance.XPosToTime(arg.x);
+		}
 	}
 	
 	internal class SeekHandler : MouseHandlerBase<RulerView>
