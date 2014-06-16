@@ -249,7 +249,7 @@ namespace Timeliner
             //make sure ticks are only shifted within one unit range
             var off = FView.Elements[4] % unit;
             //make a copy of the above elements and just replace translation
-            var el = new List<float>(FView.Elements);
+            var el = FView.Elements.ToList();
             el[4] = off;
             NumberGroup.Transforms[0] = new SvgMatrix(el);
 			

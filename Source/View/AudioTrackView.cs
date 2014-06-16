@@ -148,7 +148,7 @@ namespace Timeliner
 			m.Scale(1, 1/scaleY);
 			m.Translate(0, 0.5f);
 			
-			PanZoomGroup.Transforms[1] = new SvgMatrix(new List<float>(m.Elements));
+			PanZoomGroup.Transforms[1] = new SvgMatrix(m.Elements.ToList());
 			
 			ApplyInverseScaling();
 		}

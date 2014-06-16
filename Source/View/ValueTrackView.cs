@@ -183,7 +183,7 @@ namespace Timeliner
 			m.Scale(1, 1/scaleY);
 			m.Translate(0, Model.Maximum.Value);
 			
-			PanZoomGroup.Transforms[1] = new SvgMatrix(new List<float>(m.Elements));
+			PanZoomGroup.Transforms[1] = new SvgMatrix(m.Elements.ToList());
 			
 			var newScale = PanZoomGroup.Transforms[1].Matrix.Elements[3];
 			var newOffset = PanZoomGroup.Transforms[1].Matrix.Elements[5];
@@ -210,7 +210,7 @@ namespace Timeliner
 			m.Multiply(s1.Matrix);
 			m.Invert();
 			
-			KeyframeDefinition.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
+			KeyframeDefinition.Transforms[0] = new SvgMatrix(m.Elements.ToList());
             CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
 		

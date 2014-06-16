@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 
 using Svg;
 using Svg.Transforms;
@@ -112,7 +113,7 @@ namespace Timeliner
 				
 				m.Multiply(Parent.KeyframeDefinition.Transforms[0].Matrix);
 				
-				Label.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
+				Label.Transforms[0] = new SvgMatrix(m.Elements.ToList());
 				Label.Y = 20;
 				Label.Text = Model.Text.Value;
 			}
