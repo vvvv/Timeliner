@@ -51,8 +51,6 @@ namespace Timeliner
         public SvgLine CollapsedKeyframeDefinition = new SvgLine();
 		public SvgGroup CurveGroup = new SvgGroup();
 		public SvgGroup KeyframeGroup = new SvgGroup();
-		SvgValueWidget MinValueEdit, MaxValueEdit;
-		public SvgValueWidget ValueEdit;
 		SvgText CurrentValue = new SvgText();
 		
 		public ValueTrackView(TLValueTrack track, TimelineView tv, RulerView rv)
@@ -120,10 +118,6 @@ namespace Timeliner
 		public override void Dispose()
 		{
 			Background.Click -= Background_MouseClick;
-			
-			MaxValueEdit.OnValueChanged -= ChangeMaximum;
-			MinValueEdit.OnValueChanged -= ChangeMinimum;
-			ValueEdit.OnValueChanged -= ChangeKeyframeValue;
 			
 			base.Dispose();
 		}
@@ -253,59 +247,49 @@ namespace Timeliner
 				}
 			}
 		}
-		
-        protected override void FillTrackMenu()
-        {
-            MaxValueEdit = new SvgValueWidget(0, 20, "Maximum", 1);
-			MaxValueEdit.OnValueChanged += ChangeMaximum;
-			TrackMenu.AddItem(MaxValueEdit);
-			
-			MinValueEdit = new SvgValueWidget(0, 20, "Minimum", -1);
-			MinValueEdit.OnValueChanged += ChangeMinimum;
-			TrackMenu.AddItem(MinValueEdit);
-        }
         
-        protected override void FillKeyframeMenu()
-        {
-            ValueEdit = new SvgValueWidget(0, 20, "Value", 0);
-			ValueEdit.OnValueChanged += ChangeKeyframeValue;
-			KeyframeMenu.AddItem(ValueEdit);
-        }
+//        protected override void FillKeyframeMenu()
+//        {
+//            ValueEdit = new SvgValueWidget("", 0, 20, "Value", 0);
+//			ValueEdit.ValueChanged += ChangeKeyframeValue;
+//			KeyframeMenu.AddItem(ValueEdit, 0);
+//        }
 		
 		public override void UpdateKeyframeMenu(KeyframeView kf)
 		{
 			base.UpdateKeyframeMenu(kf);
 			
 			//also update the value of the keyframe menu
-			ValueEdit.Value = (kf as ValueKeyframeView).Model.Value.Value;
+			var item = (SvgValueWidget) KeyframeMenu.GetItem("Value");
+			item.Value = (kf as ValueKeyframeView).Model.Value.Value;
 		}
 		#endregion
 		
 		#region scenegraph eventhandler
-		void ChangeMinimum(float delta)
+		void ChangeMinimum(SvgWidget widget, object newValue)
 		{
-			History.Insert(Command.Set(Model.Minimum, MinValueEdit.Value));
+			History.Insert(Command.Set(Model.Minimum, (float) newValue));
 		}
 		
-		void ChangeMaximum(float delta)
+		void ChangeMaximum(SvgWidget widget, object newValue)
 		{
-			History.Insert(Command.Set(Model.Maximum, MaxValueEdit.Value));
+			History.Insert(Command.Set(Model.Maximum, (float) newValue));
 		}
 		
-		void ChangeKeyframeValue(float delta)
+		void ChangeKeyframeValue(SvgWidget widget, object newValue)
 		{
-			var cmd = new CompoundCommand();
+			var cmds = new CompoundCommand();
 			
 			var min = Model.Maximum.Value;
 			var max = Model.Minimum.Value;
 			
 			foreach(var kf in Keyframes.Where(x => x.Model.Selected.Value))
 			{
-				var newValue = Math.Min(min, Math.Max(max, kf.Model.Value.Value + delta));
-				cmd.Append(Command.Set(kf.Model.Value, newValue));
+//				var newValue = Math.Min(min, Math.Max(max, kf.Model.Value.Value + delta));
+//				cmds.Append(Command.Set(kf.Model.Value, newValue));
 			}
 					
-			History.Insert(cmd);
+			History.Insert(cmds);
 		}
 		
 		void Background_MouseClick(object sender, MouseArg e)

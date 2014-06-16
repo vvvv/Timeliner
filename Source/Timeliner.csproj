@@ -97,9 +97,9 @@
     <Compile Include="SvgWidgets\SvgDocumentWidget.cs" />
     <Compile Include="SvgWidgets\SvgMenuWidget.cs" />
     <Compile Include="SvgWidgets\SvgStringWidget.cs" />
-    <Compile Include="SvgWidgets\SvgTextList.cs" />
     <Compile Include="SvgWidgets\SvgValueWidget.cs" />
     <Compile Include="SvgWidgets\SvgWidget.cs" />
+    <Compile Include="SvgWidgets\WidgetFactory.cs" />
     <Compile Include="Timeliner.cs" />
     <Compile Include="View\AudioTrackView.cs" />
     <Compile Include="View\BaseClasses.cs" />

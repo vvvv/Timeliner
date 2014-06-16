@@ -101,8 +101,7 @@ namespace Timeliner
 		{
 			Background.Click -= Background_MouseClick;
 			
-
-			TextEdit.OnValueChanged -= ChangeKeyframeText;
+			TextEdit.ValueChanged -= ChangeKeyframeText;
 			
 			base.Dispose();
 		}
@@ -158,20 +157,9 @@ namespace Timeliner
 			m.Multiply(s1.Matrix);
 			m.Invert();
 			
-			KeyframeDefinition.Transforms[0] = new SvgMatrix(new List<float>(m.Elements));
+			KeyframeDefinition.Transforms[0] = new SvgMatrix(m.Elements.ToList());
             CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
-		
-		protected override void FillTrackMenu()
-        {
-        }
-        
-        protected override void FillKeyframeMenu()
-        {
-            TextEdit = new SvgStringWidget(0, 20, "Text");
-			TextEdit.OnValueChanged += ChangeKeyframeText;
-			KeyframeMenu.AddItem(TextEdit);
-        }
         
         public override void UpdateKeyframeMenu(KeyframeView kf)
 		{
@@ -184,17 +172,17 @@ namespace Timeliner
 		
 		#region scenegraph eventhandler
 		
-		void ChangeKeyframeText(string newText)
+		void ChangeKeyframeText(SvgWidget widget, object newValue, object delta)
 		{
-			var cmd = new CompoundCommand();
+			var cmds = new CompoundCommand();
 			
 			foreach(var kf in Keyframes)
 			{
 				if (kf.Model.Selected.Value)
-					cmd.Append(Command.Set(kf.Model.Text, newText));
+					cmds.Append(Command.Set(kf.Model.Text, (string) newValue));
 			}
 					
-			History.Insert(cmd);
+			History.Insert(cmds);
 		}
 		
 		void Background_MouseClick(object sender, MouseArg e)

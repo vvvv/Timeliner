@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+
 using Svg;
 using Svg.Transforms;
 
@@ -12,43 +14,55 @@ namespace Timeliner
 	public class SvgMenuWidget: SvgWidget
 	{
 		private float FWidth;
-        private float FHeight = 0;
-		private List<SvgGroup> MenuItems;
+		private float FHeight = 0;
+		private Dictionary<string, SvgWidget> MenuEntries = new Dictionary<string, SvgWidget>();
 		
-		public SvgMenuWidget(float width): base()
+		public SvgMenuWidget(float width): base("")
 		{
 			FWidth = width;
-			MenuItems = new List<SvgGroup>();
 			
 			Transforms = new SvgTransformCollection();
 			Transforms.Add(new SvgTranslate(0, 0));
 			Visible = false;
 		}
 		
-		public void AddItem(SvgWidget item)
+		public void AddItem(SvgWidget item, int order)
 		{
 			if (item is SvgButtonWidget)
-				(item as SvgButtonWidget).OnButtonPressed += item_OnButtonPressed;
+				(item as SvgButtonWidget).ValueChanged += item_OnButtonPressed;
 			item.Transforms = new SvgTransformCollection();
-			item.Transforms.Add(new SvgTranslate(0, FHeight));
+			item.Transforms.Add(new SvgTranslate(0, 0));
 			item.Width = FWidth;
-            
-            FHeight += item.Height;
-			                    
-			MenuItems.Add(item);
-			this.Children.Add(item);
+			
+			MenuEntries.Add(item.Name, item);
+
+			order = Math.Min(Children.Count-1, order);
+			this.Children.Insert(order, item);
+
+			//update entry positions
+			FHeight = 0;
+			foreach (var entry in Children.Where(x => x is SvgWidget))
+			{
+				entry.Transforms[0] = new SvgTranslate(0, FHeight);
+				FHeight += (entry as SvgWidget).Height;
+			}
+		}
+		
+		public SvgWidget GetItem(string name)
+		{
+			return MenuEntries[name];
 		}
 
-		void item_OnButtonPressed()
+		void item_OnButtonPressed(SvgWidget widget, object newValue, object delta)
 		{
 			Hide();
 		}
-        
-        public void Show(PointF point)
-        {
-            Transforms[0] = new SvgTranslate(point.X - FWidth/2f, point.Y - FHeight/2f);
-            Visible = true;
-        }
+		
+		public void Show(PointF point)
+		{
+			Transforms[0] = new SvgTranslate(point.X - FWidth/2f, Math.Max(0, point.Y - FHeight/2f));
+			Visible = true;
+		}
 		
 		public void Hide()
 		{

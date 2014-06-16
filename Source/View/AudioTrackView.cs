@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 
 using Svg;
 using Svg.Transforms;
@@ -152,12 +153,6 @@ namespace Timeliner
 			
 			ApplyInverseScaling();
 		}
-		
-		protected override void FillTrackMenu()
-		{}
-		
-        protected override void FillKeyframeMenu()
-        {}
 		#endregion
 		
         public override void Evaluate()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Reflection;
 
 using Posh;
 using Svg;
@@ -10,6 +11,7 @@ using Svg.Transforms;
 using VVVV.Core;
 using VVVV.Core.Collections;
 using VVVV.Core.Commands;
+using VVVV.Core.Model;
 
 namespace Timeliner
 {
@@ -48,13 +50,9 @@ namespace Timeliner
 		public SvgMenuWidget KeyframeMenu;
 		
 		//trackmenu
-		protected SvgStringWidget TrackLabelEdit;
 		protected SvgButtonWidget CollapseButton;
 		protected SvgButtonWidget RemoveButton;
 		
-		//keyframemenu
-		public SvgValueWidget TimeEdit;
-
 		public float Top
 		{
 			get
@@ -110,6 +108,8 @@ namespace Timeliner
 		{
 			get {return Model.Height.Value == Model.CollapsedHeight;}
 		}
+		
+		Dictionary<SvgWidget, TLModelBase> TrackMenuDict = new Dictionary<SvgWidget, TLModelBase>();
 		
 		public TrackView(TLTrackBase track, TimelineView tv, RulerView rv)
 			: base(track, tv)
@@ -174,35 +174,14 @@ namespace Timeliner
 			SizeBar.MouseMove += MouseMove;
 			SizeBar.MouseUp += MouseUp;
 			
-			//track menu
-			TrackMenu = new SvgMenuWidget(110);
-			
-			TrackLabelEdit = new SvgStringWidget(0, 30, Model.Label.Value);
-			TrackLabelEdit.OnValueChanged += RenameTrack;
-			TrackMenu.AddItem(TrackLabelEdit);
-			
-			CollapseButton = new SvgButtonWidget(0, 20, "Collapse");
-			CollapseButton.OnButtonPressed += CollapseTrack;
-			TrackMenu.AddItem(CollapseButton);
-			
-			FillTrackMenu();
-			
-			RemoveButton = new SvgButtonWidget(0, 20, "Remove");
-			RemoveButton.OnButtonPressed += RemoveTrack;
-			TrackMenu.AddItem(RemoveButton);
-			
-			//keyframe menu
-			KeyframeMenu = new SvgMenuWidget(110);
-			
-			TimeEdit = new SvgValueWidget(0, 20, "Time", 0);
-			TimeEdit.OnValueChanged += ChangeKeyframeTime;
-			KeyframeMenu.AddItem(TimeEdit);
-			
-			FillKeyframeMenu();
+			CreateTrackMenu();
+			CreateKeyframeMenu();
 		}
 		
 		public override void Dispose()
 		{
+			TrackMenuDict.Clear();
+			
 			Background.MouseDown -= Background_MouseDown;
 			Background.MouseMove -= MouseMove;
 			Background.MouseUp -= MouseUp;
@@ -214,11 +193,8 @@ namespace Timeliner
 			Label.MouseDown -= Background_MouseDown;
 			Label.MouseUp -= MouseUp;
 			
-			CollapseButton.OnButtonPressed -= CollapseTrack;
-			TrackLabelEdit.OnValueChanged -= RenameTrack;
-			RemoveButton.OnButtonPressed -= RemoveTrack;
-			
-			TimeEdit.OnValueChanged -= ChangeKeyframeTime;
+			CollapseButton.ValueChanged -= CollapseTrack;
+			RemoveButton.ValueChanged -= RemoveTrack;
 			
 			base.Dispose();
 		}
@@ -262,8 +238,92 @@ namespace Timeliner
 			Parent.FTrackGroup.Children.Remove(MainGroup);
 		}
 		
-		protected abstract void FillTrackMenu();
-		protected abstract void FillKeyframeMenu();
+		void CreateTrackMenu()
+		{
+			TrackMenu = new SvgMenuWidget(110);
+
+			CollapseButton = new SvgButtonWidget(0, 20, "Collapse");
+			CollapseButton.ValueChanged += CollapseTrack;
+			TrackMenu.AddItem(CollapseButton, 1);
+			
+			//get all [MenuEntry] properties of Model
+			var props = Model.GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(TrackMenuEntryAttribute)));
+			foreach (var p in props)
+			{
+				var attributes = p.GetCustomAttributes(true);
+				var menuEntry = (attributes[0] as TrackMenuEntryAttribute);
+				
+				//get an editor for the property
+				var editor = WidgetFactory.GetWidget(Model, p, 0, menuEntry.Height);
+				editor.ValueChanged += ChangeTrackMenuEntry;
+					
+				TrackMenuDict.Add(editor, Model);
+				
+				//add it to the TrackMenu
+				TrackMenu.AddItem(editor, menuEntry.Order);
+			}
+			
+			RemoveButton = new SvgButtonWidget(0, 20, "Remove");
+			RemoveButton.ValueChanged += RemoveTrack;
+			TrackMenu.AddItem(RemoveButton, 4);
+		}
+		
+		void ChangeTrackMenuEntry(SvgWidget editor, object newValue, object delta)
+		{
+			var cmds = new CompoundCommand();
+			SendValue(ref cmds, TrackMenuDict[editor], editor.Name, newValue);
+			History.Insert(cmds);
+		}
+		
+		void CreateKeyframeMenu()
+		{
+			KeyframeMenu = new SvgMenuWidget(110);
+			
+			//get all [MenuEntry] properties of Model
+			IEnumerable<PropertyInfo> props = new List<PropertyInfo>();
+			if (this is ValueTrackView)
+				props = typeof(TLValueKeyframe).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(KeyframeMenuEntryAttribute)));
+			else if (this is StringTrackView)
+				props = typeof(TLStringKeyframe).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(KeyframeMenuEntryAttribute)));			
+
+			foreach (var p in props)
+			{
+				var attributes = p.GetCustomAttributes(true);
+				var menuEntry = (attributes[0] as KeyframeMenuEntryAttribute);
+				
+				//get an editor for the property
+				var editor = WidgetFactory.GetWidget(null, p, 0, menuEntry.Height);
+				editor.ValueChanged += ChangeKeyframeMenuEntry;
+					
+				//add it to the TrackMenu
+				KeyframeMenu.AddItem(editor, menuEntry.Order);
+			}
+		}
+		
+		void ChangeKeyframeMenuEntry(SvgWidget editor, object newValue, object delta)
+		{
+			var cmds = new CompoundCommand();
+			foreach (var track in Parent.Document.Tracks)
+				foreach (var kf in track.KeyframeModels.Where(x => x.Selected.Value))
+					SendValue(ref cmds, kf, editor.Name, delta);
+			History.Insert(cmds);
+		}
+		
+		void SendValue(ref CompoundCommand cmds, TLModelBase model, string name, object newValue)
+		{
+			//from editor get editableproperty
+			var property = model.GetType().GetProperty(name);
+			if (property.PropertyType.GenericTypeArguments[0] == typeof(string))
+			{
+				var prop = (EditableProperty<string>) property.GetValue(model);
+				cmds.Append(Command.Set(prop, newValue));
+			}
+			else if (property.PropertyType.GenericTypeArguments[0] == typeof(float))
+			{
+				var prop = (EditableProperty<float>) property.GetValue(model);
+				cmds.Append(Command.Set(prop, prop.Value + (float) newValue));
+			}
+		}
 		#endregion
 		
 		#region update scenegraph
@@ -313,22 +373,18 @@ namespace Timeliner
 		
 		public virtual void UpdateKeyframeMenu(KeyframeView kf)
 		{
-			TimeEdit.Value = kf.Model.Time.Value;
+			var item = (SvgValueWidget) KeyframeMenu.GetItem("Time");
+			item.Value = kf.Model.Time.Value;
 		}
 		#endregion
 		
 		#region scenegraph eventhandler
-		void RenameTrack(string label)
-		{
-			History.Insert(Command.Set(Model.Label, label));
-		}
-		
-		void RemoveTrack()
+		void RemoveTrack(SvgWidget widget, object newValue, object delta)
 		{
 			History.Insert(Command.Remove(Parent.Document.Tracks, Model));
 		}
 		
-		public void CollapseTrack()
+		public void CollapseTrack(SvgWidget editor, object newValue, object delta)
 		{
 			var newHeight = 0f;
 			if (Model.Height.Value > 50)
@@ -340,19 +396,6 @@ namespace Timeliner
 				newHeight = Model.UncollapsedHeight.Value;
 			
 			History.Insert(Command.Set(Model.Height, newHeight));
-		}
-		
-		protected void ChangeKeyframeTime(float delta)
-		{
-			var cmd = new CompoundCommand();
-			foreach (var track in Parent.Document.Tracks)
-			{
-				foreach (var kf in track.KeyframeModels)
-					if (kf.Selected.Value)
-						cmd.Append(Command.Set(kf.Time, kf.Time.Value + delta));
-			}
-			
-			History.Insert(cmd);
 		}
 		
 		//dispatch events to parent

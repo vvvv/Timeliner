@@ -21,7 +21,9 @@ namespace Timeliner
     /// </summary>
     public abstract class TLKeyframeBase : TLModelBase
     {
+    	[KeyframeMenuEntry]
     	public EditableProperty<float> Time { get; private set; }
+    	
     	public EditableProperty<bool> Selected { get; private set; }
     	
     	public TLKeyframeBase()
@@ -70,6 +72,7 @@ namespace Timeliner
         }
 
         //the Name property cannot have spaces so we need an extra Label property
+        [TrackMenuEntry(Order=0, Height=30)]
         public EditableProperty<string> Label
         {
             get;
@@ -136,5 +139,29 @@ namespace Timeliner
         /// <returns></returns>
 		public abstract object GetCurrentValueAsObject();
 		
+    }
+    
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public class TrackMenuEntryAttribute: System.Attribute
+    {
+    	public int Order;
+    	public int Height;
+    	
+        public TrackMenuEntryAttribute()
+        {
+        	Height = 20;
+        }
+    }
+    
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public class KeyframeMenuEntryAttribute: System.Attribute
+    {
+    	public int Order;
+    	public int Height;
+    	
+        public KeyframeMenuEntryAttribute()
+        {
+        	Height = 20;
+        }
     }
 }

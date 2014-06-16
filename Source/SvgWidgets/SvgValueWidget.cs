@@ -12,7 +12,6 @@ namespace Timeliner
 	{
 		private SvgText Label = new SvgText();
 		private SvgText ValueLabel = new SvgText();
-		public Action<float> OnValueChanged;	
 		private bool FMouseDown = false;
 		private PointF FMouseDownPos;
 		private PointF FLastMousePos;
@@ -39,9 +38,9 @@ namespace Timeliner
 			}
 		}
 		
-		public SvgValueWidget(string label, float value): base()
+		public SvgValueWidget(string name, float value): base(name)
 		{
-			Caption = label;
+			Caption = name;
 			Value = value;
 			
 			Background.MouseScroll += Background_MouseScroll;
@@ -55,7 +54,7 @@ namespace Timeliner
             Label.CustomAttributes["class"] = "menufont";
             
             ValueLabel.FontSize = 12;
-			ValueLabel.X = 65;
+			ValueLabel.X = 80;
 			ValueLabel.Y = ValueLabel.FontSize + 2;
             ValueLabel.CustomAttributes["class"] = "labelmenufont";
             ValueLabel.Change += ValueLabel_Change;
@@ -70,6 +69,12 @@ namespace Timeliner
             UpdateScene();
 		}
 
+		public SvgValueWidget(string name, float width, float height, string label, float value): this(name, value)
+		{
+			Width = width;
+			Height = height;
+		}
+		
 		void ValueLabel_Change(object sender, StringArg e)
 		{
 			var newValue = float.Parse(e.s);
@@ -77,13 +82,7 @@ namespace Timeliner
 			Value = newValue;
 				
 			UpdateScene();
-			OnValueChanged(delta);
-		}
-		
-		public SvgValueWidget(float width, float height, string label, float value): this(label, value)
-		{
-			Width = width;
-			Height = height;
+			ValueChanged(this, newValue, delta);
 		}
 
 		void UpdateScene()
@@ -94,7 +93,7 @@ namespace Timeliner
 		
 		void Background_MouseScroll(object sender, MouseScrollArg e)
 		{
-			var delta = (e.Scroll) / (120*10f);
+			var delta = (e.Scroll) / (120*100f);
 			
 			var step = e.AltKey ? 10f : 0.1f;
 			if (e.ShiftKey) 
@@ -105,7 +104,7 @@ namespace Timeliner
 			Value += delta;
 				
 			UpdateScene();
-			OnValueChanged(delta);
+			ValueChanged(this, Value, delta);
 		}
 		
 		void Background_MouseOver(object sender, EventArgs e)

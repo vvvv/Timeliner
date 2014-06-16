@@ -75,6 +75,7 @@ namespace Timeliner
 	public class TLStringKeyframe : TLKeyframeBase
     {
 		//holds the actual string of this keyframe
+		[TrackMenuEntry]
         public EditableProperty<string> Text 
         { 
         	get; 

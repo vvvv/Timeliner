@@ -11,7 +11,6 @@ namespace Timeliner
 	public class SvgStringWidget: SvgWidget
 	{
         private SvgText Label = new SvgText();
-		public Action<string> OnValueChanged;	
 		
 		public string Caption
 		{
@@ -19,9 +18,8 @@ namespace Timeliner
 			set {Label.Text = value;}
 		}
 		
-		public SvgStringWidget(string label): base()
+		public SvgStringWidget(string name): base(name)
 		{
-            Label.Text = label;
 			Label.FontSize = 20;
 			Label.X = 2;
 			Label.Y = Label.FontSize + 2;
@@ -31,8 +29,9 @@ namespace Timeliner
             Children.Add(Label);
 		}
 		
-		public SvgStringWidget(float width, float height, string label): this(label)
+		public SvgStringWidget(string name, float width, float height, string value): this(name)
 		{
+			Label.Text = value;
 			Width = width;
 			Height = height;
 		}
@@ -40,7 +39,7 @@ namespace Timeliner
 		void Change(object sender, StringArg e)
 		{
 			Label.Text = e.s;
-            OnValueChanged(e.s);
+			ValueChanged(this, e.s, null);
 		}
 		
 		public override void Dispose()

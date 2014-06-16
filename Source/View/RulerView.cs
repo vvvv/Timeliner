@@ -8,6 +8,7 @@ using Posh;
 using Svg;
 using Svg.Transforms;
 using VVVV.Core;
+using VVVV.Core.Model;
 using VVVV.Core.Commands;
 
 namespace Timeliner
@@ -43,8 +44,8 @@ namespace Timeliner
         public SvgMatrix PanZoomMatrix;
         
         //rulermenu
-        public SvgMenuWidget RulerMenu;  
-		SvgValueWidget FPSEdit, SpeedEdit, LoopEdit;        
+        public SvgMenuWidget Menu;  
+        Dictionary<SvgWidget, TLModelBase> TrackMenuDict = new Dictionary<SvgWidget, TLModelBase>();
 		
         public new TLRuler Model
         {
@@ -171,18 +172,8 @@ namespace Timeliner
             LoopRegion.CustomAttributes["class"] = "loop";
             PanZoomGroup.Children.Add(LoopRegion);
             
-            RulerMenu = new SvgMenuWidget(115);
-            RulerMenu.ID = "RulerMenu";
-            FPSEdit = new SvgValueWidget(0, 20, "FPS", Model.FPS.Value);
-            FPSEdit.OnValueChanged += ChangeFPS;
-            RulerMenu.AddItem(FPSEdit);
-            SpeedEdit = new SvgValueWidget(0, 20, "Speed", Model.Speed.Value);
-            SpeedEdit.OnValueChanged += ChangeSpeed;
-            RulerMenu.AddItem(SpeedEdit);
-            LoopEdit = new SvgValueWidget(0, 20, "Loop", 1);
-            LoopEdit.OnValueChanged += ChangeLoop;
-            RulerMenu.AddItem(LoopEdit);
-            
+            CreateMenu();
+
             //init scalings
             PanZoom(0, 0, 0);
             UpdateScene();
@@ -190,6 +181,8 @@ namespace Timeliner
 
         public override void Dispose()
         {
+        	TrackMenuDict.Clear();
+        	
         	LabelBackground.MouseDown -= Background_MouseDown;
         	
             Background.MouseDown -= Background_MouseDown;
@@ -229,11 +222,66 @@ namespace Timeliner
 		
         protected override void UnbuildSVG()
         {
-        	Parent.FOverlaysGroup.Children.Remove(RulerMenu);
+        	Parent.FOverlaysGroup.Children.Remove(Menu);
         	
             Parent.SvgRoot.Children.Remove(RulerClipPath);
             Parent.FTrackGroup.Children.Remove(MainGroup);
         }
+        
+        void CreateMenu()
+		{
+			Menu = new SvgMenuWidget(125);
+
+			//get all [MenuEntry] properties of Model
+			var props = Model.GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(TrackMenuEntryAttribute)));
+			foreach (var p in props)
+			{
+				var attributes = p.GetCustomAttributes(true);
+				var menuEntry = (attributes[0] as TrackMenuEntryAttribute);
+				
+				//get an editor for the property
+				var editor = WidgetFactory.GetWidget(Model, p, 0, menuEntry.Height);
+				editor.ValueChanged += ChangeTrackMenuEntry;
+					
+				TrackMenuDict.Add(editor, Model);
+				
+				//add it to the TrackMenu
+				Menu.AddItem(editor, menuEntry.Order);
+			}
+		}
+		
+		void ChangeTrackMenuEntry(SvgWidget editor, object newValue, object delta)
+		{
+			var cmds = new CompoundCommand();
+			SendValue(ref cmds, TrackMenuDict[editor], editor.Name, newValue);
+			History.Insert(cmds);
+		}
+		
+		void SendValue(ref CompoundCommand cmds, TLModelBase model, string name, object newValue)
+		{
+			//from editor get editableproperty
+			var property = model.GetType().GetProperty(name);
+			if (property.PropertyType.GenericTypeArguments[0] == typeof(string))
+			{
+				var prop = (EditableProperty<string>) property.GetValue(model);
+				cmds.Append(Command.Set(prop, newValue));
+			}
+			else if (property.PropertyType.GenericTypeArguments[0] == typeof(float))
+			{
+				var prop = (EditableProperty<float>) property.GetValue(model);
+				cmds.Append(Command.Set(prop, newValue));
+			}
+			else if (property.PropertyType.GenericTypeArguments[0] == typeof(int))
+			{
+				var prop = (EditableProperty<int>) property.GetValue(model);
+				cmds.Append(Command.Set(prop, newValue));
+			}
+			else if (property.PropertyType.GenericTypeArguments[0] == typeof(bool))
+			{
+				var prop = (EditableProperty<bool>) property.GetValue(model);
+				cmds.Append(Command.Set(prop, (float) newValue >= 0.5));
+			}			
+		}
         #endregion
 		
         #region update scenegraph
@@ -316,7 +364,7 @@ namespace Timeliner
             Parent.Default_MouseDown(this, e);
             
             if (e.Button == 2)
-        		RulerMenu.Show(new PointF(e.x, 0));
+        		Menu.Show(new PointF(e.x, 0));
         }
 		
         void Background_MouseUp(object sender, MouseArg e)
@@ -329,22 +377,22 @@ namespace Timeliner
             Parent.Default_MouseMove(this, e);
         }
         
-        void ChangeFPS(float delta)
+        void ChangeFPS(SvgWidget widget, object newValue, object delta)
 		{
-        	Parent.Timer.FPS = (int) FPSEdit.Value;
-        	History.Insert(Command.Set(Model.FPS, (int) FPSEdit.Value));
+        	Parent.Timer.FPS = (int) newValue;
+        	History.Insert(Command.Set(Model.FPS, (int) newValue));
 		}
         
-        void ChangeSpeed(float delta)
+        void ChangeSpeed(SvgWidget widget, object newValue, object delta)
 		{
-        	Parent.Timer.Speed = SpeedEdit.Value;
-			History.Insert(Command.Set(Model.Speed, SpeedEdit.Value));
+        	Parent.Timer.Speed = (float) newValue;
+        	History.Insert(Command.Set(Model.Speed, (float) newValue));
 		}
         
-        void ChangeLoop(float delta)
+        void ChangeLoop(SvgWidget widget, object newValue, object delta)
 		{
-        	Parent.Timer.Loop = LoopEdit.Value >= 0.5;
-			History.Insert(Command.Set(Model.Loop, LoopEdit.Value >= 0.5));
+        	Parent.Timer.Loop = ((float) newValue) >= 0.5;
+        	History.Insert(Command.Set(Model.Loop, (float) newValue));
 		}
         #endregion
 		

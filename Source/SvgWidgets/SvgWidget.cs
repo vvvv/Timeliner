@@ -6,6 +6,9 @@ namespace Timeliner
 {
 	public abstract class SvgWidget: SvgGroup, IDisposable
 	{
+		public Action<SvgWidget, object, object> ValueChanged { get; set; }
+		public string Name { get; set; }
+		
 		protected SvgRectangle Background;
 		
 		public float Width
@@ -20,8 +23,9 @@ namespace Timeliner
 			set {Background.Height = value;}
 		}
 		
-		public SvgWidget()
+		public SvgWidget(string name)
 		{
+			Name = name;
 			Background = new SvgRectangle();
 			Background.CustomAttributes["class"] = "menu";
 			
@@ -29,7 +33,7 @@ namespace Timeliner
             this.Visible = true;
 		}
 		
-		public SvgWidget(float width, float height): this()
+		public SvgWidget(string name, float width, float height): this(name)
 		{
 			Background.Width = width;
 			Background.Height = height;

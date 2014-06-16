@@ -200,7 +200,7 @@ namespace Timeliner
 					Nudge(NudgeDirection.Down, shift, ctrl, alt);
 					break;
 				case (int) Keys.OemBackslash:
-					Timeliner.TimelineView.ActiveTrack.CollapseTrack();
+					Timeliner.TimelineView.ActiveTrack.CollapseTrack(null, null, null);
 					break;
 				case (int) Keys.I:
 					cmd.Append(Command.Set(Timeliner.TimelineView.Ruler.Model.LoopStart, Timeliner.Timer.Time));

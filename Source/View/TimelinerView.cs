@@ -131,13 +131,13 @@ namespace Timeliner
             MainMenu.ID = "MainMenu";
             
             var addValueTrack = new SvgButtonWidget(0, 20, "Add Value Track");
-            addValueTrack.OnButtonPressed += AddValueTrack;
+            addValueTrack.ValueChanged += AddValueTrack;
             
             var addStringTrack = new SvgButtonWidget(0, 20, "Add String Track");
-            addStringTrack.OnButtonPressed += AddStringTrack;
+            addStringTrack.ValueChanged += AddStringTrack;
             
-            MainMenu.AddItem(addValueTrack);
-            MainMenu.AddItem(addStringTrack);
+            MainMenu.AddItem(addValueTrack, 0);
+            MainMenu.AddItem(addStringTrack, 1);
             
             FRulerGroup.ID = "Ruler";
             FRulerGroup.Transforms = new SvgTransformCollection();
@@ -257,7 +257,7 @@ namespace Timeliner
             FOverlaysGroup.Children.Add(MouseTimeLine);
             FOverlaysGroup.Children.Add(MouseTimeLabel);
 			FOverlaysGroup.Children.Add(MainMenu);
-			FOverlaysGroup.Children.Add(Ruler.RulerMenu);
+			FOverlaysGroup.Children.Add(Ruler.Menu);
 			SvgRoot.Children.Add(FOverlaysGroup);			
 			
 			return SvgRoot;
@@ -320,14 +320,14 @@ namespace Timeliner
 		}
 		
 		int FTrackCount = 0;
-		void AddValueTrack()
+		void AddValueTrack(SvgWidget widget, object newValue, object delta)
 		{
 			var track = new TLValueTrack(FTrackCount++.ToString());
 			track.Order.Value = Document.Tracks.Count;
         	History.Insert(Command.Add(Document.Tracks, track));
 		}
 		
-		void AddStringTrack()
+		void AddStringTrack(SvgWidget widget, object newValue, object delta)
 		{
 			var track = new TLStringTrack(FTrackCount++.ToString());
 			track.Order.Value = Document.Tracks.Count;
@@ -446,7 +446,7 @@ namespace Timeliner
 				track.TrackMenu.Hide();
 				track.KeyframeMenu.Hide();
 			}
-			Ruler.RulerMenu.Hide();
+			Ruler.Menu.Hide();
 			MainMenu.Hide();
 		}
 	}

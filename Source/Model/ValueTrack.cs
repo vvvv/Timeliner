@@ -32,12 +32,14 @@ namespace Timeliner
             private set;
         }
         
+        [TrackMenuEntry(Order=2)]
         public EditableProperty<float> Minimum
         {
             get;
             private set;
         }
         
+        [TrackMenuEntry(Order=3)]
         public EditableProperty<float> Maximum
         {
             get;
@@ -191,6 +193,7 @@ namespace Timeliner
 
     public class TLValueKeyframe : TLKeyframeBase
     {
+    	[KeyframeMenuEntry]
         public EditableProperty<float> Value { get; private set; }
         
         public TLValueKeyframe NeighbourLeft

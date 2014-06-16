@@ -15,9 +15,7 @@ namespace Timeliner
             set { FLabel.Text = value;}
         }
         
-		public Action OnButtonPressed;		
-		
-		public SvgButtonWidget(string label): base()
+		public SvgButtonWidget(string label): base(label)
 		{
             Background.MouseOver += Background_MouseOver;
 			Background.MouseOut += Background_MouseOut;
@@ -48,7 +46,7 @@ namespace Timeliner
 	
 		void Background_MouseDown(object sender, EventArgs e)
 		{
-			OnButtonPressed.Invoke();
+			ValueChanged(this, true, null);
 		}
 		
 		public override void Dispose()
