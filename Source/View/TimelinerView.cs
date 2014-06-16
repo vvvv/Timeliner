@@ -389,7 +389,7 @@ namespace Timeliner
 			{
 				HideMenus();
 				if (e.Button == 1)
-					return new LoopRegionMouseHandler(Ruler, Ruler.Model.LoopStart, e.SessionID);
+					return new LoopRegionMouseHandler(Ruler, Ruler.Model.LoopStart, null, e.SessionID);
 				else
 					return null;					
 			}
@@ -397,7 +397,15 @@ namespace Timeliner
 			{
 				HideMenus();
 				if (e.Button == 1)
-					return new LoopRegionMouseHandler(Ruler, Ruler.Model.LoopEnd, e.SessionID);
+					return new LoopRegionMouseHandler(Ruler, null, Ruler.Model.LoopEnd, e.SessionID);
+				else
+					return null;					
+			}
+			else if (sender == Ruler.LoopRegion)
+			{
+				HideMenus();
+				if (e.Button == 1)
+					return new LoopRegionMouseHandler(Ruler, Ruler.Model.LoopStart, Ruler.Model.LoopEnd, e.SessionID);
 				else
 					return null;					
 			}

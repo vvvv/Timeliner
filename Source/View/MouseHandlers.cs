@@ -431,12 +431,15 @@ namespace Timeliner
 	
 	internal class LoopRegionMouseHandler : MouseHandlerBase<RulerView>
 	{
-		private EditableProperty<float> FMarker;
+		private EditableProperty<float> FStart;
+		private EditableProperty<float> FEnd;
 		private CompoundCommand FMoveCommands;
-		public LoopRegionMouseHandler(RulerView rv, EditableProperty<float> marker, string sessionID)
+		
+		public LoopRegionMouseHandler(RulerView rv, EditableProperty<float> start, EditableProperty<float> end, string sessionID)
 			: base(rv, sessionID)
 		{
-			FMarker = marker;
+			FStart = start;
+			FEnd = end;
 			
 			//start collecting movecommands in drag
 			FMoveCommands = new CompoundCommand();
@@ -446,12 +449,16 @@ namespace Timeliner
 		{
 			if (delta.X != 0)
 			{
+				var cmds = new CompoundCommand();
 				var x = Instance.XDeltaToTime(delta.X);
-				var cmd = Command.Set(FMarker, FMarker.Value + x);
+				if (FStart != null)
+					cmds.Append(Command.Set(FStart, FStart.Value + x));
+				if (FEnd != null)
+					cmds.Append(Command.Set(FEnd, FEnd.Value + x));
 				//execute changes immediately
-				cmd.Execute();
+				cmds.Execute();
 				//collect changes for history
-				FMoveCommands.Append(cmd);
+				FMoveCommands.Append(cmds);
 				
 				Instance.Parent.UpdateScene();
 			}

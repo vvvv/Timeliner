@@ -144,6 +144,17 @@ namespace Timeliner
                 NumberGroup.Children.Add(num);
             }
 			
+            LoopRegion.ID = "LoopRegion";
+            LoopRegion.Y = Background.Height / 4;
+            LoopRegion.Height = Background.Height / 2;
+            LoopRegion.FillOpacity = 0.7f;
+            LoopRegion.CustomAttributes["pointer-events"] = "fill";
+            LoopRegion.CustomAttributes["class"] = "loop";
+            LoopRegion.MouseDown += (s, e) => Parent.Default_MouseDown(LoopRegion, e);
+            LoopRegion.MouseUp += (s, e) => Parent.Default_MouseUp(LoopRegion, e);
+            LoopRegion.MouseMove += (s, e) => Parent.Default_MouseMove(LoopRegion, e);
+            PanZoomGroup.Children.Add(LoopRegion);
+            
             LoopStart.ID = "LoopStart";
             LoopStart.Width = 1/Timer.PPS * CHandlerWidth;
             LoopStart.Height = Background.Height;
@@ -163,14 +174,6 @@ namespace Timeliner
             LoopEnd.MouseMove += (s, e) => Parent.Default_MouseMove(LoopEnd, e);
             LoopEnd.CustomAttributes["pointer-events"] = "fill";
             LoopEnd.CustomAttributes["class"] = "loopcap";
-			
-            LoopRegion.ID = "LoopRegion";
-            LoopRegion.Y = Background.Height / 4;
-            LoopRegion.Height = Background.Height / 2;
-            LoopRegion.FillOpacity = 0.7f;
-            LoopRegion.CustomAttributes["pointer-events"] = "none";
-            LoopRegion.CustomAttributes["class"] = "loop";
-            PanZoomGroup.Children.Add(LoopRegion);
             
             CreateMenu();
 

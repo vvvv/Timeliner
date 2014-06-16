@@ -20,7 +20,7 @@ namespace Timeliner
 		public float Time
 		{
 			get {return FCurrentTime;}
-			set 
+			set
 			{
 				if (FCurrentTime != value)
 				{
@@ -43,8 +43,8 @@ namespace Timeliner
 		public float HostTime
 		{
 			get { return FHostTime;}
-			set 
-			{ 
+			set
+			{
 				FHostTime = value;
 				if (FLastHostTime == -1)
 					FLastHostTime = value;
@@ -68,12 +68,12 @@ namespace Timeliner
 		
 		public override string ToString()
 		{
-            return TimeToString(FCurrentTime);
+			return TimeToString(FCurrentTime);
 		}
-        
-        public string TimeToString(float time)
-        {
-            var showMinus = time < 0;
+		
+		public string TimeToString(float time)
+		{
+			var showMinus = time < 0;
 			time = Math.Abs(time);
 			
 			var ms = (int) ((time - Math.Floor(time)) * 1000);
@@ -84,10 +84,10 @@ namespace Timeliner
 			DateTime dt = new DateTime(2008, 1, 1, h, m, s, ms);
 
 			if (showMinus)
-				return "-" + dt.ToString("H:mm:ss:fff"); 
+				return "-" + dt.ToString("H:mm:ss:fff");
 			else //add empty char for - placeholder
 				return "\u00A0" + dt.ToString("H:mm:ss:fff");
-        }
+		}
 		
 		public void Evaluate()
 		{
@@ -95,8 +95,12 @@ namespace Timeliner
 			{
 				FTimeDelta = (FHostTime - FLastHostTime) * FSpeed;
 				FCurrentTime += FTimeDelta;
-				if ((Loop) && (FCurrentTime > LoopEnd))
-					FCurrentTime = LoopStart;
+				if (Loop)
+				{	if (FCurrentTime > LoopEnd)
+						FCurrentTime = LoopStart;
+					else if (FCurrentTime < LoopStart)
+						FCurrentTime = LoopStart;
+				}
 			}
 			else if (FForceUpdate)
 				FForceUpdate = false;
@@ -105,17 +109,17 @@ namespace Timeliner
 			
 			FLastHostTime = FHostTime;
 		}
-        
-        public void Play(bool run)
-        {
-            IsRunning = run;
-        }
-        
-        public void Stop()
-        {
-            IsRunning = false;
-            Time = 0;
-        }
+		
+		public void Play(bool run)
+		{
+			IsRunning = run;
+		}
+		
+		public void Stop()
+		{
+			IsRunning = false;
+			Time = 0;
+		}
 	}
 }
 
