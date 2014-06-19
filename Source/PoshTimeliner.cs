@@ -1,9 +1,11 @@
 #region usings
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
+
 using Posh;
 using Svg;
 using VVVV.Core;
@@ -67,7 +69,7 @@ namespace Timeliner
 			
 			//publish changes
 			FPoshServer.PublishAll(this, new CallInvokedArgs(""));
-		
+			
 			AfterHistoryPublish();
 		}
 		
@@ -144,6 +146,7 @@ namespace Timeliner
 		{
 			var cmds = new CompoundCommand();
 			
+			var cursorPos = Cursor.Position;
 			switch(keyCode)
 			{
 				case (int) Keys.Space:
@@ -155,6 +158,11 @@ namespace Timeliner
 					Timeliner.TimelineView.UpdateScene();
 					break;
 				case (int) Keys.Delete:
+					
+					//HACK: move mousecursor (to somewhere else (in the window!) 
+					//before deleting elements so IE does not freeze
+					var p = Application.OpenForms[0].Location;
+					Cursor.Position = new Point(p.X + 20, p.Y + 100);
 					
 					foreach(var track in Timeliner.TimelineView.Tracks.OfType<ValueTrackView>())
 						foreach(var kf in track.Keyframes.Where(k => k.Model.Selected.Value))
@@ -223,6 +231,9 @@ namespace Timeliner
 			
 			if (cmds.CommandCount > 0)
 				Context.History.Insert(cmds);
+			
+			//HACK: see above
+			Cursor.Position = cursorPos;
 		}
 		
 		void Nudge(NudgeDirection direction, bool shift, bool ctrl, bool alt)
@@ -234,9 +245,9 @@ namespace Timeliner
 				timeDelta *= Timeliner.Timer.FPS; //to nudge a whole second
 			
 			var step = alt ? 10f : 0.1f;
-			if (shift) 
+			if (shift)
 				valueDelta *= step;
-			if (ctrl) 
+			if (ctrl)
 				valueDelta *= step;
 			
 			var cmds = new CompoundCommand();
