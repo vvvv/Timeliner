@@ -173,8 +173,7 @@ namespace Timeliner
 	                                     	tv.Dispose();
 	                                     	
 	                                     	//update Order on all tracks below the one removed
-	                                     	foreach (var track in Tracks)
-	                                     		if (track.Model.Order.Value > order)
+	                                     	foreach (var track in Tracks.Where(x => x.Model.Order.Value > order))
 	                                     			track.Model.Order.Value -= 1;
                                      	});
 		}

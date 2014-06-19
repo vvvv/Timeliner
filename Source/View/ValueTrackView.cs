@@ -17,26 +17,26 @@ namespace Timeliner
 	public class ValueTrackView: TrackView
 	{
 		public new TLValueTrack Model
-        {
-            get
-            {
-                return (TLValueTrack)base.Model;
-            }
-            protected set
-            {
-                base.Model = value;
-            }
-        }
+		{
+			get
+			{
+				return (TLValueTrack)base.Model;
+			}
+			protected set
+			{
+				base.Model = value;
+			}
+		}
 		
-		public EditableList<ValueKeyframeView> Keyframes 
+		public EditableList<ValueKeyframeView> Keyframes
 		{
 			get;
 			protected set;
 		}
 		
-		public override IEnumerable<KeyframeView> KeyframeViews 
+		public override IEnumerable<KeyframeView> KeyframeViews
 		{
-			get 
+			get
 			{
 				return Keyframes;
 			}
@@ -48,7 +48,7 @@ namespace Timeliner
 		Synchronizer<CurveView, TLCurve> CurveSyncer;
 		
 		public SvgCircle KeyframeDefinition = new SvgCircle();
-        public SvgLine CollapsedKeyframeDefinition = new SvgLine();
+		public SvgLine CollapsedKeyframeDefinition = new SvgLine();
 		public SvgGroup CurveGroup = new SvgGroup();
 		public SvgGroup KeyframeGroup = new SvgGroup();
 		SvgText CurrentValue = new SvgText();
@@ -56,7 +56,7 @@ namespace Timeliner
 		public ValueTrackView(TLValueTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv, rv)
 		{
-		
+			
 			Keyframes = new EditableList<ValueKeyframeView>();
 			
 			KFSyncer = Keyframes.SyncWith(Model.Keyframes,
@@ -83,7 +83,7 @@ namespace Timeliner
 			                              cv =>
 			                              {
 			                              	cv.Dispose();
-		                              	  }
+			                              }
 			                             );
 			
 			Background.Click += Background_MouseClick;
@@ -94,24 +94,24 @@ namespace Timeliner
 			KeyframeDefinition.ID = Model.GetID() + "_KF";
 			KeyframeDefinition.Transforms = new SvgTransformCollection();
 			KeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
-            
-            CollapsedKeyframeDefinition.ID = Model.GetID() + "_CKF";
-            CollapsedKeyframeDefinition.StartX = 0;
-            CollapsedKeyframeDefinition.StartY = -25f;
-            CollapsedKeyframeDefinition.EndX = 0;
-            CollapsedKeyframeDefinition.EndY = 25f;
-            CollapsedKeyframeDefinition.Transforms = new SvgTransformCollection();
+			
+			CollapsedKeyframeDefinition.ID = Model.GetID() + "_CKF";
+			CollapsedKeyframeDefinition.StartX = 0;
+			CollapsedKeyframeDefinition.StartY = -25f;
+			CollapsedKeyframeDefinition.EndX = 0;
+			CollapsedKeyframeDefinition.EndY = 25f;
+			CollapsedKeyframeDefinition.Transforms = new SvgTransformCollection();
 			CollapsedKeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
 			
 			CurveGroup.ID = "Curves";
 			KeyframeGroup.ID = "Keyframes";
 			
 			CurrentValue.FontSize = 20;
-            CurrentValue.X = 5;
-            CurrentValue.CustomAttributes["class"] = "trackfont";
-            CurrentValue.CustomAttributes["pointer-events"] = "none";
+			CurrentValue.X = 5;
+			CurrentValue.CustomAttributes["class"] = "trackfont";
+			CurrentValue.CustomAttributes["pointer-events"] = "none";
 			CurrentValue.Y = 40;
-						
+			
 			UpdateScene();
 		}
 		
@@ -122,16 +122,16 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
-		#region build scenegraph		
+		#region build scenegraph
 		protected override void BuildSVG()
 		{
 			base.BuildSVG();
-				
+			
 			CurveGroup.Children.Clear();
 			KeyframeGroup.Children.Clear();
 			
 			Definitions.Children.Add(KeyframeDefinition);
-            Definitions.Children.Add(CollapsedKeyframeDefinition);
+			Definitions.Children.Add(CollapsedKeyframeDefinition);
 			PanZoomGroup.Children.Add(CurveGroup);
 			PanZoomGroup.Children.Add(KeyframeGroup);
 			
@@ -205,12 +205,12 @@ namespace Timeliner
 			m.Invert();
 			
 			KeyframeDefinition.Transforms[0] = new SvgMatrix(m.Elements.ToList());
-            CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
+			CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
 		
 		//curves need to be rebuild after the model updates,
 		//in case keyframes have moved beyond their neighbours.
-		//this can only be done from outside, in this case before 
+		//this can only be done from outside, in this case before
 		//the posh publish.
 		bool FNeedsRebuild;
 		protected void NeedsRebuild()
@@ -231,10 +231,9 @@ namespace Timeliner
 		{
 			base.Nudge(ref cmds, direction, timeDelta, valueDelta);
 			
-			foreach(var kf in Keyframes)
+			foreach(var kf in Keyframes.Where(x => x.Model.Selected.Value))
 			{
-				if (kf.Model.Selected.Value)
-					switch (direction)
+				switch (direction)
 				{
 					case NudgeDirection.Up:
 						var newValue = (float) VMath.Clamp(kf.Model.Value.Value + valueDelta, Model.Minimum.Value, Model.Maximum.Value);
@@ -247,13 +246,6 @@ namespace Timeliner
 				}
 			}
 		}
-        
-//        protected override void FillKeyframeMenu()
-//        {
-//            ValueEdit = new SvgValueWidget("", 0, 20, "Value", 0);
-//			ValueEdit.ValueChanged += ChangeKeyframeValue;
-//			KeyframeMenu.AddItem(ValueEdit, 0);
-//        }
 		
 		public override void UpdateKeyframeMenu(KeyframeView kf)
 		{
@@ -266,32 +258,6 @@ namespace Timeliner
 		#endregion
 		
 		#region scenegraph eventhandler
-		void ChangeMinimum(SvgWidget widget, object newValue)
-		{
-			History.Insert(Command.Set(Model.Minimum, (float) newValue));
-		}
-		
-		void ChangeMaximum(SvgWidget widget, object newValue)
-		{
-			History.Insert(Command.Set(Model.Maximum, (float) newValue));
-		}
-		
-		void ChangeKeyframeValue(SvgWidget widget, object newValue)
-		{
-			var cmds = new CompoundCommand();
-			
-			var min = Model.Maximum.Value;
-			var max = Model.Minimum.Value;
-			
-			foreach(var kf in Keyframes.Where(x => x.Model.Selected.Value))
-			{
-//				var newValue = Math.Min(min, Math.Max(max, kf.Model.Value.Value + delta));
-//				cmds.Append(Command.Set(kf.Model.Value, newValue));
-			}
-					
-			History.Insert(cmds);
-		}
-		
 		void Background_MouseClick(object sender, MouseArg e)
 		{
 			if(e.ClickCount >= 2)

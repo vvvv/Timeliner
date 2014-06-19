@@ -142,7 +142,7 @@ namespace Timeliner
 		
 		void PoshServer_OnKeyDown(bool ctrl, bool shift, bool alt, int keyCode)
 		{
-			var cmd = new CompoundCommand();
+			var cmds = new CompoundCommand();
 			
 			switch(keyCode)
 			{
@@ -157,17 +157,15 @@ namespace Timeliner
 				case (int) Keys.Delete:
 					
 					foreach(var track in Timeliner.TimelineView.Tracks.OfType<ValueTrackView>())
-						foreach(var kf in track.Keyframes)
+						foreach(var kf in track.Keyframes.Where(k => k.Model.Selected.Value))
 					{
-						if (kf.Model.Selected.Value)
-							cmd.Append(Command.Remove(track.Model.Keyframes, kf.Model));
+						cmds.Append(Command.Remove(track.Model.Keyframes, kf.Model));
 					}
 					
 					foreach(var track in Timeliner.TimelineView.Tracks.OfType<StringTrackView>())
-						foreach(var kf in track.Keyframes)
+						foreach(var kf in track.Keyframes.Where(k => k.Model.Selected.Value))
 					{
-						if (kf.Model.Selected.Value)
-							cmd.Append(Command.Remove(track.Model.Keyframes, kf.Model));
+						cmds.Append(Command.Remove(track.Model.Keyframes, kf.Model));
 					}
 					
 					break;
@@ -178,12 +176,12 @@ namespace Timeliner
 						{
 							foreach(var track in Timeliner.TimelineView.Tracks)
 								foreach(var kf in track.KeyframeViews)
-									cmd.Append(Command.Set(kf.Model.Selected, true));
+									cmds.Append(Command.Set(kf.Model.Selected, true));
 						}
 						else
 						{
 							foreach(var kf in Timeliner.TimelineView.ActiveTrack.KeyframeViews)
-								cmd.Append(Command.Set(kf.Model.Selected, true));
+								cmds.Append(Command.Set(kf.Model.Selected, true));
 						}
 					}
 					break;
@@ -203,10 +201,10 @@ namespace Timeliner
 					Timeliner.TimelineView.ActiveTrack.CollapseTrack(null, null, null);
 					break;
 				case (int) Keys.I:
-					cmd.Append(Command.Set(Timeliner.TimelineView.Ruler.Model.LoopStart, Timeliner.Timer.Time));
+					cmds.Append(Command.Set(Timeliner.TimelineView.Ruler.Model.LoopStart, Timeliner.Timer.Time));
 					break;
 				case (int) Keys.O:
-					cmd.Append(Command.Set(Timeliner.TimelineView.Ruler.Model.LoopEnd, Timeliner.Timer.Time));
+					cmds.Append(Command.Set(Timeliner.TimelineView.Ruler.Model.LoopEnd, Timeliner.Timer.Time));
 					break;
 				case (int) Keys.Z:
 					if (ctrl)
@@ -223,7 +221,8 @@ namespace Timeliner
 					break;
 			}
 			
-			Context.History.Insert(cmd);
+			if (cmds.CommandCount > 0)
+				Context.History.Insert(cmds);
 		}
 		
 		void Nudge(NudgeDirection direction, bool shift, bool ctrl, bool alt)

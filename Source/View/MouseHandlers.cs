@@ -164,17 +164,15 @@ namespace Timeliner
 				var cmds = new CompoundCommand();
 				if (FNewOrder > oldOrder)
 				{
-					foreach (var track in Instance.Parent.Tracks)
-						if (track != Instance)
-							if ((track.Model.Order.Value > oldOrder) && (track.Model.Order.Value <= FNewOrder))
-								cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value - 1));
+					foreach (var track in Instance.Parent.Tracks.Where(x => x != Instance))
+						if ((track.Model.Order.Value > oldOrder) && (track.Model.Order.Value <= FNewOrder))
+							cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value - 1));
 				}
 				else
 				{
-					foreach (var track in Instance.Parent.Tracks)
-						if (track != Instance)
-							if ((track.Model.Order.Value >= FNewOrder) && (track.Model.Order.Value < oldOrder))
-								cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value + 1));
+					foreach (var track in Instance.Parent.Tracks.Where(x => x != Instance))
+						if ((track.Model.Order.Value >= FNewOrder) && (track.Model.Order.Value < oldOrder))
+							cmds.Append(Command.Set(track.Model.Order, track.Model.Order.Value + 1));
 				}
 				
 				cmds.Append(Command.Set(Instance.Model.Order, FNewOrder));
@@ -218,19 +216,16 @@ namespace Timeliner
 			if (arg.CtrlKey || arg.AltKey)
 			{
 				foreach (var track in Instance.Parent.Tracks)
-					foreach (var kf in track.KeyframeViews)
-						if (kf.Model.Selected.Value)
-							FPreviouslySelected.Add(kf);
+					foreach (var kf in track.KeyframeViews.Where(x => x.Model.Selected.Value))
+						FPreviouslySelected.Add(kf);
 			}
 			else //deselect keyframes
 			{
 				var cmds = new CompoundCommand();
 				foreach (var track in Instance.Parent.Tracks)
-					foreach (var kf in track.KeyframeViews)
-				{
-					if (kf.Model.Selected.Value)
+					foreach (var kf in track.KeyframeViews.Where(x => x.Model.Selected.Value))
 						cmds.Append(Command.Set(kf.Model.Selected, false));
-				}
+
 				if (cmds.CommandCount > 0)
 					Instance.History.Insert(cmds);
 			}
@@ -321,9 +316,8 @@ namespace Timeliner
 				{
 					//unselect all keyframes
 					foreach (var track in Instance.Parent.Parent.Tracks)
-						foreach (var kf in track.KeyframeViews)
-							if (kf.Model.Selected.Value)
-								cmd.Append(Command.Set(kf.Model.Selected, false));
+						foreach (var kf in track.KeyframeViews.Where(x => x.Model.Selected.Value))
+							cmd.Append(Command.Set(kf.Model.Selected, false));
 				}
 				//set keyframe selected
 				cmd.Append(Command.Set(Instance.Model.Selected, true));
@@ -334,8 +328,7 @@ namespace Timeliner
 				
 				//store initial values to operate on for being able to drag beyond min/max
 				foreach (var track in Instance.Parent.Parent.Tracks)
-					foreach (var kf in track.KeyframeViews)
-						if (kf.Model.Selected.Value)
+					foreach (var kf in track.KeyframeViews.Where(x => x.Model.Selected.Value))
 				{
 					if (!FAffectedTracks.Contains(track))
 						FAffectedTracks.Add(track);

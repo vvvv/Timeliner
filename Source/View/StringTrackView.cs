@@ -16,26 +16,26 @@ namespace Timeliner
 	public class StringTrackView: TrackView
 	{
 		public new TLStringTrack Model
-        {
-            get
-            {
-                return (TLStringTrack)base.Model;
-            }
-            protected set
-            {
-                base.Model = value;
-            }
-        }
+		{
+			get
+			{
+				return (TLStringTrack)base.Model;
+			}
+			protected set
+			{
+				base.Model = value;
+			}
+		}
 		
-		public EditableList<StringKeyframeView> Keyframes 
+		public EditableList<StringKeyframeView> Keyframes
 		{
 			get;
 			protected set;
 		}
 		
-		public override IEnumerable<KeyframeView> KeyframeViews 
+		public override IEnumerable<KeyframeView> KeyframeViews
 		{
-			get 
+			get
 			{
 				return Keyframes;
 			}
@@ -71,29 +71,29 @@ namespace Timeliner
 			Background.Click += Background_MouseClick;
 			
 			KeyframeDefinition.StartX = 0;
-            KeyframeDefinition.StartY = -25f;
-            KeyframeDefinition.EndX = 0;
-            KeyframeDefinition.EndY = 25f;
+			KeyframeDefinition.StartY = -25f;
+			KeyframeDefinition.EndX = 0;
+			KeyframeDefinition.EndY = 25f;
 			KeyframeDefinition.ID = Model.GetID() + "_KF";
 			KeyframeDefinition.Transforms = new SvgTransformCollection();
 			KeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
-            
-            CollapsedKeyframeDefinition.ID = Model.GetID() + "_CKF";
-            CollapsedKeyframeDefinition.StartX = 0;
-            CollapsedKeyframeDefinition.StartY = -25f;
-            CollapsedKeyframeDefinition.EndX = 0;
-            CollapsedKeyframeDefinition.EndY = 25f;
-            CollapsedKeyframeDefinition.Transforms = new SvgTransformCollection();
+			
+			CollapsedKeyframeDefinition.ID = Model.GetID() + "_CKF";
+			CollapsedKeyframeDefinition.StartX = 0;
+			CollapsedKeyframeDefinition.StartY = -25f;
+			CollapsedKeyframeDefinition.EndX = 0;
+			CollapsedKeyframeDefinition.EndY = 25f;
+			CollapsedKeyframeDefinition.Transforms = new SvgTransformCollection();
 			CollapsedKeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
 
 			KeyframeGroup.ID = "Keyframes";
 			
 			CurrentValue.FontSize = 20;
-            CurrentValue.X = 5;
-            CurrentValue.CustomAttributes["class"] = "trackfont";
-            CurrentValue.CustomAttributes["pointer-events"] = "none";
+			CurrentValue.X = 5;
+			CurrentValue.CustomAttributes["class"] = "trackfont";
+			CurrentValue.CustomAttributes["pointer-events"] = "none";
 			CurrentValue.Y = 40;
-						
+			
 			UpdateScene();
 		}
 		
@@ -106,15 +106,15 @@ namespace Timeliner
 			base.Dispose();
 		}
 		
-		#region build scenegraph		
+		#region build scenegraph
 		protected override void BuildSVG()
 		{
 			base.BuildSVG();
-				
+			
 			KeyframeGroup.Children.Clear();
 			
 			Definitions.Children.Add(KeyframeDefinition);
-            Definitions.Children.Add(CollapsedKeyframeDefinition);
+			Definitions.Children.Add(CollapsedKeyframeDefinition);
 			PanZoomGroup.Children.Add(KeyframeGroup);
 			
 			MainGroup.Children.Add(CurrentValue);
@@ -158,10 +158,10 @@ namespace Timeliner
 			m.Invert();
 			
 			KeyframeDefinition.Transforms[0] = new SvgMatrix(m.Elements.ToList());
-            CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
+			CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
-        
-        public override void UpdateKeyframeMenu(KeyframeView kf)
+		
+		public override void UpdateKeyframeMenu(KeyframeView kf)
 		{
 			base.UpdateKeyframeMenu(kf);
 			
@@ -176,12 +176,9 @@ namespace Timeliner
 		{
 			var cmds = new CompoundCommand();
 			
-			foreach(var kf in Keyframes)
-			{
-				if (kf.Model.Selected.Value)
-					cmds.Append(Command.Set(kf.Model.Text, (string) newValue));
-			}
-					
+			foreach(var kf in Keyframes.Where(x => x.Model.Selected.Value))
+				cmds.Append(Command.Set(kf.Model.Text, (string) newValue));
+			
 			History.Insert(cmds);
 		}
 		
@@ -198,7 +195,7 @@ namespace Timeliner
 			}
 		}
 		#endregion
-        
+		
 		public override void Evaluate()
 		{
 			CurrentValue.Text = Model.GetCurrentValueAsString();

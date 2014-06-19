@@ -256,7 +256,7 @@ namespace Timeliner
 				//get an editor for the property
 				var editor = WidgetFactory.GetWidget(Model, p, 0, menuEntry.Height);
 				editor.ValueChanged += ChangeTrackMenuEntry;
-					
+				
 				TrackMenuDict.Add(editor, Model);
 				
 				//add it to the TrackMenu
@@ -284,7 +284,7 @@ namespace Timeliner
 			if (this is ValueTrackView)
 				props = typeof(TLValueKeyframe).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(KeyframeMenuEntryAttribute)));
 			else if (this is StringTrackView)
-				props = typeof(TLStringKeyframe).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(KeyframeMenuEntryAttribute)));			
+				props = typeof(TLStringKeyframe).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(KeyframeMenuEntryAttribute)));
 
 			foreach (var p in props)
 			{
@@ -294,7 +294,7 @@ namespace Timeliner
 				//get an editor for the property
 				var editor = WidgetFactory.GetWidget(null, p, 0, menuEntry.Height);
 				editor.ValueChanged += ChangeKeyframeMenuEntry;
-					
+				
 				//add it to the TrackMenu
 				KeyframeMenu.AddItem(editor, menuEntry.Order);
 			}
@@ -347,11 +347,8 @@ namespace Timeliner
 		{
 			//calc y position
 			var y = 0.0f;
-			foreach (var track in Parent.Document.Tracks)
-			{
-				if(track.Order.Value < Model.Order.Value)
-					y += track.Height.Value + SizeBar.Height;
-			}
+			foreach (var track in Parent.Document.Tracks.Where(x => x.Order.Value < Model.Order.Value))
+				y += track.Height.Value + SizeBar.Height;
 			
 			MainGroup.Transforms[0] = new SvgTranslate(0, y);
 			
