@@ -13,9 +13,9 @@ namespace Timeliner
 	/// </summary>
 	public class SvgMenuWidget: SvgWidget
 	{
-		private float FWidth;
-		private float FHeight = 0;
-		private Dictionary<string, SvgWidget> MenuEntries = new Dictionary<string, SvgWidget>();
+		float FWidth;
+		float FHeight = 0;
+		Dictionary<string, SvgWidget> MenuEntries = new Dictionary<string, SvgWidget>();
 		
 		public SvgMenuWidget(float width): base("")
 		{
