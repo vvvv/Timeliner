@@ -64,7 +64,11 @@ namespace Timeliner
 			                              {
 			                              	var kv = new ValueKeyframeView(kf, this);
 			                              	kf.NeighbourChanged += NeedsRebuild;
-			                              	kv.AddToSceneGraphAt(KeyframeGroup);
+			                              	//HACK: shouldn't need to sort here
+			                              	var kfs = Model.Keyframes.ToList();
+			                              	kfs.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
+			                              	var prev = kfs.FindLastIndex(x => x.Time.Value < kf.Time.Value);
+			                              	kv.AddToSceneGraphAt(KeyframeGroup, Keyframes.Count - 1 - prev);
 			                              	return kv;
 			                              },
 			                              kv =>

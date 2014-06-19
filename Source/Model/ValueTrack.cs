@@ -82,6 +82,8 @@ namespace Timeliner
 
         void Keyframes_Added(IViewableCollection<TLValueKeyframe> collection, TLValueKeyframe item)
         {
+        	//sorting does nothing here?!
+			//Keyframes.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
         	if (!Loading)
             	BuildCurves();
         }

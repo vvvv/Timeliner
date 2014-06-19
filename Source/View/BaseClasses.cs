@@ -67,10 +67,13 @@ namespace Timeliner
         /// Put graphical elements into a given group and rebuild the svg tree.
         /// </summary>
         /// <param name="parentGroup"></param>
-        public void AddToSceneGraphAt(SvgGroup parentGroup)
+        public void AddToSceneGraphAt(SvgGroup parentGroup, int index = -1)
         {
             FGroup.Children.Clear();
-            parentGroup.Children.Add(FGroup);
+            if ((index == -1) || (index >= parentGroup.Children.Count))
+            	parentGroup.Children.Add(FGroup);
+            else
+            	parentGroup.Children.Insert(index, FGroup);
             BuildSVG();
         }
         
