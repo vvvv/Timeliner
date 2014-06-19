@@ -375,7 +375,7 @@ namespace Timeliner
 				else 
 					return null;
 			}
-			else if (sender is RulerView)
+			else if (sender == Ruler.Background)
 			{
 				HideMenus();
 				if (e.Button == 1)

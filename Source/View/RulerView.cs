@@ -23,7 +23,7 @@ namespace Timeliner
 		protected SvgRectangle ClipRect = new SvgRectangle();
 		
 		//MainGroup holds
-		protected SvgRectangle Background = new SvgRectangle();
+		public SvgRectangle Background = new SvgRectangle();
 		SvgText Label = new SvgText();
 		SvgRectangle LabelBackground = new SvgRectangle();
 		
@@ -150,7 +150,7 @@ namespace Timeliner
 			LoopRegion.FillOpacity = 0.7f;
 			LoopRegion.CustomAttributes["pointer-events"] = "fill";
 			LoopRegion.CustomAttributes["class"] = "loop";
-			LoopRegion.MouseDown += (s, e) => Parent.Default_MouseDown(LoopRegion, e);
+			LoopRegion.MouseDown += (s, e) => Background_MouseDown(LoopRegion, e);
 			LoopRegion.MouseUp += (s, e) => Parent.Default_MouseUp(LoopRegion, e);
 			LoopRegion.MouseMove += (s, e) => Parent.Default_MouseMove(LoopRegion, e);
 			PanZoomGroup.Children.Add(LoopRegion);
@@ -159,7 +159,7 @@ namespace Timeliner
 			LoopStart.Width = 1/Timer.PPS * CHandlerWidth;
 			LoopStart.Height = Background.Height;
 			PanZoomGroup.Children.Add(LoopStart);
-			LoopStart.MouseDown += (s, e) => Parent.Default_MouseDown(LoopStart, e);
+			LoopStart.MouseDown += (s, e) => Background_MouseDown(LoopStart, e);
 			LoopStart.MouseUp += (s, e) => Parent.Default_MouseUp(LoopStart, e);
 			LoopStart.MouseMove += (s, e) => Parent.Default_MouseMove(LoopStart, e);
 			LoopStart.CustomAttributes["pointer-events"] = "fill";
@@ -169,7 +169,7 @@ namespace Timeliner
 			LoopEnd.Width = 1/Timer.PPS * CHandlerWidth;
 			LoopEnd.Height = Background.Height;
 			PanZoomGroup.Children.Add(LoopEnd);
-			LoopEnd.MouseDown += (s, e) => Parent.Default_MouseDown(LoopEnd, e);
+			LoopEnd.MouseDown += (s, e) => Background_MouseDown(LoopEnd, e);
 			LoopEnd.MouseUp += (s, e) => Parent.Default_MouseUp(LoopEnd, e);
 			LoopEnd.MouseMove += (s, e) => Parent.Default_MouseMove(LoopEnd, e);
 			LoopEnd.CustomAttributes["pointer-events"] = "fill";
@@ -388,13 +388,13 @@ namespace Timeliner
 		//dispatch events to parent
 		void Background_MouseDown(object sender, MouseArg e)
 		{
-			Parent.Default_MouseDown(this, e);
-			
 			if (e.Button == 2)
 			{
 				UpdateMenu();
 				Menu.Show(new PointF(e.x, 0));
 			}
+			else
+				Parent.Default_MouseDown(sender, e);
 		}
 		
 		void Background_MouseUp(object sender, MouseArg e)

@@ -14,35 +14,35 @@ namespace Timeliner
             private set;
         }
     	
-    	[TrackMenuEntry]
+    	[TrackMenuEntry(Order=0)]
     	public EditableProperty<int> FPS
     	{
             get;
             private set;
         }
     	
-    	[TrackMenuEntry]
+    	[TrackMenuEntry(Order=1)]
     	public EditableProperty<float> Speed
     	{
             get;
             private set;
         }
     	
-    	[TrackMenuEntry]
+    	[TrackMenuEntry(Order=2)]
     	public EditableProperty<bool> Loop
     	{
             get;
             private set;
         }
     	
-    	[TrackMenuEntry]
+    	[TrackMenuEntry(Order=3)]
     	public EditableProperty<float> LoopStart
     	{
             get;
             private set;
         }
     	
-    	[TrackMenuEntry]
+    	[TrackMenuEntry(Order=4)]
     	public EditableProperty<float> LoopEnd
     	{
             get;
