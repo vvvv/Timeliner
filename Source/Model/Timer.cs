@@ -118,7 +118,7 @@ namespace Timeliner
 		public void Stop()
 		{
 			IsRunning = false;
-			Time = 0;
+			Time = Loop ? LoopStart : 0;
 		}
 	}
 }
