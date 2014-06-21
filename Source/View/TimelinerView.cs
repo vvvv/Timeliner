@@ -389,7 +389,7 @@ namespace Timeliner
 			{
 				HideMenus();
 				if (e.Button == 1)
-					return new LoopRegionMouseHandler(Ruler, Ruler.Model.LoopStart, null, e.SessionID);
+					return new RulerMouseHandler(Ruler, Ruler.Model.LoopStart, null, e.SessionID);
 				else
 					return null;					
 			}
@@ -397,7 +397,7 @@ namespace Timeliner
 			{
 				HideMenus();
 				if (e.Button == 1)
-					return new LoopRegionMouseHandler(Ruler, null, Ruler.Model.LoopEnd, e.SessionID);
+					return new RulerMouseHandler(Ruler, null, Ruler.Model.LoopEnd, e.SessionID);
 				else
 					return null;					
 			}
@@ -405,7 +405,7 @@ namespace Timeliner
 			{
 				HideMenus();
 				if (e.Button == 1)
-					return new LoopRegionMouseHandler(Ruler, Ruler.Model.LoopStart, Ruler.Model.LoopEnd, e.SessionID);
+					return new RulerMouseHandler(Ruler, Ruler.Model.LoopStart, Ruler.Model.LoopEnd, e.SessionID);
 				else if (e.Button == 3)
 					return new TrackPanZoomHandler(this, e.SessionID);
 				else

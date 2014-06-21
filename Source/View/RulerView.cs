@@ -150,18 +150,18 @@ namespace Timeliner
 			LoopRegion.FillOpacity = 0.7f;
 			LoopRegion.CustomAttributes["pointer-events"] = "fill";
 			LoopRegion.CustomAttributes["class"] = "loop";
-			LoopRegion.MouseDown += (s, e) => Background_MouseDown(LoopRegion, e);
-			LoopRegion.MouseUp += (s, e) => Parent.Default_MouseUp(LoopRegion, e);
-			LoopRegion.MouseMove += (s, e) => Parent.Default_MouseMove(LoopRegion, e);
+			LoopRegion.MouseDown += Background_MouseDown;
+			LoopRegion.MouseUp += Parent.Default_MouseUp;
+			LoopRegion.MouseMove += Parent.Default_MouseMove;
 			PanZoomGroup.Children.Add(LoopRegion);
 			
 			LoopStart.ID = "LoopStart";
 			LoopStart.Width = 1/Timer.PPS * CHandlerWidth;
 			LoopStart.Height = Background.Height;
 			PanZoomGroup.Children.Add(LoopStart);
-			LoopStart.MouseDown += (s, e) => Background_MouseDown(LoopStart, e);
-			LoopStart.MouseUp += (s, e) => Parent.Default_MouseUp(LoopStart, e);
-			LoopStart.MouseMove += (s, e) => Parent.Default_MouseMove(LoopStart, e);
+			LoopStart.MouseDown += Background_MouseDown;
+			LoopStart.MouseUp += Parent.Default_MouseUp;
+			LoopStart.MouseMove += Parent.Default_MouseMove;
 			LoopStart.CustomAttributes["pointer-events"] = "fill";
 			LoopStart.CustomAttributes["class"] = "loopcap";
 			
@@ -169,9 +169,9 @@ namespace Timeliner
 			LoopEnd.Width = 1/Timer.PPS * CHandlerWidth;
 			LoopEnd.Height = Background.Height;
 			PanZoomGroup.Children.Add(LoopEnd);
-			LoopEnd.MouseDown += (s, e) => Background_MouseDown(LoopEnd, e);
-			LoopEnd.MouseUp += (s, e) => Parent.Default_MouseUp(LoopEnd, e);
-			LoopEnd.MouseMove += (s, e) => Parent.Default_MouseMove(LoopEnd, e);
+			LoopEnd.MouseDown += Background_MouseDown;
+			LoopEnd.MouseUp += Parent.Default_MouseUp;
+			LoopEnd.MouseMove += Parent.Default_MouseMove;
 			LoopEnd.CustomAttributes["pointer-events"] = "fill";
 			LoopEnd.CustomAttributes["class"] = "loopcap";
 			
@@ -191,6 +191,18 @@ namespace Timeliner
 			Background.MouseDown -= Background_MouseDown;
 			Background.MouseMove -= Background_MouseMove;
 			Background.MouseUp -= Background_MouseUp;
+			
+			LoopRegion.MouseDown -= Background_MouseDown;
+			LoopRegion.MouseUp -= Parent.Default_MouseUp;
+			LoopRegion.MouseMove -= Parent.Default_MouseMove;
+			
+			LoopStart.MouseDown -= Background_MouseDown;
+			LoopStart.MouseUp -= Parent.Default_MouseUp;
+			LoopStart.MouseMove -= Parent.Default_MouseMove;
+			
+			LoopEnd.MouseDown -= Background_MouseDown;
+			LoopEnd.MouseUp -= Parent.Default_MouseUp;
+			LoopEnd.MouseMove -= Parent.Default_MouseMove;
 			
 			base.Dispose();
 		}

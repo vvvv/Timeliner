@@ -50,7 +50,7 @@ namespace Timeliner
 	
 	internal class TrackResizeMouseHandler : MouseHandlerBase<TrackView>
 	{
-		private CompoundCommand FMoveCommands;
+		CompoundCommand FMoveCommands;
 		
 		public TrackResizeMouseHandler(TrackView tv, string sessionID)
 			: base(tv, sessionID)
@@ -80,12 +80,12 @@ namespace Timeliner
 				if ((delta.Y < 0) || (arg.Y > Instance.Top + Instance.Height))
 				{
 					//scale this track
-					var cmd = Command.Set(Instance.Model.Height, h);
+					var cmds = Command.Set(Instance.Model.Height, h);
 					
 					//execute changes immediately
-					cmd.Execute();
+					cmds.Execute();
 					//collect changes for history
-					FMoveCommands.Append(cmd);
+					FMoveCommands.Append(cmds);
 				}
 			}
 			
@@ -297,12 +297,11 @@ namespace Timeliner
 		{
 		}
 		
-		private bool FWasSelected;
-		private bool FWasMoved;
-		private List<TrackView> FAffectedTracks = new List<TrackView>();
-		private List<KeyframeView> FSelectedKeyframes = new List<KeyframeView>();
-		private List<float> FActualValues = new List<float>();
-		private CompoundCommand FMoveCommands;
+		bool FWasSelected;
+		List<TrackView> FAffectedTracks = new List<TrackView>();
+		List<KeyframeView> FSelectedKeyframes = new List<KeyframeView>();
+		List<float> FActualValues = new List<float>();
+		CompoundCommand FMoveCommands;
 		
 		//delete on right click
 		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
@@ -364,8 +363,7 @@ namespace Timeliner
 		{
 			if(FMoveCommands != null)
 			{
-				var cmd = new CompoundCommand();
-				FWasMoved = true;
+				var cmds = new CompoundCommand();
 				
 				var dx = Instance.Parent.Parent.Ruler.XDeltaToTime(delta.X);
 				var i = 0;
@@ -373,7 +371,7 @@ namespace Timeliner
 				foreach (var kf in FSelectedKeyframes)
 				{
 					//set time
-					cmd.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + dx));
+					cmds.Append(Command.Set(kf.Model.Time, kf.Model.Time.Value + dx));
 					
 					//set value if value keyframe
 					if(kf is ValueKeyframeView)
@@ -387,16 +385,16 @@ namespace Timeliner
 						FActualValues[i] += dy;
 
 						if (!FAffectedTracks.Any(x => x.Collapsed))
-							cmd.Append(Command.Set(vkf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
+							cmds.Append(Command.Set(vkf.Model.Value, Math.Min(min, Math.Max(max, FActualValues[i]))));
 						
 						i++;
 					}
 				}
 				
 				//execute changes immediately
-				cmd.Execute();
+				cmds.Execute();
 				//collect changes for history
-				FMoveCommands.Append(cmd);
+				FMoveCommands.Append(cmds);
 				
 				Instance.Parent.Parent.UpdateScene();
 			}
@@ -407,7 +405,7 @@ namespace Timeliner
 			if (arg.Button == 1)
 			{
 				//unselect?
-				if(FWasSelected && !FWasMoved)
+				if(FWasSelected && !(FMoveCommands.CommandCount > 0))
 				{
 					Instance.History.Insert(Command.Set(Instance.Model.Selected, false));
 				}
@@ -423,13 +421,13 @@ namespace Timeliner
 		}
 	}
 	
-	internal class LoopRegionMouseHandler : MouseHandlerBase<RulerView>
+	internal class RulerMouseHandler : MouseHandlerBase<RulerView>
 	{
-		private EditableProperty<float> FStart;
-		private EditableProperty<float> FEnd;
-		private CompoundCommand FMoveCommands;
+		EditableProperty<float> FStart;
+		EditableProperty<float> FEnd;
+		CompoundCommand FMoveCommands;
 		
-		public LoopRegionMouseHandler(RulerView rv, EditableProperty<float> start, EditableProperty<float> end, string sessionID)
+		public RulerMouseHandler(RulerView rv, EditableProperty<float> start, EditableProperty<float> end, string sessionID)
 			: base(rv, sessionID)
 		{
 			FStart = start;
