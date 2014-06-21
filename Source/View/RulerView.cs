@@ -371,7 +371,7 @@ namespace Timeliner
 			LoopEnd.Width = 1/m.Elements[0] * CHandlerWidth;
 		}
 		
-		public void UpdateMenu()
+		void UpdateMenu()
 		{
 			var props = Model.GetType().GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(TrackMenuEntryAttribute)));
 			foreach (var p in props)
@@ -396,17 +396,22 @@ namespace Timeliner
 		}
 		#endregion
 		
+		public void ShowMenu(MouseArg arg)
+		{
+			UpdateMenu();
+			Menu.Show(new PointF(arg.x, 0));
+		}
+		
+		public void HideMenu()
+		{
+			Menu.Hide();
+		}
+		
 		#region scenegraph eventhandler
 		//dispatch events to parent
 		void Background_MouseDown(object sender, MouseArg e)
 		{
-			if (e.Button == 2)
-			{
-				UpdateMenu();
-				Menu.Show(new PointF(e.x, 0));
-			}
-			else
-				Parent.Default_MouseDown(sender, e);
+  			Parent.Default_MouseDown(sender, e);
 		}
 		
 		void Background_MouseUp(object sender, MouseArg e)

@@ -25,26 +25,68 @@ namespace Timeliner
 		}
 	}
 	
-	internal class TrackPanZoomHandler : MouseHandlerBase<TimelineView>
+	internal class PanZoomMenuHandler : MouseHandlerBase<TLViewBase>
 	{
-		public TrackPanZoomHandler(TimelineView view, string sessionID)
+		bool FWasMoved;
+		RulerView FRulerView;
+		TimelineView FTimelineView;
+		TrackView FTrackView;
+		
+		public PanZoomMenuHandler(TLViewBase view, string sessionID)
 			: base(view, sessionID)
 		{
+			if (Instance is RulerView)
+			{
+				FRulerView = Instance as RulerView;
+				FTimelineView = FRulerView.Parent;
+			}
+			else if (Instance is TimelineView)
+			{
+				FTimelineView = Instance as TimelineView;
+				FRulerView = FTimelineView.Ruler;
+			}
+			else if (Instance is TrackView)
+			{
+				FTrackView = Instance as TrackView;
+				FTimelineView = FTrackView.Parent;
+				FRulerView = FTimelineView.Ruler;
+			}
 		}
 		
 		public override void MouseDrag(object sender, PointF arg, PointF delta, int callNr)
 		{
+			FWasMoved = true;
 			var zoom = Math.Abs(delta.X) < Math.Abs(delta.Y);
 			
 			if (zoom)
-				Instance.Ruler.PanZoom(0, delta.Y, arg.X);
+				FRulerView.PanZoom(0, delta.Y, arg.X);
 			else
-				Instance.Ruler.PanZoom(delta.X, 0, arg.X);
+				FRulerView.PanZoom(delta.X, 0, arg.X);
 			
-			foreach (var tv in Instance.Tracks)
-				tv.View = Instance.Ruler.PanZoomMatrix;
+			foreach (var tv in FTimelineView.Tracks)
+				tv.View = FRulerView.PanZoomMatrix;
 			
-			Instance.UpdateScene();
+			FTimelineView.UpdateScene();
+		}
+		
+		public override void MouseClick(object sender, MouseArg arg)
+		{
+			if (!FWasMoved)
+				if (Instance == FRulerView)
+			{
+				var rulerHandler = new RulerMouseHandler(FRulerView, null, null, SessionID);
+				rulerHandler.MouseClick(sender, arg);
+			}
+			else if (Instance == FTimelineView)
+			{
+				FTimelineView.ShowMenu(arg);
+			}
+			else if (Instance == FTrackView)
+			{
+				FTrackView.ShowTrackMenu(arg);
+			}
+
+			base.MouseClick(sender, arg);
 		}
 	}
 	
@@ -186,20 +228,6 @@ namespace Timeliner
 		}
 	}
 	
-	internal class TrackMenuHandler : MouseHandlerBase<TrackView>
-	{
-		public TrackMenuHandler(TrackView view, string sessionID)
-			: base(view, sessionID)
-		{
-		}
-		
-		public override void MouseClick(object sender, MouseArg arg)
-		{
-			if (arg.Button == 2)
-				Instance.TrackMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
-		}
-	}
-	
 	internal class SelectionMouseHandler : MouseHandlerBase<TrackView>
 	{
 		CompoundCommand FSelectionCommands;
@@ -307,7 +335,7 @@ namespace Timeliner
 		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
 		{
 			var ret = base.MouseDown(sender, arg);
-			if ((arg.Button == 1) || (arg.Button == 2))
+			if ((arg.Button == 1) || (arg.Button == 3))
 			{
 				FWasSelected = Instance.Model.Selected.Value;
 				var cmd = new CompoundCommand();
@@ -347,15 +375,8 @@ namespace Timeliner
 		{
 			if (arg.Button == 3)
 			{
-//				causes total freeze in IE11
-//				so for now only delete via keyboard
-//				var cmd = Command.Remove(Instance.Parent.Model.Keyframes, Instance.Model);
-//				Instance.History.Insert(cmd);
-			}
-			else if (arg.Button == 2)
-			{
 				Instance.Parent.UpdateKeyframeMenu(Instance);
-				Instance.Parent.KeyframeMenu.Show(new PointF(arg.x, arg.y - Instance.Parent.Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
+				Instance.Parent.ShowKeyframeMenu(arg);
 			}
 		}
 
@@ -478,9 +499,18 @@ namespace Timeliner
 		
 		public override void MouseClick(object sender, MouseArg arg)
 		{
-			//set timebar if loopregion was not moved
 			if (FMoveCommands.CommandCount == 0)
-				Instance.Parent.Timer.Time = Instance.XPosToTime(arg.x);
+				switch (arg.Button)
+			{
+				case 1:
+					//set timebar if loopregion was not moved
+					Instance.Parent.Timer.Time = Instance.XPosToTime(arg.x);
+					break;
+				case 3:
+					//show rulermenu
+					Instance.ShowMenu(arg);
+					break;
+			}
 		}
 	}
 	

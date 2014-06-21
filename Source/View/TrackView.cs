@@ -46,8 +46,8 @@ namespace Timeliner
 		
 		//parent.OverlayGroup holds:
 		public SvgRectangle SizeBarDragRect = new SvgRectangle();
-		public SvgMenuWidget TrackMenu;
-		public SvgMenuWidget KeyframeMenu;
+		SvgMenuWidget TrackMenu;
+		protected SvgMenuWidget KeyframeMenu;
 		SvgRectangle Hack = new SvgRectangle();
 		
 		//trackmenu
@@ -278,7 +278,7 @@ namespace Timeliner
 		void ChangeTrackMenuEntry(SvgWidget editor, object newValue, object delta)
 		{
 			var cmds = new CompoundCommand();
-			SendValue(ref cmds, TrackMenuDict[editor], editor.Name, newValue);
+			SendValue(ref cmds, TrackMenuDict[editor], editor.Name, delta);
 			History.Insert(cmds);
 		}
 		
@@ -328,7 +328,7 @@ namespace Timeliner
 			else if (property.PropertyType.GenericTypeArguments[0] == typeof(float))
 			{
 				var prop = (EditableProperty<float>) property.GetValue(model);
-				cmds.Append(Command.Set(prop, newValue));
+				cmds.Append(Command.Set(prop, prop.Value + (float) newValue));
 			}
 		}
 		#endregion
@@ -374,12 +374,6 @@ namespace Timeliner
 		
 		public virtual void RebuildAfterUpdate()
 		{}
-		
-		public virtual void UpdateKeyframeMenu(KeyframeView kf)
-		{
-			var item = (SvgValueWidget) KeyframeMenu.GetItem("Time");
-			item.Value = kf.Model.Time.Value;
-		}
 		#endregion
 		
 		#region scenegraph eventhandler
@@ -441,6 +435,32 @@ namespace Timeliner
 		#endregion
 		
 		#region helper
+		public virtual void UpdateKeyframeMenu(KeyframeView kf)
+		{
+			var item = (SvgValueWidget) KeyframeMenu.GetItem("Time");
+			item.Value = kf.Model.Time.Value;
+		}
+		
+		public void ShowTrackMenu(MouseArg e)
+		{
+			TrackMenu.Show(new PointF(e.x, e.y - Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
+		}
+		
+		public void ShowKeyframeMenu(MouseArg e)
+		{
+			KeyframeMenu.Show(new PointF(e.x, e.y - Parent.FTrackGroup.Transforms[0].Matrix.Elements[5]));
+		}
+		
+		public void HideTrackMenu()
+		{
+			TrackMenu.Hide();
+		}
+		
+		public void HideKeyframeMenu()
+		{
+			KeyframeMenu.Hide();
+		}
+		
 		public virtual void Nudge(ref CompoundCommand cmds, NudgeDirection direction, float timeDelta, float valueDelta)
 		{
 			foreach(var kf in KeyframeViews)

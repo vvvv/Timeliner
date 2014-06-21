@@ -89,7 +89,6 @@ namespace Timeliner
             Background.MouseDown += Default_MouseDown;
             Background.MouseMove += Default_MouseMove;
             Background.MouseUp += Default_MouseUp;
-            Background.Click += Background_Click;
             
             Selection.ID = "Selection";
             Selection.CustomAttributes["pointer-events"] = "none";
@@ -195,7 +194,6 @@ namespace Timeliner
             Background.MouseDown -= Default_MouseDown;
             Background.MouseMove -= Default_MouseMove;
             Background.MouseUp -= Default_MouseUp;
-            Background.Click -= Background_Click;
             
             PlayButton.Click -= PlayButton_Click;
             StopButton.Click -= StopButton_Click;
@@ -313,12 +311,6 @@ namespace Timeliner
 		#endregion
 		
 		#region scenegraph eventhandler
-		void Background_Click(object sender, MouseArg e)
-		{
-			if (e.ClickCount == 2)
-				MainMenu.Show(new PointF(e.x, e.y - FTrackGroup.Transforms[0].Matrix.Elements[5]));
-		}
-		
 		int FTrackCount = 0;
 		void AddValueTrack(SvgWidget widget, object newValue, object delta)
 		{
@@ -368,10 +360,8 @@ namespace Timeliner
 				HideMenus();
 				if ((e.Button == 1) && (sender is TrackView))
 					return new SelectionMouseHandler(sender as TrackView, e.SessionID);
-				else if (e.Button == 2)
-					return new TrackMenuHandler(sender as TrackView, e.SessionID);
 				else if (e.Button == 3)
-					return new TrackPanZoomHandler(this, e.SessionID);
+					return new PanZoomMenuHandler(sender as TrackView, e.SessionID);
 				else 
 					return null;
 			}
@@ -381,7 +371,7 @@ namespace Timeliner
 				if (e.Button == 1)
 					return new SeekHandler(Ruler, e.SessionID);					
 				else if (e.Button == 3)
-					return new TrackPanZoomHandler(this, e.SessionID);
+					return new PanZoomMenuHandler(Ruler, e.SessionID);
 				else
 					return null;
 			}
@@ -407,7 +397,7 @@ namespace Timeliner
 				if (e.Button == 1)
 					return new RulerMouseHandler(Ruler, Ruler.Model.LoopStart, Ruler.Model.LoopEnd, e.SessionID);
 				else if (e.Button == 3)
-					return new TrackPanZoomHandler(this, e.SessionID);
+					return new PanZoomMenuHandler(Ruler, e.SessionID);
 				else
 					return null;					
 			}
@@ -427,7 +417,7 @@ namespace Timeliner
 				if ((e.Button == 1) && (ActiveTrack != null))
 					return new SelectionMouseHandler(ActiveTrack, e.SessionID);					
 				else if (e.Button == 3)
-					return new TrackPanZoomHandler(this, e.SessionID);
+					return new PanZoomMenuHandler(this, e.SessionID);
 				else 
 					return null;
 			}
@@ -448,15 +438,20 @@ namespace Timeliner
             MouseTimeLabel.X = Math.Max(0, e.x - 110);
             MouseTimeLabel.Text = Timer.TimeToString(Ruler.XPosToTime(e.x));
 		}
+        
+        public void ShowMenu(MouseArg e)
+		{
+			MainMenu.Show(new PointF(e.x, e.y - FTrackGroup.Transforms[0].Matrix.Elements[5]));
+		}
 		
 		private void HideMenus()
 		{
 			foreach (var track in Tracks)
 			{
-				track.TrackMenu.Hide();
-				track.KeyframeMenu.Hide();
+				track.HideTrackMenu();
+				track.HideKeyframeMenu();
 			}
-			Ruler.Menu.Hide();
+			Ruler.HideMenu();
 			MainMenu.Hide();
 		}
 	}

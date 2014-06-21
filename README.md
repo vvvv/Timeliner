@@ -11,10 +11,11 @@ Requires Internet Explorer >= 10 to be installed on your system.
 * String
 
 ### Mouse Interaction
-* create a track via doubleclick
-* create a keyframe in a track via doubleclick
-* show track menu via middleclick on a track
-* show keyframe menu via middleclick on a keyframe
+* add a track via rightclick in the empty area
+* add a keyframe in a track via doubleclick
+* show track menu via rightclick on a track
+* show keyframe menu via rightclick on a keyframe
+* show ruler menu via rightclick in the ruler area
 * add keyframes to selection by pressing Ctrl while selecting
 * remove keyframes from selection by pressing Alt while selecting
 * in menues:

@@ -46,7 +46,6 @@ namespace Timeliner
 		public SvgLine KeyframeDefinition = new SvgLine();
 		public SvgLine CollapsedKeyframeDefinition = new SvgLine();
 		public SvgGroup KeyframeGroup = new SvgGroup();
-		public SvgStringWidget TextEdit;
 		private SvgText CurrentValue = new SvgText();
 		
 		public StringTrackView(TLStringTrack track, TimelineView tv, RulerView rv)
@@ -104,8 +103,6 @@ namespace Timeliner
 		public override void Dispose()
 		{
 			Background.Click -= Background_MouseClick;
-			
-			TextEdit.ValueChanged -= ChangeKeyframeText;
 			
 			base.Dispose();
 		}
@@ -170,7 +167,8 @@ namespace Timeliner
 			base.UpdateKeyframeMenu(kf);
 			
 			//also update the value of the keyframe menu
-			TextEdit.Caption = (kf as StringKeyframeView).Model.Text.Value;
+//			var item = (SvgStringWidget) KeyframeMenu.GetItem("Value");
+//			item.Caption = (kf as StringKeyframeView).Model.Text.Value;
 		}
 		#endregion
 		
