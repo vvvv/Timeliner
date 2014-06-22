@@ -52,6 +52,7 @@
         	this.FOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
         	this.FSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
         	this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+        	this.openInBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         	this.OSCPanel.SuspendLayout();
         	((System.ComponentModel.ISupportInitialize)(this.ReceivePortNumberBox)).BeginInit();
         	((System.ComponentModel.ISupportInitialize)(this.TargetPortNumberBox)).BeginInit();
@@ -208,6 +209,7 @@
         	        	        	this.saveToolStripMenuItem,
         	        	        	this.saveAsToolStripMenuItem,
         	        	        	this.oSCToolStripMenuItem,
+        	        	        	this.openInBrowserToolStripMenuItem,
         	        	        	this.exitToolStripMenuItem});
         	this.mainToolStripMenuItem.Name = "mainToolStripMenuItem";
         	this.mainToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
@@ -217,7 +219,7 @@
         	// 
         	this.newToolStripMenuItem.Name = "newToolStripMenuItem";
         	this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-        	this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+        	this.newToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
         	this.newToolStripMenuItem.Text = "New";
         	this.newToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItemClick);
         	// 
@@ -225,7 +227,7 @@
         	// 
         	this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
         	this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-        	this.loadToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+        	this.loadToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
         	this.loadToolStripMenuItem.Text = "Open";
         	this.loadToolStripMenuItem.Click += new System.EventHandler(this.LoadToolStripMenuItemClick);
         	// 
@@ -233,7 +235,7 @@
         	// 
         	this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
         	this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-        	this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+        	this.saveToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
         	this.saveToolStripMenuItem.Text = "Save";
         	this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItemClick);
         	// 
@@ -242,14 +244,14 @@
         	this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
         	this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
         	        	        	| System.Windows.Forms.Keys.S)));
-        	this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+        	this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
         	this.saveAsToolStripMenuItem.Text = "Save As...";
         	this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItemClick);
         	// 
         	// oSCToolStripMenuItem
         	// 
         	this.oSCToolStripMenuItem.Name = "oSCToolStripMenuItem";
-        	this.oSCToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+        	this.oSCToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
         	this.oSCToolStripMenuItem.Text = "OSC";
         	this.oSCToolStripMenuItem.Click += new System.EventHandler(this.OSCToolStripMenuItemClick);
         	// 
@@ -257,7 +259,7 @@
         	// 
         	this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
         	this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-        	this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+        	this.exitToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
         	this.exitToolStripMenuItem.Text = "Exit";
         	this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItemClick);
         	// 
@@ -278,6 +280,14 @@
         	this.webBrowser1.ScriptErrorsSuppressed = true;
         	this.webBrowser1.Size = new System.Drawing.Size(876, 431);
         	this.webBrowser1.TabIndex = 5;
+        	// 
+        	// openInBrowserToolStripMenuItem
+        	// 
+        	this.openInBrowserToolStripMenuItem.Name = "openInBrowserToolStripMenuItem";
+        	this.openInBrowserToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
+        	this.openInBrowserToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+        	this.openInBrowserToolStripMenuItem.Text = "Open In Browser";
+        	this.openInBrowserToolStripMenuItem.Click += new System.EventHandler(this.OpenInBrowserToolStripMenuItemClick);
         	// 
         	// Form1
         	// 
@@ -300,6 +310,7 @@
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
+        private System.Windows.Forms.ToolStripMenuItem openInBrowserToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.Panel panel1;

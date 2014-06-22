@@ -283,6 +283,12 @@ namespace TimeLinerSA
 			OSCPanel.Visible = !OSCPanel.Visible;
 			oSCToolStripMenuItem.Checked = OSCPanel.Visible;
 		}
+		
+		void OpenInBrowserToolStripMenuItemClick(object sender, EventArgs e)
+        {
+			var url = "http://localhost:4444/" + Path.GetFileNameWithoutExtension(FFilename);
+        	Process.Start(url);
+        }
         
 		void ExitToolStripMenuItemClick(object sender, System.EventArgs e)
 		{
