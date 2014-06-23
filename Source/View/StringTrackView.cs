@@ -58,9 +58,8 @@ namespace Timeliner
 			                              kf =>
 			                              {
 			                              	var kv = new StringKeyframeView(kf, this);
-			                              	//HACK: shouldn't need to sort here
+			                              	kf.NeighbourChanged += NeedsRebuild;
 			                              	var kfs = Model.Keyframes.ToList();
-			                              	kfs.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
 			                              	var prev = kfs.FindLastIndex(x => x.Time.Value < kf.Time.Value);
 			                              	kv.AddToSceneGraphAt(KeyframeGroup, Keyframes.Count - 1 - prev);
 			                              	return kv;
@@ -171,6 +170,21 @@ namespace Timeliner
 //			item.Caption = (kf as StringKeyframeView).Model.Text.Value;
 		}
 		#endregion
+		
+		bool FNeedsRebuild;
+		protected void NeedsRebuild()
+		{
+			FNeedsRebuild = true;
+		}
+		
+		public override void RebuildAfterUpdate()
+		{
+			if(FNeedsRebuild)
+			{
+				Model.SortKeyframes();
+				FNeedsRebuild = false;
+			}
+		}
 		
 		#region scenegraph eventhandler
 		

@@ -26,6 +26,18 @@ namespace Timeliner
     	
     	public EditableProperty<bool> Selected { get; private set; }
     	
+    	public TLKeyframeBase NeighbourLeft
+        {
+        	get;
+        	set;
+        }
+        
+        public TLKeyframeBase NeighbourRight
+        {
+        	get;
+        	set;
+        }
+    	
     	public TLKeyframeBase()
     		: this(IDGenerator.NewID)
     	{
@@ -43,7 +55,31 @@ namespace Timeliner
     		Selected = new EditableProperty<bool>("Selected", false);
     		Add(Time);
     		Add(Selected);
+    		Time.ValueChanged += Time_ValueChanged;
     	}
+    	
+    	void Time_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
+        {
+        	if(NeighbourLeft != null)
+        	{
+        		if(NeighbourLeft.Time.Value > this.Time.Value)
+        		{
+        			NeighbourChanged();
+        			return;
+        		}
+        	}
+        	
+        	if(NeighbourRight != null)
+        	{
+        		if(NeighbourRight.Time.Value < this.Time.Value)
+        		{
+        			NeighbourChanged();
+        			return;
+        		}
+        	}
+        }
+                
+        public Action NeighbourChanged = () => {};
     }
 
     public abstract class TLTrackBase : TLModelBase
