@@ -289,7 +289,7 @@ namespace Timeliner
 			else if (property.PropertyType.GenericTypeArguments[0] == typeof(int))
 			{
 				var prop = (EditableProperty<int>) property.GetValue(model);
-				cmds.Append(Command.Set(prop, newValue));
+				cmds.Append(Command.Set(prop, (int)((float)newValue)));
 			}
 			else if (property.PropertyType.GenericTypeArguments[0] == typeof(bool))
 			{
