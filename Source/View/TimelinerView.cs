@@ -164,6 +164,12 @@ namespace Timeliner
 											if (ActiveTrack == null)
         										ActiveTrack = tv;
 	                                     	tv.AddToSceneGraphAt(FTrackGroup);
+	                                     	
+	                                     	//update Order on all tracks below the one added
+	                                     	var order = tv.Model.Order.Value;
+	                                     	foreach (var track in Tracks.Where(x => x.Model.Order.Value >= order))
+	                                     			track.Model.Order.Value += 1;
+	                                     	
 	                                     	return tv;
                                         },
                                      	tv => 
