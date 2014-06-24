@@ -68,6 +68,8 @@ namespace Timeliner
             Maximum.Value = 1f;
             Add(Keyframes);
             Add(Curves);
+            Add(Minimum);
+            Add(Maximum);
             Keyframes.Added += Keyframes_Added;
             Keyframes.Removed += Keyframes_Removed;
             
@@ -79,15 +81,13 @@ namespace Timeliner
         {
             BuildCurves();
         }
-
+        
         void Keyframes_Added(IViewableCollection<TLValueKeyframe> collection, TLValueKeyframe item)
         {
-        	//sorting does nothing here?!
-			//Keyframes.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
         	if (!Loading)
             	BuildCurves();
         }
-        
+
         public event EventHandler BeforeBuildingCurves;
         public event EventHandler AfterBuildingCurves;
         
@@ -101,43 +101,45 @@ namespace Timeliner
         	if(BeforeBuildingCurves != null)
         		BeforeBuildingCurves(this, null);
         	
-            Curves.Clear();
+        	//sort the keyframes
+        	Keyframes.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
+        	
+        	Curves.Clear();
 
-            if (Keyframes.Count > 0)
-            {
-            	var ordered = Keyframes.OrderBy(kf => kf.Time.Value).ToArray();
-            	
-            	if(ordered.Length > 1)
-            	{
-            		//arrange neighbours
-            		ordered[0].NeighbourLeft = null;
-            		ordered[0].NeighbourRight = ordered[1];
-            		for (int i = 1; i < Keyframes.Count-1; i++)
-            		{
-            			ordered[i].NeighbourLeft = ordered[i-1];
-            			ordered[i].NeighbourRight = ordered[i+1];
-            		}
-            		ordered[ordered.Length - 1].NeighbourLeft = ordered[ordered.Length - 2];
-            		ordered[ordered.Length - 1].NeighbourRight = null;
-            	}
-            	else
-            	{
-            		ordered[0].NeighbourLeft = null;
-            		ordered[0].NeighbourRight = null;
-            	}
-            	
-                //first curve
-                Curves.Add(new TLCurve("Start" + IDGenerator.NewID, null, ordered[0]));
-                
+        	if (Keyframes.Count > 0)
+        	{
+        		
+        		if(Keyframes.Count > 1)
+        		{
+        			//arrange neighbours
+        			Keyframes[0].NeighbourLeft = null;
+        			Keyframes[0].NeighbourRight = Keyframes[1];
+        			for (int i = 1; i < Keyframes.Count-1; i++)
+        			{
+        				Keyframes[i].NeighbourLeft = Keyframes[i-1];
+        				Keyframes[i].NeighbourRight = Keyframes[i+1];
+        			}
+        			Keyframes[Keyframes.Count - 1].NeighbourLeft = Keyframes[Keyframes.Count - 2];
+        			Keyframes[Keyframes.Count - 1].NeighbourRight = null;
+        		}
+        		else
+        		{
+        			Keyframes[0].NeighbourLeft = null;
+        			Keyframes[0].NeighbourRight = null;
+        		}
+        		
+        		//first curve
+        		Curves.Add(new TLCurve("Start" + IDGenerator.NewID, null, Keyframes[0]));
+        		
 
-                //between
-                for (int i = 1; i < Keyframes.Count; i++)
-                {
-                	Curves.Add(new TLCurve(IDGenerator.NewID, ordered[i - 1], ordered[i]));
+        		//between
+        		for (int i = 1; i < Keyframes.Count; i++)
+        		{
+        			Curves.Add(new TLCurve(IDGenerator.NewID, Keyframes[i - 1], Keyframes[i]));
                 }
 
                 //last
-                Curves.Add(new TLCurve("End" + IDGenerator.NewID, ordered[Keyframes.Count - 1], null));
+                Curves.Add(new TLCurve("End" + IDGenerator.NewID, Keyframes[Keyframes.Count - 1], null));
             }
             
             if(AfterBuildingCurves != null)
@@ -147,7 +149,6 @@ namespace Timeliner
         public override void Evaluate(float time)
         {   
         	var kfs = Keyframes.ToList(); 
-        	kfs.Sort((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value));
         	var kf = kfs.FindLast(k => k.Time.Value <= time);
         	var kf1 = kfs.Find(k => k.Time.Value >= time);
 			
@@ -197,18 +198,6 @@ namespace Timeliner
     {
     	[KeyframeMenuEntry]
         public EditableProperty<float> Value { get; private set; }
-        
-        public TLValueKeyframe NeighbourLeft
-        {
-        	get;
-        	set;
-        }
-        
-        public TLValueKeyframe NeighbourRight
-        {
-        	get;
-        	set;
-        }
 
         public PointF Position
         {
@@ -238,30 +227,6 @@ namespace Timeliner
         {
             Value = new EditableProperty<float>("Value", value);
             Add(Value);
-            Time.ValueChanged += Time_ValueChanged;
         }
-
-        void Time_ValueChanged(IViewableProperty<float> property, float newValue, float oldValue)
-        {
-        	if(NeighbourLeft != null)
-        	{
-        		if(NeighbourLeft.Time.Value > this.Time.Value)
-        		{
-        			NeighbourChanged();
-        			return;
-        		}
-        	}
-        	
-        	if(NeighbourRight != null)
-        	{
-        		if(NeighbourRight.Time.Value < this.Time.Value)
-        		{
-        			NeighbourChanged();
-        			return;
-        		}
-        	}
-        }
-                
-        public Action NeighbourChanged = () => {};
     }
 }

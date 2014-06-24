@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using VVVV.Core;
 using VVVV.Core.Collections;
 using VVVV.Core.Model;
 
@@ -32,17 +33,47 @@ namespace Timeliner
 		{
 			//create the keyframe list and add it to self
 			Keyframes = new EditableIDList<TLStringKeyframe>("Keyframes");
+			Keyframes.Added += Keyframes_Added;
             Add(Keyframes);
             
             //set the name of this track
             Label.Value = "String " + name;
 		}
+
+		void Keyframes_Added(IViewableCollection<TLStringKeyframe> collection, TLStringKeyframe item)
+		{
+			//sort the keyframes
+			SortKeyframes();
+		}
+		
+		public void SortKeyframes()
+		{
+			Keyframes.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
+			
+			if(Keyframes.Count > 1)
+			{
+				//arrange neighbours
+				Keyframes[0].NeighbourLeft = null;
+				Keyframes[0].NeighbourRight = Keyframes[1];
+				for (int i = 1; i < Keyframes.Count-1; i++)
+				{
+					Keyframes[i].NeighbourLeft = Keyframes[i-1];
+					Keyframes[i].NeighbourRight = Keyframes[i+1];
+				}
+				Keyframes[Keyframes.Count - 1].NeighbourLeft = Keyframes[Keyframes.Count - 2];
+				Keyframes[Keyframes.Count - 1].NeighbourRight = null;
+			}
+			else
+			{
+				Keyframes[0].NeighbourLeft = null;
+				Keyframes[0].NeighbourRight = null;
+			}
+		}
 		
 		public override void Evaluate(float time)
 		{
-			var kfs = Keyframes.ToList(); 
-        	kfs.Sort((k1, k2) => k1.Time.Value.CompareTo(k2.Time.Value));
-        	var kf = kfs.FindLast(k => k.Time.Value <= time);
+			var kfs = Keyframes.ToList();
+			var kf = kfs.FindLast(k => k.Time.Value <= time);
 			
 			if (kf == null)
 				CurrentText = "";
