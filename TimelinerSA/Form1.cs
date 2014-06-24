@@ -86,8 +86,18 @@ namespace TimeLinerSA
             if (FOSCTransmitter != null)
                 FOSCTransmitter.Send(bundle);
         }
-		
-        private PoshTimeliner AddTimeliner(string url)
+
+		void HandleAction(int shortcut)
+		{
+            foreach (ToolStripMenuItem menuItem in mainToolStripMenuItem.DropDownItems)
+                if ((int) menuItem.ShortcutKeys == shortcut)
+                {
+                    menuItem.Select();
+                    menuItem.PerformClick();
+                }
+		}
+        
+        PoshTimeliner AddTimeliner(string url)
         {
             var _url = WebServer.AddURL(url);
             var port = WebServer.URLPort[_url];
@@ -100,16 +110,17 @@ namespace TimeLinerSA
 			
             timeliner.Log = x => Console.WriteLine(x);
             timeliner.AfterHistoryPublish = () => UpdateCaption(true);
+            timeliner.Shortcut = HandleAction;
             return timeliner;
         }
         
-        private void AddUrl(string url)
+        void AddUrl(string url)
         {
             if (!url.Contains("."))
                 AddTimeliner(url);
         }
         
-        private void OpenUrl(string url)
+        void OpenUrl(string url)
         {
             if (!WebServer.URLPort.ContainsKey(url))
             {
@@ -273,9 +284,12 @@ namespace TimeLinerSA
 		
 		void CloseCurrent()
 		{
-			WebServer.RemoveURL(FPoshTimeliners[0].Url);
-			FPoshTimeliners[0].Dispose();
-			FPoshTimeliners.RemoveAt(0);
+            if (FPoshTimeliners.Count > 0)
+            {    
+			    WebServer.RemoveURL(FPoshTimeliners[0].Url);
+    			FPoshTimeliners[0].Dispose();
+    			FPoshTimeliners.RemoveAt(0);
+            }
 		}
 		
 		void OSCToolStripMenuItemClick(object sender, System.EventArgs e)
