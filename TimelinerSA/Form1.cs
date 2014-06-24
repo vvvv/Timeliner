@@ -64,12 +64,16 @@ namespace TimeLinerSA
         {
             var hosttime = Clock.ElapsedMilliseconds / 1000f;
             var bundle = new OSCBundle();
-            var prefix = "/" + PrefixTextBox.Text.Trim('/');
+            var prefix = "/" + PrefixTextBox.Text.Trim('/') + "/";
             
             lock(FPoshTimeliners)
                 foreach (var timeliner in FPoshTimeliners)
                 {
                     timeliner.Evaluate(hosttime);
+                    var msg = new OSCMessage(prefix + "time");
+                    msg.Append(timeliner.Timeliner.Timer.Time);
+                    bundle.Append(msg);
+                    
                     foreach (var tl in timeliner.Timeliner.TimelineModel.Tracks)
                     {
                         var label = tl.Label.Value;
@@ -77,10 +81,13 @@ namespace TimeLinerSA
                         //TODO: ask track to generate osc message
                         var val = tl.GetCurrentValueAsObject();
                         
-                        var message = new OSCMessage(prefix + "/" + label);
-                        message.Append(val);
-                        bundle.Append(message);                    
+                        msg = new OSCMessage(prefix + label);
+                        msg.Append(val);
+                        bundle.Append(msg);                    
                     }
+                    
+                    //set interval for next round
+                    timer1.Interval = 1000/timeliner.Timeliner.Timer.FPS;
                 }
             
             if (FOSCTransmitter != null)
