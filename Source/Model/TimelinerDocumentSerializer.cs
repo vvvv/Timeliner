@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -18,6 +19,7 @@ namespace Timeliner
             //register serializers
             serializer.RegisterGeneric<TLDocument, TLDocumentSerializer>();
             serializer.RegisterGeneric<EditableIDList<TLTrackBase>, TLTrackListSerializer>();
+            serializer.RegisterGeneric<TLRuler, TLRulerSerializer>();
             
             //track
             serializer.RegisterGeneric<TLTrackBase, TLTrackBaseSerializer>();
@@ -36,9 +38,14 @@ namespace Timeliner
     {
         public XElement Serialize(TLDocument value, Serializer serializer)
         {
-            var x = serializer.Serialize(value.Tracks);
-            x.Add(new XAttribute("Name", value.Name));
+        	var x = value.GetXML("Timeliner");
             x.Add(new XAttribute("Path", value.LocalPath));
+            //ruler
+            x.Add(serializer.Serialize(value.Ruler));
+            
+            var tracks = new XElement("Tracks");
+            tracks.SerializeAndAddList(value.Tracks, serializer);
+            x.Add(tracks);
             return x;
         }
 
@@ -48,6 +55,25 @@ namespace Timeliner
             doc.LoadFromXML(data, serializer);
             return doc;
         }
+    }
+    
+    //ruler
+    public class TLRulerSerializer : ISerializer<TLRuler>
+    {
+    	
+		public XElement Serialize(TLRuler value, Serializer serializer)
+		{
+			var x = value.GetXML("Ruler");
+			value.SerializeProperties(x);
+			return x;
+		}
+    	
+		public TLRuler Deserialize(XElement data, Type type, Serializer serializer)
+		{
+			var ruler = new TLRuler();
+			ruler.DeserializeProperties(data);
+			return ruler;
+		}
     }
 
     //document tracks
@@ -85,7 +111,7 @@ namespace Timeliner
             //create track
             var track = CreateTrack(data.Name.LocalName, data.Attribute("Name").Value);
             
-            track.DeserializeProperties(data, serializer);
+            track.DeserializeProperties(data);
             
             track.Loading = true;
             
@@ -119,7 +145,7 @@ namespace Timeliner
         {
             var x = value.GetXML(GetTagName());
             
-			value.SerializeProperties(x, serializer);
+			value.SerializeProperties(x);
             
             SerializeKeyframes(x, value, serializer);
 
@@ -172,14 +198,14 @@ namespace Timeliner
         public XElement Serialize(TLValueKeyframe value, Serializer serializer)
         {
             var x = value.GetXML("Keyframe");
-            value.SerializeProperties(x, serializer);
+            value.SerializeProperties(x);
             return x;
         }
 
         public TLValueKeyframe Deserialize(XElement data, Type type, Serializer serializer)
         {
             var kf = new TLValueKeyframe(data.Attribute("Name").Value);
-            kf.DeserializeProperties(data, serializer);
+            kf.DeserializeProperties(data);
             System.Diagnostics.Debug.WriteLine("deserialized value keyframe: " + kf.Name);
             return kf;
         }
@@ -190,14 +216,14 @@ namespace Timeliner
         public XElement Serialize(TLStringKeyframe value, Serializer serializer)
         {
             var x = value.GetXML("Keyframe");
-            value.SerializeProperties(x, serializer);
+            value.SerializeProperties(x);
             return x;
         }
 
         public TLStringKeyframe Deserialize(XElement data, Type type, Serializer serializer)
         {
             var kf = new TLStringKeyframe(data.Attribute("Name").Value);
-            kf.DeserializeProperties(data, serializer);
+            kf.DeserializeProperties(data);
             System.Diagnostics.Debug.WriteLine("deserialized string keyframe: " + kf.Name);
             return kf;
         }
@@ -205,7 +231,7 @@ namespace Timeliner
     
     public static class IDContainerExtentions
     {
-    	public static void SerializeProperties(this IDContainer container, XElement x, Serializer serializer)
+    	public static void SerializeProperties(this IDContainer container, XElement x)
     	{
     		foreach (var element in container)
     		{
@@ -217,7 +243,7 @@ namespace Timeliner
     		}
     	}
     	
-    	public static void DeserializeProperties(this IDContainer container, XElement data, Serializer serializer)
+    	public static void DeserializeProperties(this IDContainer container, XElement data)
     	{
     		foreach (var element in container)
     		{
@@ -228,7 +254,7 @@ namespace Timeliner
     				
     				var attribute = data.Attribute(prop.Name);
     				
-    				prop.Value = TypeDescriptor.GetConverter(type).ConvertFromString(attribute.Value);
+    				prop.Value = TypeDescriptor.GetConverter(type).ConvertFromString(null, CultureInfo.InvariantCulture, attribute.Value);
     			}
     		}
     	}

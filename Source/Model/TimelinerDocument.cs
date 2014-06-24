@@ -64,13 +64,15 @@ namespace Timeliner
         public override void SaveTo(string path)
         {
             var serializer = this.GetSerializer();
-            var xml = serializer.Serialize(Tracks);
+            var xml = serializer.Serialize(this);
             xml.Save(path);
         }
 
         public void LoadFromXML(XElement data, Serializer serializer)
         {
-        	data.DeserializeAndAddToList(Tracks, serializer);
+        	Name = data.Attribute("Name").Value;
+        	Ruler.DeserializeProperties(data.Element("Ruler"));
+        	data.Element("Tracks").DeserializeAndAddToList(Tracks, serializer);
         }
         
         public void Evaluate(float time)

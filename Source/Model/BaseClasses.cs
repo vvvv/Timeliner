@@ -54,7 +54,8 @@ namespace Timeliner
     		Time = new EditableProperty<float>("Time", time);
     		Selected = new EditableProperty<bool>("Selected", false);
     		Add(Time);
-    		Add(Selected);
+    		//do not add seleted to container so it will not be serialized
+    		//Add(Selected); 
     		Time.ValueChanged += Time_ValueChanged;
     	}
     	
