@@ -39,7 +39,7 @@ namespace Timeliner
 		void Change(object sender, StringArg e)
 		{
 			Label.Text = e.s;
-			ValueChanged(this, e.s, null);
+			ValueChanged(this, e.s, e.s);
 		}
 		
 		public override void Dispose()
