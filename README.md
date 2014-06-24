@@ -48,6 +48,9 @@ All values are sent in one OSC-Bundle. The individual messages addresses compris
 * /timeliner/Value 0
 * /timeliner/String 0
 
+In addition the current time is sent via:
+* /timeliner/time
+
 ### Sending OSC
 TimelinerSA can be remote controlled via OSC commands. It listenes to commands sent to the port set via the "Receive Port" numberbox in the interface (which defaults to 5555).
 
