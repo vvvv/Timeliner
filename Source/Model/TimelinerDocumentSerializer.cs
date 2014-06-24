@@ -1,10 +1,13 @@
 ﻿using System;
 using System.CodeDom;
+using System.ComponentModel;
 using System.Linq;
 using System.Xml.Linq;
-using VVVV.Core.Serialization;
-using VVVV.Core.Collections;
+
 using VVVV.Core;
+using VVVV.Core.Collections;
+using VVVV.Core.Model;
+using VVVV.Core.Serialization;
 
 namespace Timeliner
 {
@@ -26,6 +29,7 @@ namespace Timeliner
             serializer.RegisterGeneric<TLStringKeyframe, TLStringKeyframeSerializer>();
         }
     }
+   
 
     //document 
     public class TLDocumentSerializer : ISerializer<TLDocument>
@@ -80,8 +84,8 @@ namespace Timeliner
         {
             //create track
             var track = CreateTrack(data.Name.LocalName, data.Attribute("Name").Value);
-            track.Order.Value = int.Parse(data.Attribute("Order").Value);
-            track.Height.Value = float.Parse(data.Attribute("Height").Value);
+            
+            track.DeserializeProperties(data, serializer);
             
             track.Loading = true;
             
@@ -114,8 +118,8 @@ namespace Timeliner
         public XElement Serialize(TTrack value, Serializer serializer)
         {
             var x = value.GetXML(GetTagName());
-            x.Add(new XAttribute("Order", value.Order.Value));
-            x.Add(new XAttribute("Height", value.Height.Value));
+            
+			value.SerializeProperties(x, serializer);
             
             SerializeKeyframes(x, value, serializer);
 
@@ -168,16 +172,14 @@ namespace Timeliner
         public XElement Serialize(TLValueKeyframe value, Serializer serializer)
         {
             var x = value.GetXML("Keyframe");
-            x.Add(new XAttribute("Time", value.Time.Value));
-            x.Add(new XAttribute("Value", value.Value.Value));
+            value.SerializeProperties(x, serializer);
             return x;
         }
 
         public TLValueKeyframe Deserialize(XElement data, Type type, Serializer serializer)
         {
             var kf = new TLValueKeyframe(data.Attribute("Name").Value);
-            kf.Time.Value = float.Parse(data.Attribute("Time").Value);
-            kf.Value.Value = float.Parse(data.Attribute("Value").Value);
+            kf.DeserializeProperties(data, serializer);
             System.Diagnostics.Debug.WriteLine("deserialized value keyframe: " + kf.Name);
             return kf;
         }
@@ -188,19 +190,48 @@ namespace Timeliner
         public XElement Serialize(TLStringKeyframe value, Serializer serializer)
         {
             var x = value.GetXML("Keyframe");
-            x.Add(new XAttribute("Time", value.Time.Value));
-            x.Add(new XAttribute("Text", value.Text.Value));
+            value.SerializeProperties(x, serializer);
             return x;
         }
 
         public TLStringKeyframe Deserialize(XElement data, Type type, Serializer serializer)
         {
             var kf = new TLStringKeyframe(data.Attribute("Name").Value);
-            kf.Time.Value = float.Parse(data.Attribute("Time").Value);
-            kf.Text.Value = data.Attribute("Text").Value;
+            kf.DeserializeProperties(data, serializer);
             System.Diagnostics.Debug.WriteLine("deserialized string keyframe: " + kf.Name);
             return kf;
         }
+    }
+    
+    public static class IDContainerExtentions
+    {
+    	public static void SerializeProperties(this IDContainer container, XElement x, Serializer serializer)
+    	{
+    		foreach (var element in container)
+    		{
+    			if(element.GetType().IsGenericType && (element.GetType().GetGenericTypeDefinition() == typeof(EditableProperty<>)))
+    			{
+    				dynamic prop = element;
+    				x.Add(new XAttribute(prop.Name, prop.Value));
+    			}
+    		}
+    	}
+    	
+    	public static void DeserializeProperties(this IDContainer container, XElement data, Serializer serializer)
+    	{
+    		foreach (var element in container)
+    		{
+    			if(element.GetType().IsGenericType && (element.GetType().GetGenericTypeDefinition() == typeof(EditableProperty<>)))
+    			{
+    				var type = element.GetType().GetGenericArguments()[0];
+    				dynamic prop = element;
+    				
+    				var attribute = data.Attribute(prop.Name);
+    				
+    				prop.Value = TypeDescriptor.GetConverter(type).ConvertFromString(attribute.Value);
+    			}
+    		}
+    	}
     }
 
 }
