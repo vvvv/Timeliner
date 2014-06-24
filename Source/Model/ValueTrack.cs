@@ -79,13 +79,13 @@ namespace Timeliner
 
         void Keyframes_Removed(IViewableCollection<TLValueKeyframe> collection, TLValueKeyframe item)
         {
-            BuildCurves();
+            SortAndAssignNeighbours();
         }
         
         void Keyframes_Added(IViewableCollection<TLValueKeyframe> collection, TLValueKeyframe item)
         {
         	if (!Loading)
-            	BuildCurves();
+            	SortAndAssignNeighbours();
         }
 
         public event EventHandler BeforeBuildingCurves;
@@ -93,44 +93,29 @@ namespace Timeliner
         
         public override void LoadingFinished()
         {
-        	BuildCurves();
+        	SortAndAssignNeighbours();
         }
+        
+		protected override void SortKeyframeList()
+		{
+			//sort the keyframes
+        	Keyframes.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
+		}
 
-        public void BuildCurves()
+        public override void SortAndAssignNeighbours()
         {
         	if(BeforeBuildingCurves != null)
         		BeforeBuildingCurves(this, null);
         	
-        	//sort the keyframes
-        	Keyframes.Sort((a, b) => a.Time.Value.CompareTo(b.Time.Value));
+        	base.SortAndAssignNeighbours();
         	
         	Curves.Clear();
 
         	if (Keyframes.Count > 0)
         	{
         		
-        		if(Keyframes.Count > 1)
-        		{
-        			//arrange neighbours
-        			Keyframes[0].NeighbourLeft = null;
-        			Keyframes[0].NeighbourRight = Keyframes[1];
-        			for (int i = 1; i < Keyframes.Count-1; i++)
-        			{
-        				Keyframes[i].NeighbourLeft = Keyframes[i-1];
-        				Keyframes[i].NeighbourRight = Keyframes[i+1];
-        			}
-        			Keyframes[Keyframes.Count - 1].NeighbourLeft = Keyframes[Keyframes.Count - 2];
-        			Keyframes[Keyframes.Count - 1].NeighbourRight = null;
-        		}
-        		else
-        		{
-        			Keyframes[0].NeighbourLeft = null;
-        			Keyframes[0].NeighbourRight = null;
-        		}
-        		
         		//first curve
         		Curves.Add(new TLCurve("Start" + IDGenerator.NewID, null, Keyframes[0]));
-        		
 
         		//between
         		for (int i = 1; i < Keyframes.Count; i++)

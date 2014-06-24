@@ -372,9 +372,26 @@ namespace Timeliner
 		protected virtual void ApplyInverseScaling()
 		{}
 		
-		public virtual void RebuildAfterUpdate()
-		{}
 		#endregion
+		
+		//curves need to be rebuild after the model updates,
+		//in case keyframes have moved beyond their neighbours.
+		//this can only be done from outside, in this case before
+		//the posh publish.
+		bool FNeedsRebuild;
+		protected void NeedsRebuild()
+		{
+			FNeedsRebuild = true;
+		}
+		
+		public virtual void RebuildAfterUpdate()
+		{
+			if(FNeedsRebuild)
+			{
+				Model.SortAndAssignNeighbours();
+				FNeedsRebuild = false;
+			}
+		}
 		
 		#region scenegraph eventhandler
 		void RemoveTrack(SvgWidget widget, object newValue, object delta)

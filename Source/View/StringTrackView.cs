@@ -171,21 +171,6 @@ namespace Timeliner
 		}
 		#endregion
 		
-		bool FNeedsRebuild;
-		protected void NeedsRebuild()
-		{
-			FNeedsRebuild = true;
-		}
-		
-		public override void RebuildAfterUpdate()
-		{
-			if(FNeedsRebuild)
-			{
-				Model.SortKeyframes();
-				FNeedsRebuild = false;
-			}
-		}
-		
 		#region scenegraph eventhandler
 		
 		void ChangeKeyframeText(SvgWidget widget, object newValue, object delta)

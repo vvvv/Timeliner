@@ -164,6 +164,36 @@ namespace Timeliner
 
         }
         
+        protected abstract void SortKeyframeList();
+        
+        public virtual void SortAndAssignNeighbours()
+        {
+        	//make sure keyframes are sorted
+        	SortKeyframeList();
+        	
+        	var keyframes = KeyframeModels.ToList();
+        	
+        	//assign neighbours
+        	if(keyframes.Count > 1)
+        	{       		
+        		//arrange neighbours
+        		keyframes[0].NeighbourLeft = null;
+        		keyframes[0].NeighbourRight = keyframes[1];
+        		for (int i = 1; i < keyframes.Count-1; i++)
+        		{
+        			keyframes[i].NeighbourLeft = keyframes[i-1];
+        			keyframes[i].NeighbourRight = keyframes[i+1];
+        		}
+        		keyframes[keyframes.Count - 1].NeighbourLeft = keyframes[keyframes.Count - 2];
+        		keyframes[keyframes.Count - 1].NeighbourRight = null;
+        	}
+        	else
+        	{
+        		keyframes[0].NeighbourLeft = null;
+        		keyframes[0].NeighbourRight = null;
+        	}
+        }
+        
         /// <summary>
         /// For display purposes
         /// </summary>

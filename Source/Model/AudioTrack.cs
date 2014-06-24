@@ -9,71 +9,76 @@ using NAudio.Wave;
 
 namespace Timeliner
 {
-    public class TLAudioTrack : TLTrackBase
-    {
-    	public override IEnumerable<TLKeyframeBase> KeyframeModels
-    	{
-    		get
-    		{
-    			return Samples;
-    		}
-    	}
-    	
-    	public EditableIDList<TLSample> Samples
-        {
-            get;
-            private set;
-        }
-    	
-        public TLAudioTrack()
-        	: this(IDGenerator.NewID)
-        {
-        }
-
-        public TLAudioTrack(string name)
-            : base(name)
-        {
-        	Samples = new EditableIDList<TLSample>("Samples");
-        }
-        
-        public void LoadFile()
-        {
-        	var wave = new WaveChannel32(new Mp3FileReader(@"file.mp3"));
-
-        	var buffer = new byte[16384*2];
-        	var read = 0;
-        	
-        	var i = 0;
-        	while (wave.Position < wave.Length)
-        	{
-        		read = wave.Read(buffer, 0, 16384*2);
-        		
-        		var max = 0f;
-        		var absMax = 0f;
-        		for (int j = 0; j < read / 4; j++)
-        		{
-        			var s = BitConverter.ToSingle(buffer, j*4);
-        			var abs = Math.Abs(s); 
-        			if (abs > absMax)
-        			{
-        				absMax = abs;
-        				max = s;
-        			}
-        		}
-        		Samples.Add(new TLSample(i += 2, max));
-        	}
-        }
-    	
-		public override string GetCurrentValueAsString()
+	public class TLAudioTrack : TLTrackBase
+	{
+		public override IEnumerable<TLKeyframeBase> KeyframeModels
 		{
-			return "";
+			get
+			{
+				return Samples;
+			}
 		}
-    	
-		public override object GetCurrentValueAsObject()
+		
+		public EditableIDList<TLSample> Samples
+	    {
+	        get;
+	        private set;
+	    }
+		
+	    public TLAudioTrack()
+	    	: this(IDGenerator.NewID)
+	    {
+	    }
+	
+	    public TLAudioTrack(string name)
+	        : base(name)
+	    {
+	    	Samples = new EditableIDList<TLSample>("Samples");
+	    }
+	    
+	    public void LoadFile()
+	    {
+	    	var wave = new WaveChannel32(new Mp3FileReader(@"file.mp3"));
+	    	
+	    	var buffer = new byte[16384*2];
+	    	var read = 0;
+	    	
+	    	var i = 0;
+	    	while (wave.Position < wave.Length)
+	    	{
+	    		read = wave.Read(buffer, 0, 16384*2);
+	    		
+	    		var max = 0f;
+	    		var absMax = 0f;
+	    		for (int j = 0; j < read / 4; j++)
+	    		{
+	    			var s = BitConverter.ToSingle(buffer, j*4);
+	    			var abs = Math.Abs(s);
+	    			if (abs > absMax)
+	    			{
+	    				absMax = abs;
+	    				max = s;
+	    			}
+	    		}
+	    		Samples.Add(new TLSample(i += 2, max));
+	    	}
+	    }
+	    
+		protected override void SortKeyframeList()
 		{
-			return null;
+			//sorting of samples not needed
 		}
-    }
+	    
+	    public override string GetCurrentValueAsString()
+	    {
+	    	return "";
+	    }
+	    
+	    public override object GetCurrentValueAsObject()
+	    {
+	    	return null;
+	    }
+	}
 
     public class TLSample : TLKeyframeBase
     {
