@@ -10,7 +10,7 @@ namespace Timeliner
 	/// </summary>
 	public class SvgStringWidget: SvgWidget
 	{
-        private SvgText Label = new SvgText();
+        SvgText Label = new SvgText();
 		
 		public string Caption
 		{

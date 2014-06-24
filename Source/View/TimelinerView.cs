@@ -20,7 +20,7 @@ namespace Timeliner
 	/// </summary>
 	public class TimelineView : TLViewBase
 	{
-		private static string SResourcePath;
+		static string SResourcePath;
 		public static string ResourcePath
 		{
 			get
@@ -40,17 +40,17 @@ namespace Timeliner
         
 		public RulerView Ruler;
 		public EditableList<TrackView> Tracks = new EditableList<TrackView>();
-		private Synchronizer<TrackView, TLTrackBase> Syncer;
+		Synchronizer<TrackView, TLTrackBase> Syncer;
 
 		public SvgDefinitionList Definitions = new SvgDefinitionList();
-		private SvgDocumentWidget PlayButton;
-        private SvgDocumentWidget StopButton;
+		SvgDocumentWidget PlayButton;
+        SvgDocumentWidget StopButton;
         
         public SvgGroup FRulerGroup = new SvgGroup();
         
 		public SvgGroup FTrackGroup = new SvgGroup();
-		private SvgRectangle Background = new SvgRectangle();
-        private SvgRectangle SizeBar = new SvgRectangle();
+		SvgRectangle Background = new SvgRectangle();
+        SvgRectangle SizeBar = new SvgRectangle();
 		
 		public SvgGroup FOverlaysGroup = new SvgGroup();
 		public SvgRectangle Selection = new SvgRectangle();
@@ -444,7 +444,7 @@ namespace Timeliner
 			MainMenu.Show(new PointF(e.x, e.y - FTrackGroup.Transforms[0].Matrix.Elements[5]));
 		}
 		
-		private void HideMenus()
+		void HideMenus()
 		{
 			foreach (var track in Tracks)
 			{

@@ -423,24 +423,6 @@ namespace Timeliner
 		{
 			Parent.Default_MouseMove(this, e);
 		}
-		
-		void ChangeFPS(SvgWidget widget, object newValue, object delta)
-		{
-			Parent.Timer.FPS = (int) newValue;
-			History.Insert(Command.Set(Model.FPS, (int) newValue));
-		}
-		
-		void ChangeSpeed(SvgWidget widget, object newValue, object delta)
-		{
-			Parent.Timer.Speed = (float) newValue;
-			History.Insert(Command.Set(Model.Speed, (float) newValue));
-		}
-		
-		void ChangeLoop(SvgWidget widget, object newValue, object delta)
-		{
-			Parent.Timer.Loop = ((float) newValue) >= 0.5;
-			History.Insert(Command.Set(Model.Loop, (float) newValue));
-		}
 		#endregion
 		
 		public float XPosToTime(float x)

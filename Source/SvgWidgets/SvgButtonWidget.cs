@@ -8,7 +8,7 @@ namespace Timeliner
 	/// </summary>
 	public class SvgButtonWidget: SvgWidget
 	{
-		private SvgText FLabel;
+		SvgText FLabel;
         public string Label
         {
             get { return FLabel.Text;}

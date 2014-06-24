@@ -14,7 +14,7 @@ namespace Timeliner
     {
         public SvgPath Path = new SvgPath();
 	
-        private bool FIsDirty;
+        bool FIsDirty;
         public bool IsDirty
         {
             get
@@ -96,7 +96,7 @@ namespace Timeliner
             base.UpdateScene();
         }
 		
-        private void UpdatePathData()
+        void UpdatePathData()
         {
             if (FIsDirty)
             {
@@ -120,7 +120,7 @@ namespace Timeliner
             }
         }
 		
-        private void CreatePath(float x1, float y1, float x2, float y2)
+        void CreatePath(float x1, float y1, float x2, float y2)
         {
             var coords = new List<float>();
             var curveMove = 'M';

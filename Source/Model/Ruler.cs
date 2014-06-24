@@ -49,7 +49,7 @@ namespace Timeliner
             private set;
         }
     	
-        private bool FLoading;
+        bool FLoading;
         public bool Loading
         {
         	get {return FLoading;}

@@ -22,7 +22,7 @@ namespace Timeliner
         
         protected IMouseEventHandler MouseHandler;
 
-        private SvgGroup FGroup = new SvgGroup();
+        SvgGroup FGroup = new SvgGroup();
     
         /// <summary>
         /// The enclosing group for all svg elements in this view

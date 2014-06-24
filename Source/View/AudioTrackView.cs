@@ -140,7 +140,7 @@ namespace Timeliner
 			UpdateMinMaxView();
 		}
 		
-		private void UpdateMinMaxView()
+		void UpdateMinMaxView()
 		{
 			//zoom to min/max
 			var scaleY = 1f;

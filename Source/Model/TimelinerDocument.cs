@@ -113,8 +113,8 @@ namespace Timeliner
 
     public class TLHistory : CommandHistory
     {
-    	private List<Command> InsertedCommands = new List<Command>();
-    	private int FCommandPointer = 0;
+    	List<Command> InsertedCommands = new List<Command>();
+    	int FCommandPointer = 0;
     	
         public TLHistory(Serializer s)
             : base(s)

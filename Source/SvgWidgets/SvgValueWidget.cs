@@ -10,13 +10,13 @@ namespace Timeliner
 	/// </summary>
 	public class SvgValueWidget: SvgWidget
 	{
-		private SvgText Label = new SvgText();
-		private SvgText ValueLabel = new SvgText();
-		private bool FMouseDown = false;
-		private PointF FMouseDownPos;
-		private PointF FLastMousePos;
+		SvgText Label = new SvgText();
+		SvgText ValueLabel = new SvgText();
+		bool FMouseDown = false;
+		PointF FMouseDownPos;
+		PointF FLastMousePos;
 		
-		private float FValue;
+		float FValue;
 		public float Value
 		{
 			get {return FValue;}
@@ -27,7 +27,7 @@ namespace Timeliner
 			}
 		}
 		
-		private string FCaption;
+		 string FCaption;
 		public string Caption
 		{
 			get {return FCaption;}

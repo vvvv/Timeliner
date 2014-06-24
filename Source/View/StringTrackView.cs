@@ -46,7 +46,7 @@ namespace Timeliner
 		public SvgLine KeyframeDefinition = new SvgLine();
 		public SvgLine CollapsedKeyframeDefinition = new SvgLine();
 		public SvgGroup KeyframeGroup = new SvgGroup();
-		private SvgText CurrentValue = new SvgText();
+		SvgText CurrentValue = new SvgText();
 		
 		public StringTrackView(TLStringTrack track, TimelineView tv, RulerView rv)
 			: base(track, tv, rv)

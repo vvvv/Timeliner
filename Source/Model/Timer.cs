@@ -34,7 +34,7 @@ namespace Timeliner
 		
 		public int FPS;
 		
-		private float FTimeDelta;
+		float FTimeDelta;
 		public float TimeDelta
 		{
 			get {return FTimeDelta;}

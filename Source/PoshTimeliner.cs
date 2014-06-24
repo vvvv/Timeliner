@@ -19,13 +19,13 @@ namespace Timeliner
 	
     public class PoshTimeliner: IDisposable
     {
-        private PoshServer FPoshServer;
-        private string FUrl;
+        PoshServer FPoshServer;
+        string FUrl;
         public string Url
         {
             get {return FUrl;}
         }
-        private bool FDisposed = false;
+        bool FDisposed = false;
 		
         public Action<string> Log;
         public Action<int> Shortcut;
