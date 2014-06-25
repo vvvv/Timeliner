@@ -11,10 +11,6 @@ body{
 	fill: #646464;
 }
 
-#svg_SizeBar{
-	fill: #404040;
-}
-
 .sizebar{
 	cursor:row-resize;
 	fill: #404040;
@@ -95,6 +91,11 @@ path{
 	fill: #646464;
 }
 
+
+#svg_Ruler_1_SizeBar{
+	fill: #404040;
+}
+
 .loopcap{
 	fill: #959595;
 	fill-opacity: 0;
@@ -172,7 +173,7 @@ path{
 	shape-rendering : crispEdges;
 }
 
-#svg_Overlays_MouseTimeLabel{
+#svg_Ruler_1_MouseTimeLabel{
 	fill: #ffffff;
 	font-family: "Lucida Console";
 	pointer-events: none;

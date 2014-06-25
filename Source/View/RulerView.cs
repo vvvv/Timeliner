@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 
 using Posh;
@@ -24,8 +25,12 @@ namespace Timeliner
 		
 		//MainGroup holds
 		public SvgRectangle Background = new SvgRectangle();
-		SvgText Label = new SvgText();
-		SvgRectangle LabelBackground = new SvgRectangle();
+        SvgDocumentWidget PlayButton;
+        SvgDocumentWidget StopButton;
+		SvgText TimeCodeLabel = new SvgText();
+		SvgRectangle TimeCodeLabelBackground = new SvgRectangle();
+        SvgRectangle SizeBar = new SvgRectangle();
+        public SvgText MouseTimeLabel = new SvgText();
 		
 		public SvgGroup NumberGroup = new SvgGroup();
 		public SvgGroup PanZoomGroup = new SvgGroup();
@@ -73,7 +78,7 @@ namespace Timeliner
 		
 		public float Height
 		{
-			get {return Background.Height;}
+			get {return Background.Height + SizeBar.Height;}
 		}
 		
 		public RulerView(TLRuler ruler, TimelineView tv)
@@ -98,23 +103,43 @@ namespace Timeliner
 			Background.MouseDown += Background_MouseDown;
 			Background.MouseUp += Background_MouseUp;
 			Background.MouseMove += Background_MouseMove;
+            
+            var caller = Parent.Document.Mapper.Map<ISvgEventCaller>();
+            PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller, 2);
+            StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller, 1);
+            StopButton.X = 25;
+            
+            PlayButton.Click += PlayButton_Click;
+            StopButton.Click += StopButton_Click;
 			
-			LabelBackground.Width = CLeftOffset;
-			LabelBackground.Height = Background.Height;
-			LabelBackground.CustomAttributes["class"] = "ruler";
-			LabelBackground.MouseDown += Background_MouseDown;
+			TimeCodeLabelBackground.Width = CLeftOffset;
+			TimeCodeLabelBackground.Height = Background.Height;
+			TimeCodeLabelBackground.CustomAttributes["class"] = "ruler";
+			TimeCodeLabelBackground.MouseDown += Background_MouseDown;
 			
-			Label.FontSize = 20;
-			Label.X = 55;
-			Label.Y = Label.FontSize;
-			Label.CustomAttributes["class"] = "time";
-			Label.ID = Model.GetID() + "_label";
-			Label.Text = "00:00:00:000";
-			Label.CustomAttributes["class"] = "time";
-			Label.MouseDown += Background_MouseDown;
+			TimeCodeLabel.FontSize = 20;
+			TimeCodeLabel.X = 55;
+			TimeCodeLabel.Y = TimeCodeLabel.FontSize;
+			TimeCodeLabel.CustomAttributes["class"] = "time";
+			TimeCodeLabel.ID = Model.GetID() + "_label";
+			TimeCodeLabel.Text = "00:00:00:000";
+			TimeCodeLabel.CustomAttributes["class"] = "time";
+			TimeCodeLabel.MouseDown += Background_MouseDown;
+            
+            SizeBar.Width = Background.Width;
+			SizeBar.Height = 10;
+			SizeBar.ID = "SizeBar";
+			SizeBar.Y = Background.Height;
+            SizeBar.MouseDown += Background_MouseDown;
+            SizeBar.MouseMove += Background_MouseMove;
+            SizeBar.MouseUp += Background_MouseUp;
+            
+            MouseTimeLabel.ID = "MouseTimeLabel";
+            MouseTimeLabel.Y = Height;
+            MouseTimeLabel.FontSize = 14;
 			
 			ClipRect.Width = width;
-			ClipRect.Height = Background.Height;
+			ClipRect.Height = Height;
 			ClipRect.ID = "ClipRect";
 			
 			//document roots id is "svg". this is where the trackclips are added to
@@ -186,11 +211,18 @@ namespace Timeliner
 		{
 			TrackMenuDict.Clear();
 			
-			LabelBackground.MouseDown -= Background_MouseDown;
+			TimeCodeLabelBackground.MouseDown -= Background_MouseDown;
 			
 			Background.MouseDown -= Background_MouseDown;
 			Background.MouseMove -= Background_MouseMove;
 			Background.MouseUp -= Background_MouseUp;
+            
+            SizeBar.MouseDown -= Background_MouseDown;
+            SizeBar.MouseMove -= Background_MouseMove;
+            SizeBar.MouseUp -= Background_MouseUp;
+            
+            PlayButton.Click -= PlayButton_Click;
+            StopButton.Click -= StopButton_Click;
 			
 			LoopRegion.MouseDown -= Background_MouseDown;
 			LoopRegion.MouseUp -= Parent.Default_MouseUp;
@@ -231,8 +263,12 @@ namespace Timeliner
 			MainGroup.Children.Add(Background);
 			MainGroup.Children.Add(PanZoomGroup);
 			MainGroup.Children.Add(NumberGroup);
-			MainGroup.Children.Add(LabelBackground);
-			MainGroup.Children.Add(Label);
+			MainGroup.Children.Add(TimeCodeLabelBackground);
+            MainGroup.Children.Add(PlayButton);
+            MainGroup.Children.Add(StopButton);
+			MainGroup.Children.Add(TimeCodeLabel);
+            MainGroup.Children.Add(SizeBar);
+            MainGroup.Children.Add(MouseTimeLabel);
 		}
 		
 		protected override void UnbuildSVG()
@@ -306,6 +342,8 @@ namespace Timeliner
 			
 			//PanZoomGroup
 			PanZoomGroup.Transforms[0] = PanZoomMatrix;
+            
+            PlayButton.SetViewBox(Convert.ToInt32(Parent.Timer.IsRunning));
 			
 			//TickNumGroup
 			var unit = FView.Elements[0];
@@ -423,6 +461,18 @@ namespace Timeliner
 		{
 			Parent.Default_MouseMove(this, e);
 		}
+        
+        void PlayButton_Click(object sender, MouseArg e)
+		{
+            Parent.Timer.Play(!Parent.Timer.IsRunning);
+            UpdateScene();
+		}
+
+		void StopButton_Click(object sender, MouseArg e)
+		{
+            Parent.Timer.Stop();
+            UpdateScene();
+		}
 		#endregion
 		
 		public float XPosToTime(float x)
@@ -459,7 +509,7 @@ namespace Timeliner
 			
 			if (Parent.Timer.TimeDelta != 0)
 			{
-				Label.Text = Parent.Timer.ToString();
+				TimeCodeLabel.Text = Parent.Timer.ToString();
 			}
 			
 			FViewChanged = false;

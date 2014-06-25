@@ -43,20 +43,17 @@ namespace Timeliner
 		Synchronizer<TrackView, TLTrackBase> Syncer;
 
 		public SvgDefinitionList Definitions = new SvgDefinitionList();
-		SvgDocumentWidget PlayButton;
-        SvgDocumentWidget StopButton;
         
         public SvgGroup FRulerGroup = new SvgGroup();
         
 		public SvgGroup FTrackGroup = new SvgGroup();
 		SvgRectangle Background = new SvgRectangle();
-        SvgRectangle SizeBar = new SvgRectangle();
 		
 		public SvgGroup FOverlaysGroup = new SvgGroup();
 		public SvgRectangle Selection = new SvgRectangle();
         public SvgRectangle TimeBar = new SvgRectangle();
         public SvgLine MouseTimeLine = new SvgLine();
-        public SvgText MouseTimeLabel = new SvgText();
+        
         public SvgMenuWidget MainMenu;
         
         public SvgMenuWidget NodeBrowser;
@@ -101,31 +98,13 @@ namespace Timeliner
             MouseTimeLine.StartY = 0;
             MouseTimeLine.EndX = 0;
             
-            MouseTimeLabel.ID = "MouseTimeLabel";
-            MouseTimeLabel.FontSize = 14;
-            
-            SizeBar.Width = Background.Width;
-			SizeBar.Height = 10;
-			SizeBar.ID = "SizeBar";
-			SizeBar.Y = Ruler.Height;
-            SizeBar.MouseDown += Default_MouseDown;
-            SizeBar.MouseMove += Default_MouseMove;
-            SizeBar.MouseUp += Default_MouseUp;
-            
             TimeBar.ID = "Timebar";
-            TimeBar.Y = -Ruler.Height - SizeBar.Height;
+            TimeBar.Y = -Ruler.Height;
             TimeBar.X = -1;
             TimeBar.Width = 2;
             TimeBar.MouseDown += Default_MouseDown;
             TimeBar.MouseMove += Default_MouseMove;
             TimeBar.MouseUp += Default_MouseUp;
-            
-            PlayButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "PlayButton.svg"), caller, 2);
-            StopButton = SvgDocumentWidget.Load(Path.Combine(TimelineView.ResourcePath, "StopButton.svg"), caller, 1);
-            StopButton.X = 25;
-            
-            PlayButton.Click += PlayButton_Click;
-            StopButton.Click += StopButton_Click;
             
             MainMenu = new SvgMenuWidget(120);
             MainMenu.ID = "MainMenu";
@@ -140,7 +119,9 @@ namespace Timeliner
             MainMenu.AddItem(addStringTrack, 1);
             
             FRulerGroup.ID = "Ruler";
+            FRulerGroup.CustomAttributes["class"] = "fixed";
             FRulerGroup.Transforms = new SvgTransformCollection();
+            FRulerGroup.Transforms.Add(new SvgTranslate(0, 0));
             
         	FTrackGroup.ID = "Tracks";
         	FTrackGroup.Transforms = new SvgTransformCollection();
@@ -189,10 +170,6 @@ namespace Timeliner
 			History.Undone -= History_Changed;
 			History.Redone -= History_Changed;
             
-            SizeBar.MouseDown -= Default_MouseDown;
-            SizeBar.MouseMove -= Default_MouseMove;
-            SizeBar.MouseUp -= Default_MouseUp;
-            
             TimeBar.MouseDown -= Default_MouseDown;
             TimeBar.MouseMove -= Default_MouseMove;
             TimeBar.MouseUp -= Default_MouseUp;
@@ -200,9 +177,6 @@ namespace Timeliner
             Background.MouseDown -= Default_MouseDown;
             Background.MouseMove -= Default_MouseMove;
             Background.MouseUp -= Default_MouseUp;
-            
-            PlayButton.Click -= PlayButton_Click;
-            StopButton.Click -= StopButton_Click;
             
             UnbuildSVG();
 			
@@ -242,27 +216,22 @@ namespace Timeliner
             FOverlaysGroup.Transforms.Clear();
             
             SvgRoot.Children.Add(Definitions);
-            SvgRoot.Children.Add(FRulerGroup);
             Ruler.AddToSceneGraphAt(FRulerGroup);
-            SvgRoot.Children.Add(PlayButton);
-            SvgRoot.Children.Add(StopButton);
             
-            SvgRoot.Children.Add(SizeBar);
-            
-            var menuOffset = new SvgTranslate(0, Ruler.Height+SizeBar.Height);
+            var menuOffset = new SvgTranslate(0, Ruler.Height);
             FTrackGroup.Transforms.Add(menuOffset);
             FTrackGroup.Children.Add(Background);
 			
 			SvgRoot.Children.Add(FTrackGroup);
+            SvgRoot.Children.Add(FRulerGroup);
 			
 			FOverlaysGroup.Transforms.Add(menuOffset);
 			FOverlaysGroup.Children.Add(Selection);
 			FOverlaysGroup.Children.Add(TimeBar);
             FOverlaysGroup.Children.Add(MouseTimeLine);
-            FOverlaysGroup.Children.Add(MouseTimeLabel);
 			FOverlaysGroup.Children.Add(MainMenu);
 			FOverlaysGroup.Children.Add(Ruler.Menu);
-			SvgRoot.Children.Add(FOverlaysGroup);			
+			SvgRoot.Children.Add(FOverlaysGroup);
 			
 			return SvgRoot;
 		}
@@ -297,7 +266,6 @@ namespace Timeliner
 		{
 			base.UpdateScene();
 			
-            PlayButton.SetViewBox(Convert.ToInt32(Timer.IsRunning));
 			Ruler.UpdateScene();
             			
 			foreach (var track in Tracks)
@@ -330,18 +298,6 @@ namespace Timeliner
 			var track = new TLStringTrack(FTrackCount++.ToString());
 			track.Order.Value = Document.Tracks.Count;
         	History.Insert(Command.Add(Document.Tracks, track));
-		}
-		
-		void PlayButton_Click(object sender, MouseArg e)
-		{
-            Timer.Play(!Timer.IsRunning);
-            UpdateScene();
-		}
-
-		void StopButton_Click(object sender, MouseArg e)
-		{
-            Timer.Stop();
-            UpdateScene();
 		}
 		#endregion
 		
@@ -441,8 +397,8 @@ namespace Timeliner
             MouseTimeLine.StartX = e.x;
             MouseTimeLine.EndX = e.x;
             
-            MouseTimeLabel.X = Math.Max(0, e.x - 110);
-            MouseTimeLabel.Text = Timer.TimeToString(Ruler.XPosToTime(e.x));
+            Ruler.MouseTimeLabel.X = Math.Max(0, e.x - 110);
+            Ruler.MouseTimeLabel.Text = Timer.TimeToString(Ruler.XPosToTime(e.x));
 		}
         
         public void ShowMenu(MouseArg e)
