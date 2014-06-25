@@ -11,12 +11,6 @@ body{
 	fill: #646464;
 }
 
-.selected {	
-	fill: #959595;
-	stroke: #959595;
-	stroke-width: 3;
-}
-
 #svg_SizeBar{
 	fill: #404040;
 }
@@ -46,6 +40,12 @@ body{
 .kf:hover, .kf:active{
 	fill: #252525;
 	stroke: #252525;
+}
+
+.selected {	
+	fill: #959595;
+	stroke: #959595;
+	stroke-width: 3;
 }
 
 .kffont{
