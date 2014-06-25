@@ -64,7 +64,10 @@ namespace TimeLinerSA
         {
             var hosttime = Clock.ElapsedMilliseconds / 1000f;
             var bundle = new OSCBundle();
+            
             var prefix = "/" + PrefixTextBox.Text.Trim('/') + "/";
+            if (prefix == "//")
+                prefix = "/";
             
             lock(FPoshTimeliners)
                 foreach (var timeliner in FPoshTimeliners)
