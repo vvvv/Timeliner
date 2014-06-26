@@ -69,7 +69,7 @@ namespace Timeliner
             Timeliner.TimelineView.RebuildAfterUpdate();
 			
             //publish changes
-            FPoshServer.PublishAll(this, new CallInvokedArgs(""));
+            FPoshServer.PublishAll(this, new CallInvokedArgs("", ""));
 			
             AfterHistoryPublish();
         }
