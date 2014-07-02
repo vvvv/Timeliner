@@ -29,7 +29,7 @@ namespace Timeliner
         SvgDocumentWidget StopButton;
 		SvgText TimeCodeLabel = new SvgText();
 		SvgRectangle TimeCodeLabelBackground = new SvgRectangle();
-        SvgRectangle SizeBar = new SvgRectangle();
+        public SvgRectangle SizeBar = new SvgRectangle();
         public SvgText MouseTimeLabel = new SvgText();
 		
 		public SvgGroup NumberGroup = new SvgGroup();

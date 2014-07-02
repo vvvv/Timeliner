@@ -502,10 +502,6 @@ namespace Timeliner
 			if (FMoveCommands.CommandCount == 0)
 				switch (arg.Button)
 			{
-				case 1:
-					//set timebar if loopregion was not moved
-					Instance.Parent.Timer.Time = Instance.XPosToTime(arg.x);
-					break;
 				case 3:
 					//show rulermenu
 					Instance.ShowMenu(arg);
@@ -521,9 +517,15 @@ namespace Timeliner
 		{
 		}
 		
-		public override void MouseClick(object sender, MouseArg arg)
+		public override IMouseEventHandler MouseDown(object sender, MouseArg arg)
 		{
-			Instance.Parent.Timer.Time = Instance.XPosToTime(arg.x);
+		    Instance.Parent.Timer.Time = Instance.XPosToTime(arg.x);
+		    return base.MouseDown(sender, arg);
+		}
+		
+		public override void MouseDrag(object sender, PointF arg, PointF delta, int callNr)
+		{
+			Instance.Parent.Timer.Time = Instance.XPosToTime(arg.X);
 		}
 	}
 }
