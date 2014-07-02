@@ -327,7 +327,7 @@ namespace Timeliner
 				else 
 					return null;
 			}
-			else if (sender == Ruler.Background)
+			else if ((sender == Ruler.Background) || (sender == Ruler.SizeBar))
 			{
 				HideMenus();
 				if (e.Button == 1)
