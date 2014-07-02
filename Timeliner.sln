@@ -4,17 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # SharpDevelop 4.4
 VisualStudioVersion = 12.0.20827.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svg", "..\SVG\Source\Svg.csproj", "{886A98C5-37C0-4E8B-885E-30C1D2F98B47}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Posh", "..\Posh\Source\Posh.csproj", "{15E03D5B-2054-4BA6-9561-FA259EC195F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeLinerSA", "TimelinerSA\TimeLinerSA.csproj", "{FEB50B08-BA81-453C-8376-A13F09506C19}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timeliner", "Source\Timeliner.csproj", "{A8ED0E84-E337-4DB5-8898-4BAD3960D908}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WampSharp", "..\WampSharp\src\WampSharp\WampSharp.csproj", "{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WampSharp.Default", "..\WampSharp\src\WampSharp.Default\WampSharp.Default.csproj", "{6AB75291-D296-457E-88A3-B41B16A1A247}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,14 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Debug|x86.Build.0 = Debug|Any CPU
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Release|x86.ActiveCfg = Release|Any CPU
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Release|x86.Build.0 = Release|Any CPU
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{886A98C5-37C0-4E8B-885E-30C1D2F98B47}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15E03D5B-2054-4BA6-9561-FA259EC195F0}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{15E03D5B-2054-4BA6-9561-FA259EC195F0}.Debug|x86.Build.0 = Debug|Any CPU
 		{15E03D5B-2054-4BA6-9561-FA259EC195F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -56,21 +42,5 @@ Global
 		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Release|x86.Build.0 = Release|x86
 		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Release|Any CPU.ActiveCfg = Release|x86
 		{A8ED0E84-E337-4DB5-8898-4BAD3960D908}.Release|Any CPU.Build.0 = Release|x86
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Debug|x86.Build.0 = Debug|Any CPU
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Release|x86.ActiveCfg = Release|Any CPU
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Release|x86.Build.0 = Release|Any CPU
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{653A76DC-00D7-4EFF-A25E-2FA10C5C927D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Debug|x86.Build.0 = Debug|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Release|x86.ActiveCfg = Release|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Release|x86.Build.0 = Release|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6AB75291-D296-457E-88A3-B41B16A1A247}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
