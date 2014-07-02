@@ -188,7 +188,7 @@ namespace Timeliner
         		keyframes[keyframes.Count - 1].NeighbourLeft = keyframes[keyframes.Count - 2];
         		keyframes[keyframes.Count - 1].NeighbourRight = null;
         	}
-        	else
+        	else if (keyframes.Count == 1)
         	{
         		keyframes[0].NeighbourLeft = null;
         		keyframes[0].NeighbourRight = null;
