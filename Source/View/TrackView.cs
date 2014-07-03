@@ -124,7 +124,7 @@ namespace Timeliner
 			
 			var width = new SvgUnit(SvgUnitType.Percentage, 100);
 			
-			Label.FontSize = 20;
+			Label.FontSize = 12;
 			Label.X = 5;
 			Label.Y = Label.FontSize;
 			Label.Text = Model.Label.Value;
@@ -161,7 +161,7 @@ namespace Timeliner
 			PanZoomGroup.Transforms.Add(new SvgTranslate(0)); //min/max
 			
 			SizeBar.Width = width;
-			SizeBar.Height = 5;
+			SizeBar.Height = 3;
 			SizeBar.ID = "SizeBar";
 			SizeBar.CustomAttributes["class"] = "sizebar";
 			SizeBar.Y = Background.Height.Value;
@@ -402,10 +402,10 @@ namespace Timeliner
 		public void CollapseTrack(SvgWidget editor, object newValue, object delta)
 		{
 			var newHeight = 0f;
-			if (Model.Height.Value > 50)
+			if (Model.Height.Value > Model.CollapsedHeight)
 			{
 				Model.UncollapsedHeight.Value = Model.Height.Value;
-				newHeight = 50;
+				newHeight = Model.CollapsedHeight;
 			}
 			else
 				newHeight = Model.UncollapsedHeight.Value;

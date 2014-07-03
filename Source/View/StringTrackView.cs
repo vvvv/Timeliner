@@ -90,11 +90,11 @@ namespace Timeliner
 
 			KeyframeGroup.ID = "Keyframes";
 			
-			CurrentValue.FontSize = 20;
+			CurrentValue.FontSize = 12;
 			CurrentValue.X = 5;
 			CurrentValue.CustomAttributes["class"] = "trackfont";
 			CurrentValue.CustomAttributes["pointer-events"] = "none";
-			CurrentValue.Y = 40;
+			CurrentValue.Y = 24;
 			
 			UpdateScene();
 		}

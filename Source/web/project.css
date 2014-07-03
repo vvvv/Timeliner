@@ -69,12 +69,11 @@ body{
 .pathsel{	
 	fill: #959595;
 	stroke: #959595;
-	stroke-width: 3;
 }
 
 path{
 	stroke: #ffffff;
-	stroke-width: 2;
+	stroke-width: 1.5;
 	stroke-opacity: 1;
 	vector-effect: non-scaling-stroke;
 	pointer-events: none;

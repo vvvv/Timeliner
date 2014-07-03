@@ -130,7 +130,7 @@ namespace Timeliner
         
         public float CollapsedHeight
         {
-            get {return 50;}
+            get {return 30;}
         }
         
         public TLTrackBase()
