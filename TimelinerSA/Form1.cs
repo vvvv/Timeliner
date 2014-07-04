@@ -17,7 +17,7 @@ namespace TimeLinerSA
 {
     public partial class Form1 : Form, IDisposable
     {
-        List<Timeliner.PoshTimeliner> FPoshTimeliners = new List<PoshTimeliner>();
+        List<PoshTimeliner> FPoshTimeliners = new List<PoshTimeliner>();
         WebBrowser FWebBrowser;
         Stopwatch Clock = new Stopwatch();
         OSCTransmitter FOSCTransmitter;
@@ -395,6 +395,10 @@ namespace TimeLinerSA
         		UpdateCaption(false);
         	}
         }
+		void ReloadToolStripMenuItemClick(object sender, System.EventArgs e)
+		{
+			webBrowser1.Refresh();
+		}
         #endregion
     }
 }
