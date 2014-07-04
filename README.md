@@ -78,9 +78,10 @@ Navigate to http://127.0.0.1:4444 with your browser to see a list of available t
 
 If you want to access a timeline other than via localhost make sure to run TimelinerSA.exe as admin.
 
----
+### Building Timeliner from Source
+The Timeliner.sln requires [Posh] (https://github.com/vvvv/Posh) to be cloned right next to the Timeliner\ directory. That should be it.
 
-For similar projects see:
+### Similar Projects:
 * [TimelinerSA] (http://vvvv.org/documentation/timelinersa)
 * [Duration] (http://www.duration.cc/)
 * [Vezér] (http://www.vezerapp.hu/)
