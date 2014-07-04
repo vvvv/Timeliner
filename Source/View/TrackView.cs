@@ -48,7 +48,6 @@ namespace Timeliner
 		public SvgRectangle SizeBarDragRect = new SvgRectangle();
 		SvgMenuWidget TrackMenu;
 		protected SvgMenuWidget KeyframeMenu;
-		SvgRectangle Hack = new SvgRectangle();
 		
 		//trackmenu
 		protected SvgButtonWidget CollapseButton;
@@ -177,11 +176,6 @@ namespace Timeliner
 			
 			CreateTrackMenu();
 			CreateKeyframeMenu();
-			
-			Hack.ID = "hack";
-			Hack.Width = Background.Width;
-			Hack.Height = new SvgUnit(SvgUnitType.Percentage, 100);
-			Hack.Visible = false;
 		}
 		
 		public override void Dispose()
@@ -229,7 +223,6 @@ namespace Timeliner
 			
 			SizeBarDragRect.ID = "DragRect" + IDGenerator.NewID;
 			Parent.FOverlaysGroup.Children.Add(SizeBarDragRect);
-			Parent.FOverlaysGroup.Children.Add(Hack);
 			
 			Parent.SvgRoot.Children.Add(TrackClipPath);
 		}
