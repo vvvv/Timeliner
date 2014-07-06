@@ -40,6 +40,10 @@ Delete selected keyframes | Del
 Toggle Collapse active track | Ctrl+<
 Nudge selected keyframes by one frame | Left/Right Arrow Keys
 Nudge selected keyframes values | Up/Down Arrow Keys (also use Shift/Ctrl/Alt vvvv-style to change stepsize)
+F5 | Reload page in case it is frozen or to reload CSS
+
+### Styling
+Edit web\project.css if you want to change colors, stroke-widths or fonts.
 
 ### Receiving OSC
 All of Timeliners current values are being sent via UDP using the OSC protocoll. Specify a target IP address (default: 127.0.0.1 ie. localhost) and a port (default: 4444) via Main Menu -> OSC.
