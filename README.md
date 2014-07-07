@@ -89,5 +89,6 @@ The Timeliner.sln requires [Posh] (https://github.com/vvvv/Posh) to be cloned ri
 * [TimelinerSA] (http://vvvv.org/documentation/timelinersa)
 * [Duration] (http://www.duration.cc/)
 * [Vezér] (http://www.vezerapp.hu/)
-* [KluppeTimeLine] (http://core.servus.at/node/1424)
+* [Bigfug Timeline] (http://www.bigfug.com/software/timeline/)
 * [IanniX] (http://www.iannix.org/)
+* [KluppeTimeLine] (http://core.servus.at/node/1424)
