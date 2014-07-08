@@ -156,7 +156,7 @@ path{
 	cursor: col-resize;
 }
 
-#svg_Overlays_Timebar:hover{
+#svg_Overlays_Timebar:hover, #svg_Overlays_Timebar:active{
 	fill: #000000;
 	stroke: #000000;
 	stroke-opacity: 0.5;
