@@ -60,7 +60,7 @@ namespace Timeliner
 		
 		public void Show(PointF point)
 		{
-			Transforms[0] = new SvgTranslate(point.X - FWidth/2f, Math.Max(0, point.Y - FHeight/2f));
+		    Transforms[0] = new SvgTranslate(Math.Max(0, point.X - FWidth/2f), Math.Max(0, point.Y - FHeight/2f));
 			Visible = true;
 		}
 		
