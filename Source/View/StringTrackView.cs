@@ -136,6 +136,8 @@ namespace Timeliner
 			
 			foreach (var kf in Keyframes)
 				kf.UpdateScene();
+			
+			CurrentValue.Visible = Height >= CMinValueDisplayHeight;
 		}
 
 		protected override void ApplyInverseScaling()
@@ -200,6 +202,8 @@ namespace Timeliner
 		public override void Evaluate()
 		{
 			CurrentValue.Text = Model.GetCurrentValueAsString();
+			if (!CurrentValue.Visible)
+			    Label.Text = Model.Label.Value + " | " + CurrentValue.Text;
 		}
 	}
 }

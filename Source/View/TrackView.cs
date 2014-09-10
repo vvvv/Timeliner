@@ -25,6 +25,8 @@ namespace Timeliner
 			get;
 		}
 		
+		protected float CMinValueDisplayHeight = 30;
+		
 		protected SvgDefinitionList Definitions = new SvgDefinitionList();
 		
 		//time-range zooming (x) is done on the PanZoomGroup

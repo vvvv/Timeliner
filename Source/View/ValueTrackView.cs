@@ -152,7 +152,6 @@ namespace Timeliner
 		#region update scenegraph
 		public override void UpdateScene()
 		{
-			
 			base.UpdateScene();
 			
 			UpdateMinMaxView();
@@ -165,6 +164,8 @@ namespace Timeliner
 			
 			foreach (var curve in Curves)
 				curve.UpdateScene();
+			
+			CurrentValue.Visible = Height >= CMinValueDisplayHeight;
 		}
 		
 		void UpdateMinMaxView()
@@ -259,6 +260,8 @@ namespace Timeliner
 		public override void Evaluate()
 		{
 			CurrentValue.Text = Model.GetCurrentValueAsString();
+			if (!CurrentValue.Visible)
+			    Label.Text = Model.Label.Value + " | " + CurrentValue.Text;
 		}
 	}
 }

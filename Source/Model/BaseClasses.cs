@@ -85,6 +85,8 @@ namespace Timeliner
 
     public abstract class TLTrackBase : TLModelBase
     {
+        protected float CCollapsedHeight = 15;
+        
     	public abstract IEnumerable<TLKeyframeBase> KeyframeModels
     	{
     		get;
@@ -130,7 +132,7 @@ namespace Timeliner
         
         public float CollapsedHeight
         {
-            get {return 30;}
+            get {return CCollapsedHeight;}
         }
         
         public TLTrackBase()
