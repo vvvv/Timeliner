@@ -270,11 +270,47 @@ namespace Timeliner
                 valueDelta *= step;
             if (ctrl)
                 valueDelta *= step;
-			
-            var cmds = new CompoundCommand();
+            
+            var kfSelected = false;
             foreach(var track in Timeliner.TimelineView.Tracks)
-                track.Nudge(ref cmds, direction, timeDelta, valueDelta);
-            Context.History.Insert(cmds);
+            {
+                kfSelected = track.KeyframeViews.Any(kf => kf.Model.Selected.Value);
+                if (kfSelected)
+                    break;
+            }
+            
+            if (kfSelected)
+            {
+                var cmds = new CompoundCommand();
+                foreach(var track in Timeliner.TimelineView.Tracks)
+                    track.Nudge(ref cmds, direction, timeDelta, valueDelta);
+                Context.History.Insert(cmds);
+            }
+            else
+            {
+                var currentTime = Timeliner.Timer.Time;
+                switch (direction)
+				{
+					case NudgeDirection.Back:
+						Timeliner.Timer.Time -= timeDelta;
+						break;
+					case NudgeDirection.Forward:
+						Timeliner.Timer.Time += timeDelta;
+						break;
+					case NudgeDirection.Up:
+						//find next kf
+						var nextKeyframe = Timeliner.TimelineView.Tracks.SelectMany(track => track.KeyframeViews).OrderBy(kf => kf.Model.Time.Value).First(kf => kf.Model.Time.Value > currentTime);
+						if (nextKeyframe != null)
+    						Timeliner.Timer.Time = nextKeyframe.Model.Time.Value;
+						break;
+					case NudgeDirection.Down:
+						//find prev kf
+						var lastKeyframe = Timeliner.TimelineView.Tracks.SelectMany(track => track.KeyframeViews).OrderByDescending(kf => kf.Model.Time.Value).First(kf => kf.Model.Time.Value < currentTime);
+						if (lastKeyframe != null)
+    						Timeliner.Timer.Time = lastKeyframe.Model.Time.Value;
+						break;
+				}
+            }
         }
 		
         void PoshServer_OnKeyUp(bool ctrl, bool shift, bool alt, int keyCode)
