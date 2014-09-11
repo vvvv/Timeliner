@@ -22,10 +22,6 @@ body{
 	cursor:pointer;
 }
 
-.collapsed{
-	stroke-opacity: 0.2;
-}
-
 /* valuetrack */
 .kf {
 	fill: #ffffff;
@@ -58,15 +54,37 @@ body{
 .ckf.selected {	
 	fill: #959595;
 	stroke: #959595;
-	stroke-width: 6;
 }
 
 .ckf:hover, .ckf:active{
-	stroke-width: 6;
 	stroke: #252525;
 }
 
-.pathsel{	
+.ekf {
+	fill: #ffffff;
+	stroke: #ffffff;
+	stroke-width: 1;
+}
+
+.ekf.selected {
+	fill: #959595;
+	stroke: #959595;
+}
+
+.ekf:hover, .ekf:active{
+	fill: #252525;
+	stroke: #252525;
+}
+
+.cv{
+	fill-opacity: 0;
+}
+
+.clpsd{
+	stroke-opacity: 0.4;
+}
+
+.sel{	
 	fill: #959595;
 	stroke: #959595;
 }

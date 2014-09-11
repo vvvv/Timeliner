@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 
@@ -48,7 +49,11 @@ namespace Timeliner
 		Synchronizer<CurveView, TLCurve> CurveSyncer;
 		
 		public SvgCircle KeyframeDefinition = new SvgCircle();
-		public SvgLine CollapsedKeyframeDefinition = new SvgLine();
+		public SvgPolygon EaseInDefinition = new SvgPolygon();
+		public SvgPolygon EaseOutDefinition = new SvgPolygon();
+		public SvgPolygon EaseInOutDefinition = new SvgPolygon();
+		
+		public SvgLine EaseNoneDefinition = new SvgLine();
 		public SvgGroup CurveGroup = new SvgGroup();
 		public SvgGroup KeyframeGroup = new SvgGroup();
 		SvgText CurrentValue = new SvgText();
@@ -97,13 +102,40 @@ namespace Timeliner
 			KeyframeDefinition.Transforms = new SvgTransformCollection();
 			KeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
 			
-			CollapsedKeyframeDefinition.ID = Model.GetID() + "_CKF";
-			CollapsedKeyframeDefinition.StartX = 0;
-			CollapsedKeyframeDefinition.StartY = -25f;
-			CollapsedKeyframeDefinition.EndX = 0;
-			CollapsedKeyframeDefinition.EndY = 25f;
-			CollapsedKeyframeDefinition.Transforms = new SvgTransformCollection();
-			CollapsedKeyframeDefinition.Transforms.Add(new SvgScale(1, 1));
+			EaseNoneDefinition.ID = Model.GetID() + "_NE";
+			EaseNoneDefinition.StartX = 0;
+			EaseNoneDefinition.StartY = -25f;
+			EaseNoneDefinition.EndX = 0;
+			EaseNoneDefinition.EndY = 25f;
+			EaseNoneDefinition.Transforms = new SvgTransformCollection();
+			EaseNoneDefinition.Transforms.Add(new SvgScale(1, 1));
+			
+			var half = Model.CCollapsedHeight / 2f;
+			    
+			EaseInDefinition.ID = Model.GetID() + "_EI";
+			EaseInDefinition.Points = new SvgUnitCollection();
+			AddPoint(EaseInDefinition, new PointF(0, -half));
+			AddPoint(EaseInDefinition, new PointF(-half, 0));
+			AddPoint(EaseInDefinition, new PointF(0, half));
+			EaseInDefinition.Transforms = new SvgTransformCollection();
+			EaseInDefinition.Transforms.Add(new SvgScale(1, 1));
+			
+			EaseOutDefinition.ID = Model.GetID() + "_EO";
+			EaseOutDefinition.Points = new SvgUnitCollection();
+			AddPoint(EaseOutDefinition, new PointF(0, -half));
+			AddPoint(EaseOutDefinition, new PointF(half, 0));
+			AddPoint(EaseOutDefinition, new PointF(0, half));
+			EaseOutDefinition.Transforms = new SvgTransformCollection();
+			EaseOutDefinition.Transforms.Add(new SvgScale(1, 1));
+			
+			EaseInOutDefinition.ID = Model.GetID() + "_EIO";
+			EaseInOutDefinition.Points = new SvgUnitCollection();
+			AddPoint(EaseInOutDefinition, new PointF(0, -half));
+			AddPoint(EaseInOutDefinition, new PointF(half, 0));
+			AddPoint(EaseInOutDefinition, new PointF(0, half));
+			AddPoint(EaseInOutDefinition, new PointF(-half, 0));
+			EaseInOutDefinition.Transforms = new SvgTransformCollection();
+			EaseInOutDefinition.Transforms.Add(new SvgScale(1, 1));
 			
 			CurveGroup.ID = "Curves";
 			KeyframeGroup.ID = "Keyframes";
@@ -116,6 +148,12 @@ namespace Timeliner
 			
 			UpdateScene();
 		}
+		
+		void AddPoint(SvgPolygon polygon, PointF point)
+        {
+            polygon.Points.Add(point.X);
+		    polygon.Points.Add(point.Y);
+        }
 		
 		public override void Dispose()
 		{
@@ -133,7 +171,11 @@ namespace Timeliner
 			KeyframeGroup.Children.Clear();
 			
 			Definitions.Children.Add(KeyframeDefinition);
-			Definitions.Children.Add(CollapsedKeyframeDefinition);
+			Definitions.Children.Add(EaseInDefinition);
+			Definitions.Children.Add(EaseOutDefinition);
+			Definitions.Children.Add(EaseInOutDefinition);
+			Definitions.Children.Add(EaseNoneDefinition);
+			
 			PanZoomGroup.Children.Add(CurveGroup);
 			PanZoomGroup.Children.Add(KeyframeGroup);
 			
@@ -156,8 +198,8 @@ namespace Timeliner
 			
 			UpdateMinMaxView();
 			
-			CollapsedKeyframeDefinition.StartY = - Model.CollapsedHeight * PanZoomGroup.Transforms[1].Matrix.Elements[5];
-			CollapsedKeyframeDefinition.EndY = CollapsedKeyframeDefinition.StartY + Model.CollapsedHeight;
+			EaseNoneDefinition.StartY = - Model.CollapsedHeight * PanZoomGroup.Transforms[1].Matrix.Elements[5];
+			EaseNoneDefinition.EndY = EaseNoneDefinition.StartY + Model.CollapsedHeight;
 			
 			foreach (var kf in Keyframes)
 				kf.UpdateScene();
@@ -208,7 +250,10 @@ namespace Timeliner
 			m.Invert();
 			
 			KeyframeDefinition.Transforms[0] = new SvgMatrix(m.Elements.ToList());
-			CollapsedKeyframeDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
+			EaseInDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
+			EaseOutDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
+			EaseInOutDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
+			EaseNoneDefinition.Transforms[0] = KeyframeDefinition.Transforms[0];
 		}
 		
 		

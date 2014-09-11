@@ -62,7 +62,7 @@ namespace Timeliner
 			Label.Transforms = new SvgTransformCollection();
 			Label.Transforms.Add(new SvgScale(1, 1));
             
-            CollapsedView.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_CKF", UriKind.Relative);
+            CollapsedView.ReferencedElement = new Uri("#" + Parent.Model.GetID() + "_NE", UriKind.Relative);
             CollapsedView.ID = "fg";
             CollapsedView.CustomAttributes["class"] = "ckf";
             CollapsedView.MouseDown += Background_MouseDown;
@@ -127,7 +127,19 @@ namespace Timeliner
 			}
             
 			Background.CustomAttributes["class"] = isSelected ? "kf selected" : "kf";
-            CollapsedView.CustomAttributes["class"] = isSelected ? "ckf selected" : "ckf";
+			var css = "ckf";
+			if (Model.Ease.Value > 0)
+			    css = "ekf";
+            CollapsedView.CustomAttributes["class"] = isSelected ? css + " selected" : css;
+            
+            var ease = "_NE";
+            switch (Model.Ease.Value)
+            {
+                    case 1: ease = "_EI"; break;
+                    case 2: ease = "_EO"; break;
+                    case 3: ease = "_EIO"; break;
+            }
+            CollapsedView.ReferencedElement = new Uri("#" + Parent.Model.GetID() + ease, UriKind.Relative);
             
             Background.Visible = !Parent.Collapsed;
             CollapsedView.Visible = Parent.Collapsed;
