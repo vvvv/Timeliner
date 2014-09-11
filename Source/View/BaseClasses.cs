@@ -183,7 +183,7 @@ namespace Timeliner
 	public abstract class MouseHandlerBase<TView> : IMouseEventHandler where TView : TLViewBase
 	{
 		bool pressed;
-		int Button;
+		protected int Button;
 		PointF StartPoint;
 		PointF LastPoint;
 		int DragCallCounter = 0;
