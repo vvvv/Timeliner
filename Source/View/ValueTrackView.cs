@@ -239,6 +239,9 @@ namespace Timeliner
 			//also update the value of the keyframe menu
 			var item = (SvgValueWidget) KeyframeMenu.GetItem("Value");
 			item.Value = (kf as ValueKeyframeView).Model.Value.Value;
+			
+			item = (SvgValueWidget) KeyframeMenu.GetItem("Ease");
+			item.Value = (kf as ValueKeyframeView).Model.Ease.Value;
 		}
 		#endregion
 		

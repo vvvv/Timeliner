@@ -325,6 +325,11 @@ namespace Timeliner
 				var prop = (EditableProperty<float>) property.GetValue(model);
 				cmds.Append(Command.Set(prop, prop.Value + (float) newValue));
 			}
+			else if (property.PropertyType.GenericTypeArguments[0] == typeof(int))
+			{
+				var prop = (EditableProperty<int>) property.GetValue(model);
+				cmds.Append(Command.Set(prop, prop.Value + (int) ((float)newValue)));
+			}
 		}
 		#endregion
 		

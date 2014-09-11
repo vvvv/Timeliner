@@ -132,33 +132,97 @@ namespace Timeliner
         }
         
         public override void Evaluate(float time)
-        {   
-        	var kfs = Keyframes.ToList(); 
-        	var kf = kfs.FindLast(k => k.Time.Value <= time);
-        	var kf1 = kfs.Find(k => k.Time.Value >= time);
-			
-			if (kf == null && kf1 == null)
-				CurrentValue = 0;
-			else if (kf == null)
-				CurrentValue =  kf1.Value.Value;
-			else if (kf1 == null)
-				CurrentValue =  kf.Value.Value;
-			else
-			{
-				var t = VMath.Map(time, kf.Time.Value, kf1.Time.Value, 0, 1, TMapMode.Float);
-				CurrentValue = (float) VMath.Lerp(kf.Value.Value, kf1.Value.Value, t); 
-			}
+        {
+            var kfs = Keyframes.ToList();
+            var kf = kfs.FindLast(k => k.Time.Value <= time);
+            var kf1 = kfs.Find(k => k.Time.Value >= time);
+            
+            if (kf == null && kf1 == null)
+                CurrentValue = 0;
+            else if (kf == null)
+                CurrentValue =  kf1.Value.Value;
+            else if (kf1 == null)
+                CurrentValue =  kf.Value.Value;
+            else
+            {
+                //compute points between kf and kf given the ease modes of both
+                var p1 = new Vector2D(kf.Time.Value, kf.Value.Value);
+                var p2 = new Vector2D(kf1.Time.Value, kf1.Value.Value);
+                
+                var d = p2 - p1;
+                var c1 = p1 + d * (1/3.0);
+                var c2 = p1 + d * (2/3.0);
+                                      
+                switch (kf.Ease.Value)
+                {
+                    case 2: 
+                        case 3: c1 = new Vector2D(p1.x + d.x * 0.5, p1.y); break;
+                }
+
+                switch (kf1.Ease.Value)
+                {
+                    case 1: 
+                        case 3: c2 = new Vector2D(p2.x - d.x * 0.5, p2.y); break;
+                }
+                
+                var resolution = 500;
+                var pts = new Vector2D[resolution];
+                for (int i=0; i<resolution; i++)
+                    pts[i] = CalculateBezierPoint(i / (float)(resolution-1), p1, c1, c2, p2);
+                
+                //create a LUT that for each t along the curve saves the length traveled on the path (by adding up the length between consecutive points)
+                var lut = new double[resolution];
+                for (int i=0; i<resolution-1; i++)
+                {
+                    var length = VMath.Dist(pts[i], pts[i+1]);
+                    lut[i+1] = lut[i] + length;
+                }
+                
+                //given x to sample the curve [0..1] consider x as length traveled along path and from LUT find t it takes to get to that point
+                var x = VMath.Map(time, kf.Time.Value, kf1.Time.Value, 0, 1, TMapMode.Clamp);
+                x *= lut.Last();
+                
+                var t = 0f;
+                for (int i=0; i<resolution; i++)
+                {
+                    if (lut[i] > x)
+                    {
+                        t = i + (float)VMath.Map(x, lut[i-1], lut[i], 0, 1, TMapMode.Clamp);
+                        t /= (resolution-1);
+                        break;
+                    }
+                }
+                
+                //from that t again get the bezierpoint
+                CurrentValue = (float)CalculateBezierPoint(t, p1, c1, c2, p2).y;
+            }
         }
-    	
-		public override string GetCurrentValueAsString()
+        
+        Vector2D CalculateBezierPoint(float t, Vector2D p0, Vector2D p1, Vector2D p2, Vector2D p3)
+        {
+            float u = 1 - t;
+            float tt = t*t;
+            float uu = u*u;
+            float uuu = uu * u;
+            float ttt = tt * t;
+            
+            var p = uuu * p0; //first term
+            p += 3 * uu * t * p1; //second term
+            p += 3 * u * tt * p2; //third term
+            p += ttt * p3; //fourth term
+            
+            return p;
+        }
+        
+        public override string GetCurrentValueAsString()
 		{
 			return CurrentValue.ToString("f4");
 		}
-    	
+		
 		public override object GetCurrentValueAsObject()
 		{
 			return CurrentValue;
-		}
+		}        
     }
 
     public class TLCurve : TLModelBase
@@ -181,8 +245,11 @@ namespace Timeliner
 
     public class TLValueKeyframe : TLKeyframeBase
     {
-    	[KeyframeMenuEntry]
+        [KeyframeMenuEntry]
         public EditableProperty<float> Value { get; private set; }
+        
+        [KeyframeMenuEntry]
+        public EditableProperty<int> Ease { get; private set; }
 
         public PointF Position
         {
@@ -212,6 +279,9 @@ namespace Timeliner
         {
             Value = new EditableProperty<float>("Value", value);
             Add(Value);
+            
+            Ease = new EditableProperty<int>("Ease", 0);
+            Add(Ease);
         }
     }
 }
