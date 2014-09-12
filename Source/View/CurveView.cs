@@ -147,7 +147,7 @@ namespace Timeliner
             {
                 if (easeOut)
                 {
-                    coords.Add(x1 + (x2-x1) * 0.5f);
+                    coords.Add(x1 + (x2-x1) * (float) Model.Start.EaseOut.Value.x);
                     coords.Add(-y1);
                 }
                 else
@@ -158,7 +158,7 @@ namespace Timeliner
                 
                 if (easeIn)
                 {
-                    coords.Add(x2 - (x2-x1) * 0.5f);
+                    coords.Add(x2 + (x2-x1) * (float) Model.Start.EaseIn.Value.x);
                     coords.Add(-y2);
                 }
                 else

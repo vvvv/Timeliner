@@ -119,9 +119,7 @@ namespace Timeliner
 
         		//between
         		for (int i = 1; i < Keyframes.Count; i++)
-        		{
         			Curves.Add(new TLCurve(IDGenerator.NewID, Keyframes[i - 1], Keyframes[i]));
-                }
 
                 //last
                 Curves.Add(new TLCurve("End" + IDGenerator.NewID, Keyframes[Keyframes.Count - 1], null));
@@ -145,8 +143,9 @@ namespace Timeliner
                 CurrentValue =  kf.Value.Value;
             else
             {
-                var curve = Curves.Where(c => (c.Start == kf) && (c.End == kf1)).First();
-                CurrentValue = curve.GetValue(time);
+                var curve = Curves.FirstOrDefault(c => (c.Start == kf) && (c.End == kf1));
+                if (curve != null)
+                    CurrentValue = curve.GetValue(time);
             }
         }
         
@@ -198,13 +197,13 @@ namespace Timeliner
             switch (Start.Ease.Value)
             {
                 case 2: 
-                    case 3: FC1 = new Vector2D(FP1.x + d.x * 0.5, FP1.y); break;
+                    case 3: FC1 = FP1 + (d * Start.EaseOut.Value); break;
             }
 
             switch (End.Ease.Value)
             {
                 case 1: 
-                    case 3: FC2 = new Vector2D(FP2.x - d.x * 0.5, FP2.y); break;
+                    case 3: FC2 = FP2 + (d * End.EaseIn.Value); break;
             }
             
             FResolution = (int) (d.x * 100);
@@ -266,6 +265,9 @@ namespace Timeliner
         
         [KeyframeMenuEntry]
         public EditableProperty<int> Ease { get; private set; }
+        
+        public EditableProperty<Vector2D> EaseIn { get; private set; }
+        public EditableProperty<Vector2D> EaseOut { get; private set; }
 
         public PointF Position
         {
@@ -298,6 +300,13 @@ namespace Timeliner
             
             Ease = new EditableProperty<int>("Ease", 0);
             Add(Ease);
+            
+            //handles should probably be clamped to 0.5
+            EaseIn = new EditableProperty<Vector2D>("EaseIn", new Vector2D(-0.5, 0));
+            Add(EaseIn);
+            
+            EaseOut = new EditableProperty<Vector2D>("EaseOut", new Vector2D(0.5, 0));
+            Add(EaseOut);
         }
     }
 }
