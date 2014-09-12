@@ -202,6 +202,14 @@ namespace Timeliner
                 case (int) Keys.OemBackslash:
                     Timeliner.TimelineView.ActiveTrack.CollapseTrack(null, null, null);
                     break;
+                case (int) Keys.E:
+                    if (!ctrl)
+                        foreach(var track in Timeliner.TimelineView.Tracks.OfType<ValueTrackView>())
+                            foreach(var kf in track.Keyframes.Where(k => k.Model.Selected.Value))
+                    {
+                        cmds.Append(Command.Set(kf.Model.Ease, (kf.Model.Ease.Value + 1) % 4));
+                    }
+                    break;
                 case (int) Keys.I:
                     if (!ctrl)
                         cmds.Append(Command.Set(Timeliner.TimelineView.Ruler.Model.LoopStart, Timeliner.Timer.Time));
