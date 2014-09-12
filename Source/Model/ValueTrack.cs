@@ -206,7 +206,7 @@ namespace Timeliner
                     case 3: FC2 = FP2 + (d * End.EaseIn.Value); break;
             }
             
-            FResolution = (int) (d.x * 100);
+            FResolution = Math.Abs((int) (d.x * 100));
             var pts = new Vector2D[FResolution];
             for (int i=0; i<FResolution; i++)
                 pts[i] = CalculateBezierPoint(i / (float)(FResolution-1), FP1, FC1, FC2, FP2);
