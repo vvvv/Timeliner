@@ -9,6 +9,7 @@ using VVVV.Core;
 using VVVV.Core.Collections;
 using VVVV.Core.Model;
 using VVVV.Core.Serialization;
+using VVVV.Utils.VMath;
 
 namespace Timeliner
 {
@@ -237,8 +238,17 @@ namespace Timeliner
     		{
     			if(element.GetType().IsGenericType && (element.GetType().GetGenericTypeDefinition() == typeof(EditableProperty<>)))
     			{
-    				dynamic prop = element;
-    				x.Add(new XAttribute(prop.Name, prop.Value));
+    			    dynamic prop = element;
+    			    
+    			    //HACK 
+                    if (element.GetType() == typeof(EditableProperty<Vector2D>))
+    			    {
+                        var v = element as EditableProperty<Vector2D>;
+                        var s = v.Value.x.ToString() + "," + v.Value.y.ToString();;
+    			        x.Add(new XAttribute(prop.Name, s));
+    			    }
+    			    else
+    				    x.Add(new XAttribute(prop.Name, prop.Value));
     			}
     		}
     	}
@@ -254,7 +264,14 @@ namespace Timeliner
     				
     				var attribute = data.Attribute(prop.Name);
     				
-    				prop.Value = TypeDescriptor.GetConverter(type).ConvertFromString(null, CultureInfo.InvariantCulture, attribute.Value);
+    				//HACK
+    				if (element.GetType() == typeof(EditableProperty<Vector2D>))
+    			    {
+    				    var v = attribute.Value.Split(',');
+    				    prop.Value = new Vector2D(double.Parse(v[0]), double.Parse(v[1]));
+    			    }
+    				else
+    				    prop.Value = TypeDescriptor.GetConverter(type).ConvertFromString(null, CultureInfo.InvariantCulture, attribute.Value);
     			}
     		}
     	}
