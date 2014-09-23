@@ -24,6 +24,7 @@ Requires Internet Explorer >= 10 to be installed on your system.
 * pan (scroll in time) via right-drag left/right
 * zoom via right-drag up/down
 * rearrange tracks via left dragging their labels 
+* right-drag the timebar to have it snap to keyframes
 
 ### Keyboard Interaction
 Function| Shortcut
@@ -40,7 +41,9 @@ Delete selected keyframes | Del
 Toggle Collapse active track | Ctrl+<
 Nudge selected keyframes by one frame | Left/Right Arrow Keys
 Nudge selected keyframes values | Up/Down Arrow Keys (also use Shift/Ctrl/Alt vvvv-style to change stepsize)
-F5 | Reload page in case it is frozen or to reload CSS
+Jump to next/previous keyframe | Up/Down Arrow Keys (with no keyframe selected)
+Change EASE mode of selected keyframe | E (toggles through: In, Out, InOut, None)
+Reload page in case it is frozen or to reload CSS | F5
 
 ### Styling
 Edit web\project.css if you want to change colors, stroke-widths or fonts.
