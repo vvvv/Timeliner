@@ -133,7 +133,7 @@ namespace Timeliner
         {
             var kfs = Keyframes.ToList();
             var kf = kfs.FindLast(k => k.Time.Value <= time);
-            var kf1 = kfs.Find(k => k.Time.Value >= time);
+            var kf1 = kfs.Find(k => k.Time.Value > time);
             
             if (kf == null && kf1 == null)
                 CurrentValue = 0;
@@ -162,6 +162,10 @@ namespace Timeliner
 
     public class TLCurve : TLModelBase
     {
+        public static double APPROXIMATION_EPSILON = 1.0e-09;
+        public static double VERYSMALL = 1.0e-20;
+        public static int MAXIMUM_ITERATIONS = 100;
+        
         int FResolution;
         double[] FLut;
         Vector2D FP1, FP2, FC1, FC2;
@@ -205,56 +209,84 @@ namespace Timeliner
                 case 1: 
                     case 3: FC2 = FP2 + (d * End.EaseIn.Value); break;
             }
-            
-            FResolution = Math.Abs((int) (d.x * 100));
-            var pts = new Vector2D[FResolution];
-            for (int i=0; i<FResolution; i++)
-                pts[i] = CalculateBezierPoint(i / (float)(FResolution-1), FP1, FC1, FC2, FP2);
-            
-            //create a LUT that for each t along the curve saves the length traveled on the path (by adding up the length between consecutive points)
-            FLut = new double[FResolution];
-            for (int i=0; i<FResolution-1; i++)
-            {
-                var length = VMath.Dist(pts[i], pts[i+1]);
-                FLut[i+1] = FLut[i] + length;
-            }
         }
         
         public float GetValue(float time)
         {
-            //given x to sample the curve [0..1] consider x as length traveled along path and from LUT find t it takes to get to that point
-            var x = VMath.Map(time, Start.Time.Value, End.Time.Value, 0, 1, TMapMode.Clamp);
-            x *= FLut.Last();
-            
-            var t = 0f;
-            for (int i=0; i<FResolution; i++)
-            {
-                if (FLut[i] > x)
-                {
-                    t = i + (float)VMath.Map(x, FLut[i-1], FLut[i], 0, 1, TMapMode.Clamp);
-                    t /= (FResolution-1);
-                    break;
-                }
-            }
-            
-            //from that t again get the bezierpoint
-            return (float)CalculateBezierPoint(t, FP1, FC1, FC2, FP2).y;
+            var x = ApproximateCubicBezierParameter(time, (float) FP1.x, (float) FC1.x, (float) FC2.x, (float) FP2.x);
+            return (float) BezierInterpolate(x, FP1, FC1, FC2, FP2).y;
         }
         
-        Vector2D CalculateBezierPoint(float t, Vector2D p0, Vector2D p1, Vector2D p2, Vector2D p3)
+        //simply clamps a value between 0 .. 1
+        float ClampToZeroOne(float value) {
+            if (value < .0f)
+                return .0f;
+            else if (value > 1.0f)
+                return 1.0f;
+            else
+                return value;
+        }
+        
+        /**
+         * Returns the approximated parameter of a parametric curve for the value X
+         * @param atX At which value should the parameter be evaluated
+         * @param P0_X The first interpolation point of a curve segment
+         * @param C0_X The first control point of a curve segment
+         * @param C1_X The second control point of a curve segment
+         * @param P1_x The second interpolation point of a curve segment
+         * @return The parametric argument that is used to retrieve atX using the parametric function representation of this curve
+         */
+        float ApproximateCubicBezierParameter (
+            float atX, float P0_X, float C0_X, float C1_X, float P1_X ) {
+            
+            if (atX - P0_X < VERYSMALL)
+                return 0.0f;
+            
+            if (P1_X - atX < VERYSMALL)
+                return 1.0f;
+            
+            long iterationStep = 0;
+            
+            float u = 0.0f; float v = 1.0f;
+            
+            //iteratively apply subdivision to approach value atX
+            while (iterationStep < MAXIMUM_ITERATIONS) {
+                
+                // de Casteljau Subdivision.
+                float a = (P0_X + C0_X)*0.5f;
+                float b = (C0_X + C1_X)*0.5f;
+                float c = (C1_X + P1_X)*0.5f;
+                float d = (a + b)*0.5f;
+                float e = (b + c)*0.5f;
+                float f = (d + e)*0.5f; //this one is on the curve!
+                
+                //The curve point is close enough to our wanted atX
+                if (Math.Abs(f - atX) < APPROXIMATION_EPSILON) {
+                    return ClampToZeroOne((u + v)*0.5f);
+                }
+                
+                //dichotomy
+                if (f < atX) {
+                    P0_X = f;
+                    C0_X = e;
+                    C1_X = c;
+                    u = (u + v)*0.5f;
+                } else {
+                    C0_X = a;
+                    C1_X = d;
+                    P1_X = f;
+                    v = (u + v)*0.5f;
+                }
+                
+                iterationStep++;
+            }
+            
+            return ClampToZeroOne((u + v)*0.5f);
+        }
+        
+        Vector2D BezierInterpolate(float s, Vector2D p0, Vector2D c0, Vector2D c1, Vector2D p1)
         {
-            float u = 1 - t;
-            float tt = t*t;
-            float uu = u*u;
-            float uuu = uu * u;
-            float ttt = tt * t;
-            
-            var p = uuu * p0; //first term
-            p += 3 * uu * t * p1; //second term
-            p += 3 * u * tt * p2; //third term
-            p += ttt * p3; //fourth term
-            
-            return p;
+            return Math.Pow(1 - s, 3) * p0 + 3 * Math.Pow(1 - s, 2) * s * c0 + 3 * (1 - s) * Math.Pow(s, 2) * c1 + Math.Pow(s, 3) * p1;
         }
     }
 
@@ -302,10 +334,10 @@ namespace Timeliner
             Add(Ease);
             
             //handles should probably be clamped to 0.5
-            EaseIn = new EditableProperty<Vector2D>("EaseIn", new Vector2D(-0.5, 0));
+            EaseIn = new EditableProperty<Vector2D>("EaseIn", new Vector2D(-1, 0));
             Add(EaseIn);
             
-            EaseOut = new EditableProperty<Vector2D>("EaseOut", new Vector2D(0.5, 0));
+            EaseOut = new EditableProperty<Vector2D>("EaseOut", new Vector2D(1, 0));
             Add(EaseOut);
         }
     }
