@@ -4,7 +4,9 @@ A [Posh] (https://github.com/vvvv/Posh) based timeline that can be controlled by
 
 Brought to you by [vvvv] (http://vvvv.org).
 
-Requires Internet Explorer >= 10 to be installed on your system.
+Requires Internet Explorer >= 10 to be installed on your system. 
+
+Looking for a binary download? Get it [here] (http://vvvv.org/contribution/timelinersa-nextgeneration).
 
 ### Track Types
 * Value
