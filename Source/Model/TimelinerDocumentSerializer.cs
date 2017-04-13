@@ -145,7 +145,9 @@ namespace Timeliner
         public XElement Serialize(TTrack value, Serializer serializer)
         {
             var x = value.GetXML(GetTagName());
-            
+
+            string trackName = value.Label.Value;
+            x.FirstAttribute.SetValue(trackName);
 			value.SerializeProperties(x);
             
             SerializeKeyframes(x, value, serializer);
