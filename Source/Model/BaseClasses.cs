@@ -91,7 +91,7 @@ namespace Timeliner
     	{
     		get;
     	}
-    	
+
         public EditableProperty<int> Order
         {
             get;

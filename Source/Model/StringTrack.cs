@@ -35,9 +35,19 @@ namespace Timeliner
 			Keyframes = new EditableIDList<TLStringKeyframe>("Keyframes");
 			Keyframes.Added += Keyframes_Added;
             Add(Keyframes);
-            
+
             //set the name of this track
-            Label.Value = "String " + name;
+            string label;
+            int x;
+            if (Int32.TryParse(name, out x))
+            {
+                label = "String " + x.ToString();
+            }
+            else
+            {
+                label = name;
+            }
+            Label.Value = label;
 		}
 
 		void Keyframes_Added(IViewableCollection<TLStringKeyframe> collection, TLStringKeyframe item)

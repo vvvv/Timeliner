@@ -73,8 +73,17 @@ namespace Timeliner
             Keyframes.Added += Keyframes_Added;
             Keyframes.Removed += Keyframes_Removed;
             
-            
-            Label.Value = "Value " + name;
+            string label;
+            int x;
+            if (Int32.TryParse(name, out x))
+            {
+                label = "Value " + x.ToString();
+            }
+            else
+            {
+                label = name;
+            }
+            Label.Value = label;
         }
 
         void Keyframes_Removed(IViewableCollection<TLValueKeyframe> collection, TLValueKeyframe item)
